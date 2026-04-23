@@ -13,7 +13,7 @@ A practitioner curates a corpus of edge-case inputs for a highly subjective task
 
 **Why this priority**: This is the core loop of the kata — without a measured before/after on the same corpus, "calibration" is an anecdote rather than an engineering technique. It is also the smallest slice that delivers standalone value: one corpus, one prompt change, one measured improvement.
 
-**Independent Test**: Can be fully tested by running the edge-case corpus once zero-shot, recording the inconsistency rate, running it again with a calibrated example set, and confirming the recorded delta meets the declared threshold.
+**Independent Test**: Can be fully tested by running the edge-case corpus once zero-shot, recording the inconsistency rate, running it again with a calibrated example set, and confirming a ≥ 40% relative reduction in inconsistency.
 
 **Acceptance Scenarios**:
 
@@ -64,7 +64,7 @@ A practitioner swaps the active example set for an alternative set of the same s
 
 ### Functional Requirements
 
-- **FR-001**: System MUST include 2–4 input/output example pairs in the prompt when measured zero-shot performance on the edge-case corpus is below the declared threshold.
+- **FR-001**: System MUST include 2–4 input/output example pairs in the prompt when measured zero-shot inconsistency on the edge-case corpus is ≥ 20%.
 - **FR-002**: System MUST validate that the active example set covers representative edge cases for the task before that set is used in a calibrated run.
 - **FR-003**: System MUST log which example set was active for each run, such that any recorded result can be traced to its calibration inputs.
 - **FR-004**: System MUST measure and record the zero-shot vs. few-shot delta on the same corpus, producing a single comparable metric per corpus.
@@ -83,7 +83,7 @@ A practitioner swaps the active example set for an alternative set of the same s
 
 ### Measurable Outcomes
 
-- **SC-001**: Few-shot calibration reduces the inconsistency rate on the edge-case corpus by at least a declared X% compared to the zero-shot baseline on the same inputs.
+- **SC-001**: Few-shot calibration reduces the inconsistency rate on the edge-case corpus by ≥ 40% (relative) compared to the zero-shot baseline on the same inputs.
 - **SC-002**: 100% of calibrated runs produce schema-valid output for the declared edge-case task format.
 - **SC-003**: 0 silently-contradictory example sets are accepted — every contradictory set surfaces as a validation failure before the run executes.
 - **SC-004**: The active example set is logged and retrievable for 100% of runs (zero-shot and few-shot alike), so any result can be traced back to its calibration inputs.

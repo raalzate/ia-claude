@@ -13,11 +13,11 @@ A practitioner sends N consecutive requests that share a large static preamble (
 
 **Why this priority**: This is the core economic outcome of the kata. Without demonstrable cache reuse across sequential calls, the entire optimization is unobservable and the cost target cannot be met.
 
-**Independent Test**: Run the kata runner with a fixed static prefix and a set of varied dynamic suffixes; assert that cache-hit metrics on runs 2..N exceed the declared threshold and that per-request input cost drops by the declared percentage relative to run 1.
+**Independent Test**: Run the kata runner with a fixed static prefix and a set of varied dynamic suffixes; assert that cache-hit rate on runs 2..N is ≥ 0.90 and that per-request billable input tokens drop by ≥ 85% relative to run 1.
 
 **Acceptance Scenarios**:
 
-1. **Given** a prompt composed of a static prefix above the minimum cacheable size and a small dynamic suffix, **When** the practitioner issues the same composition twice back-to-back with different suffix content, **Then** the second response reports a non-zero cache-read token count on the static prefix and the billable (non-cached) input cost drops to approximately the declared target of the baseline.
+1. **Given** a prompt composed of a static prefix above the minimum cacheable size and a small dynamic suffix, **When** the practitioner issues the same composition twice back-to-back with different suffix content, **Then** the second response reports a non-zero cache-read token count on the static prefix and the billable (non-cached) input cost drops to ≤ 15% of the baseline.
 2. **Given** a sequence of N requests sharing the same static prefix, **When** they run within the cache TTL window, **Then** runs 2..N each report cache hits covering the full static prefix region.
 
 ---
@@ -83,7 +83,7 @@ A practitioner modifies only the dynamic suffix (user question, session state, t
 
 ### Measurable Outcomes
 
-- **SC-001**: Cache-hit rate is greater than or equal to the declared target threshold across the test run (runs 2..N within the cache TTL window).
-- **SC-002**: Input token cost per request after the first drops by the declared percentage (target: billable input cost reduced to approximately 10% of the uncached baseline).
+- **SC-001**: Cache-hit rate is ≥ 0.90 on runs 2..N within the cache TTL window across the test corpus.
+- **SC-002**: Billable input token cost per request after the first drops to ≤ 15% of the uncached baseline.
 - **SC-003**: Zero volatile tokens are detected in the static prefix region by the lint step across the entire repository.
 - **SC-004**: Pull requests that mutate the static prefix (without an explicit declared change) fail CI on the prefix-integrity check.

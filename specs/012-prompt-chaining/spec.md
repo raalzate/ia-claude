@@ -85,7 +85,7 @@ A practitioner adds a new stage (e.g. a security-focused scan pass) to the chain
 
 ### Measurable Outcomes
 
-- **SC-001**: Finding coverage produced by the chained run is greater than or equal to the baseline (monolithic prompt) run by at least the declared delta on the same corpus.
+- **SC-001**: Finding coverage produced by the chained run is ≥ 25% higher than the baseline (monolithic prompt) run on the same corpus (distinct-issue count).
 - **SC-002**: Each stage's prompt stays under its declared size budget (tokens or characters) across all runs in the evaluation set.
 - **SC-003**: Zero silent swallowing of failed stages — 100% of per-file analysis failures surface as explicit errors in the chain's output.
 - **SC-004**: Adding a new stage to the chain requires zero changes to existing stage definitions, prompts, or payload contracts (verified by diff).

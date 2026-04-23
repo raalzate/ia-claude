@@ -187,9 +187,8 @@ needing to read free-form messages.
   observable in the agent context across any workshop run — measured by a
   scan of the agent transcript and tool-response log.
 - **SC-003**: Retryable failures resolve within the configured retry budget
-  in at least X% of runs (target X set during `/iikit-clarify`; placeholder
-  90% pending confirmation) — measured by the ratio of retried-success to
-  total retryable failures.
+  in at least 95% of runs on the fixture corpus — measured by the ratio of
+  retried-success to total retryable failures.
 - **SC-004**: 100% of non-retryable failures route to the policy-defined
   escalation path and perform zero retries — measured by correlating
   `isRetryable=false` log entries with zero subsequent attempts on the same

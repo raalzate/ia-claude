@@ -13,11 +13,11 @@ A practitioner authors a long prompt that contains a single hard, non-negotiable
 
 **Why this priority**: This is the baseline defense against the softmax-dilution failure mode. If critical rules are not anchored at the edges, every downstream mitigation (compaction, re-anchoring, logging) is operating on an already-compromised prompt. P1 delivers the minimum viable protection on its own.
 
-**Independent Test**: Can be fully tested by (a) declaring one critical rule, (b) rendering a long prompt with the rule placed only at the extremes, (c) issuing a batch of adversarial/ambiguous requests, and (d) measuring the rule-compliance rate against the declared target. No compaction logic is required for this story to deliver value.
+**Independent Test**: Can be fully tested by (a) declaring one critical rule, (b) rendering a long prompt with the rule placed only at the extremes, (c) issuing a batch of adversarial/ambiguous requests, and (d) measuring the rule-compliance rate against the 95% target. No compaction logic is required for this story to deliver value.
 
 **Acceptance Scenarios**:
 
-1. **Given** a declared critical rule and a long prompt rendered with edge placement enabled, **When** the practitioner submits the adversarial request batch, **Then** the observed rule-compliance rate meets or exceeds the declared target X%.
+1. **Given** a declared critical rule and a long prompt rendered with edge placement enabled, **When** the practitioner submits the adversarial request batch, **Then** the observed rule-compliance rate is ≥ 95%.
 2. **Given** a long prompt whose body contains content that implicitly contradicts the critical rule, **When** the rule is anchored at both edges, **Then** the model defers to the edge-anchored rule rather than the contradictory mid-prompt content.
 
 ---
@@ -28,11 +28,11 @@ The practitioner runs a controlled variant of the P1 scenario in which the same 
 
 **Why this priority**: The defense only becomes convincing when the attack is demonstrated. P2 proves the "lost in the middle" phenomenon on the practitioner's own workload and produces the empirical gap that motivates P1. It is secondary because P1 alone already delivers protection; P2 delivers the explanation and the regression signal.
 
-**Independent Test**: Can be fully tested by rendering the prompt with the rule in the middle, running the same adversarial batch used in P1, and computing the compliance delta against the P1 run. Passes when the drop is at least the declared threshold.
+**Independent Test**: Can be fully tested by rendering the prompt with the rule in the middle, running the same adversarial batch used in P1, and computing the compliance delta against the P1 run. Passes when the drop is ≥ 20 percentage points.
 
 **Acceptance Scenarios**:
 
-1. **Given** the same critical rule, adversarial batch, and base prompt from P1, **When** the rule is placed in the middle third of the prompt instead of the edges, **Then** the observed compliance rate drops by at least the declared threshold Δ.
+1. **Given** the same critical rule, adversarial batch, and base prompt from P1, **When** the rule is placed in the middle third of the prompt instead of the edges, **Then** the observed compliance rate drops by ≥ 20 percentage points (Δ ≥ 0.20).
 2. **Given** the mid-placement run completes, **When** the practitioner reviews the output, **Then** a clearly labelled anti-pattern report is produced that names the violations and attributes them to mid-context burying.
 
 ---
@@ -84,7 +84,7 @@ During a long multi-turn session, context usage grows past roughly 55% of the mo
 
 ### Measurable Outcomes
 
-- **SC-001**: Rule compliance under edge placement meets or exceeds the declared target X% across the adversarial batch.
-- **SC-002**: Compliance drop between edge placement and mid-placement is clearly observable, with Δ greater than or equal to the declared threshold, demonstrating the softmax-dilution effect on the practitioner's own workload.
+- **SC-001**: Rule compliance under edge placement is ≥ 95% across the adversarial batch.
+- **SC-002**: Compliance drop between edge placement and mid-placement is ≥ 20 percentage points (Δ ≥ 0.20), demonstrating the softmax-dilution effect on the practitioner's own workload.
 - **SC-003**: Every compaction event fires before session capacity exceeds 60%, with zero recorded instances of a session reaching the hard limit without a compaction attempt.
 - **SC-004**: Every post-compaction prompt contains every declared critical rule verbatim at both the primacy and latency edges, verified by automated inspection on 100% of compaction events.

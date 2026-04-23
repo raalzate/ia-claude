@@ -33,7 +33,7 @@ A practitioner runs the same offline audit corpus twice — once through the syn
 
 **Acceptance Scenarios**:
 
-1. **Given** an identical corpus processed through both the synchronous pathway and the batch pathway, **When** totals are compared, **Then** the batch-pathway total cost is lower than the synchronous total by at least the declared target percentage.
+1. **Given** an identical corpus processed through both the synchronous pathway and the batch pathway, **When** totals are compared, **Then** the batch-pathway total cost is ≥ 50% lower than the synchronous total.
 2. **Given** a workload that was mistakenly processed synchronously despite being async-tolerant, **When** the comparison report is produced, **Then** the report explicitly flags the missed-savings anti-pattern and quantifies the avoidable spend.
 
 ---
@@ -88,7 +88,7 @@ A practitioner injects items that will deliberately fail (e.g. inputs that excee
 
 ### Measurable Outcomes
 
-- **SC-001**: Cost reduction of the batch-pathway run vs. the synchronous baseline for an identical corpus is greater than or equal to the declared target percentage (~50%).
+- **SC-001**: Cost reduction of the batch-pathway run vs. the synchronous baseline for an identical corpus is ≥ 50%.
 - **SC-002**: 100% of responses returned by a completed batch are correlated to a submitted `custom_id` (no orphaned responses, no unanswered sources).
 - **SC-003**: 0 items are silently dropped across the test corpus — every submitted `custom_id` terminates in an accounted state (succeeded, failed, or timed out).
 - **SC-004**: Failed-item reprocessing via isolation and fragmentation converges (all items either succeed or are explicitly declared unrecoverable) within N rounds of re-submission for the test corpus.

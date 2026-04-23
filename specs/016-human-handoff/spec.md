@@ -90,5 +90,5 @@ A practitioner extends the handoff schema with a new required field (for example
 
 - **SC-001**: 100% of escalations produce schema-valid payloads (zero escalations delivered to the operator queue without passing validation).
 - **SC-002**: 0 raw-transcript-only handoffs observed in the operator queue across the evaluation run.
-- **SC-003**: Human resolution time on escalated cases is lower than the transcript-based baseline by a declared delta (target delta established during plan phase; measured over a representative sample).
+- **SC-003**: Median human resolution time on escalated cases is ≥ 50% lower than the transcript-based baseline, measured over a representative sample of at least 20 escalations.
 - **SC-004**: Every escalation id is traceable end-to-end in the audit log, linking session, precondition, payload, and operator-queue delivery.
