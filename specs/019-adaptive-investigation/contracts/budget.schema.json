@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-019/budget.schema.json",
+  "title": "ExplorationBudget",
+  "description": "Hard ceiling on exploration (FR-004, SC-003).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["max_wall_seconds", "max_revisions"],
+  "properties": {
+    "max_wall_seconds": { "type": "integer", "minimum": 1 },
+    "max_revisions": { "type": "integer", "minimum": 1 },
+    "started_at": { "type": ["string", "null"], "format": "date-time" }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-008/resolution-diagnostic.schema.json",
+  "title": "ResolutionDiagnostic",
+  "description": "Emitted by MemoryResolver when something goes wrong (missing @path, cycle, size cap). Fail-loud contract for FR-004 / FR-005 / SC-003 / SC-004.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["severity", "code", "message"],
+  "properties": {
+    "severity": { "type": "string", "enum": ["info", "warning", "error"] },
+    "code": {
+      "type": "string",
+      "enum": [
+        "missing_path_target",
+        "circular_reference",
+        "team_size_exceeded",
+        "invalid_frontmatter",
+        "scope_conflict"
+      ]
+    },
+    "message": { "type": "string", "minLength": 1 },
+    "offending_path": { "type": ["string", "null"] },
+    "chain": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Reference chain for circular errors."
+    }
+  }
+}

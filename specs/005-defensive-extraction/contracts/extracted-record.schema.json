@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-005/extracted-record.schema.json",
+  "title": "ExtractedRecord",
+  "description": "The structured record returned by a successful extraction. Conforms exactly to this schema with extra keys forbidden (FR-010). Frozen output of ExtractedRecord.model_json_schema(); the pydantic model is the source of truth (D-002). Required fields (FR-003) MUST NOT be nullable; optional fields (FR-004) MUST be nullable unions; enumerated fields include escape options (FR-005).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["subject", "reported_at", "status"],
+  "properties": {
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The entity the record describes. Required (FR-003)."
+    },
+    "reported_at": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ISO-8601 date/time as observed in the source. Required (FR-003)."
+    },
+    "nickname": {
+      "type": ["string", "null"],
+      "description": "Optional nickname. Nullable union per FR-004 — returning null when the source does not state one (NOT a fabricated value, NOT an empty string). Null rate on absent fixtures audited by FabricationMetric (SC-001, SC-004)."
+    },
+    "location": {
+      "type": ["string", "null"],
+      "description": "Optional location. Nullable union per FR-004 (see nickname)."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "inactive", "other", "unclear"],
+      "description": "Enumerated status. 'other' and 'unclear' are escape options per FR-005; they MUST be used when the source value does not map cleanly to 'active' / 'inactive' (spec Edge Case: value outside enumerated set, contradictory statements, mixed-language). 100% escape-routing on ambiguous fixtures is SC-003."
+    },
+    "status_details": {
+      "type": ["string", "null"],
+      "description": "Paired details field for the status escape option (FR-005). MUST be a non-empty string whenever status in ['other', 'unclear']; enforced by the pydantic model_validator(mode='after') on ExtractedRecord."
+    }
+  }
+}

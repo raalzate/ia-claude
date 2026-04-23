@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-007/plan-document.schema.json",
+  "title": "PlanDocument",
+  "description": "Markdown-backed plan artifact produced during Plan Mode. Authoritative scope for Direct Execution. Every write attempt in execute mode is verified against this document's affected_files.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "summary",
+    "affected_files",
+    "risks",
+    "migration_steps"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier, used as the markdown filename stem under specs/fixtures/refactor-plans/."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-paragraph human summary of the refactor."
+    },
+    "affected_files": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Repo-relative paths the refactor is authorized to modify. Authoritative for scope-change detection (FR-004, SC-004)."
+    },
+    "risks": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Identified risks; may be empty but the field is required (FR-003)."
+    },
+    "migration_steps": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "description": "Ordered migration steps; at least one is required (FR-003)."
+    },
+    "out_of_scope": {
+      "type": ["array", "null"],
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Explicitly excluded items. Nullable list — not defaulted to empty string."
+    },
+    "open_questions": {
+      "type": ["array", "null"],
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Open questions the human must answer before approval."
+    }
+  }
+}

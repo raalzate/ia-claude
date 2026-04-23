@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-016/operator-queue-entry.schema.json",
+  "title": "OperatorQueueEntry",
+  "description": "One line in runs/handoffs/index.jsonl (SC-004).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["escalation_id", "severity", "created_at", "status", "queue_path"],
+  "properties": {
+    "escalation_id": { "type": "string", "format": "uuid" },
+    "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["pending", "acknowledged", "resolved"] },
+    "queue_path": { "type": "string", "minLength": 1 }
+  }
+}

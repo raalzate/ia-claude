@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-012/final-report.schema.json",
+  "title": "FinalReport",
+  "description": "Output of the final integration stage. Focus is inter-module incoherence; per-file findings already produced upstream (FR-002).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "findings", "coverage_metric"],
+  "properties": {
+    "task_id": { "type": "string" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity", "message", "affected_files"],
+        "properties": {
+          "id": { "type": "string" },
+          "severity": { "type": "string", "enum": ["info", "warning", "error"] },
+          "message": { "type": "string" },
+          "affected_files": { "type": "array", "items": { "type": "string" } },
+          "related_findings": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "coverage_metric": {
+      "type": "object",
+      "required": ["findings_count", "monolithic_baseline_count"],
+      "properties": {
+        "findings_count": { "type": "integer", "minimum": 0 },
+        "monolithic_baseline_count": { "type": "integer", "minimum": 0 },
+        "delta": { "type": "integer" }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-007/scope-change-event.schema.json",
+  "title": "ScopeChangeEvent",
+  "description": "Emitted pre-dispatch when an execute-mode tool_use targets a file absent from the approved PlanDocument.affected_files. Its presence in events.jsonl is the SC-004 test oracle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_id",
+    "at",
+    "attempted_target",
+    "current_plan_task_id",
+    "current_plan_hash",
+    "affected_files_snapshot",
+    "tool_name"
+  ],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "attempted_target": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Repo-relative path the agent attempted to edit."
+    },
+    "current_plan_task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "current_plan_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "affected_files_snapshot": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Frozen copy of PlanDocument.affected_files at halt time, for audit."
+    },
+    "tool_name": {
+      "type": "string",
+      "enum": ["edit_file", "write_file"],
+      "description": "Write-class tool whose invocation triggered the halt."
+    }
+  }
+}

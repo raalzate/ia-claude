@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-003/audit-record.schema.json",
+  "title": "AuditRecord",
+  "description": "One JSONL line written to runs/<session-id>/audit.jsonl per intercepted tool response. Enforces FR-005 (100% raw retention) and SC-004 (byte-for-byte recoverability). Written BEFORE normalization so a crash mid-normalize cannot lose the raw payload.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_id",
+    "tool_use_id",
+    "tool_name",
+    "received_at",
+    "raw_bytes_b64",
+    "raw_sha256",
+    "parse_status",
+    "raw_token_count",
+    "normalized_token_count"
+  ],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID4 of the parent session."
+    },
+    "tool_use_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "1:1 with a RawToolResponse. Uniquely identifies the intercepted response within the session."
+    },
+    "tool_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the legacy tool that produced the raw payload."
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC ISO-8601 timestamp when the hook observed the payload."
+    },
+    "raw_bytes_b64": {
+      "type": "string",
+      "contentEncoding": "base64",
+      "minLength": 1,
+      "description": "Base64 of the exact bytes returned by the legacy source. Losslessly decodes back to the original for SC-004."
+    },
+    "raw_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Hex SHA-256 of the decoded raw bytes. Verified during test roundtrip (test_audit_roundtrip.py)."
+    },
+    "parse_status": {
+      "type": "string",
+      "enum": ["ok", "degraded", "empty"],
+      "description": "Mirrors the eventual NormalizedPayload.parse_status."
+    },
+    "raw_token_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Token count of the raw payload under the measurement counter documented in research.md D-006. Feeds SC-001 (>=70% reduction) without a second measurement pass."
+    },
+    "normalized_token_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Token count of the NormalizedPayload under the same measurement counter. Paired with raw_token_count to compute the reduction ratio."
+    }
+  }
+}

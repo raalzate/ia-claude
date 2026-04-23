@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-011/compliance-record.schema.json",
+  "title": "ComplianceRecord",
+  "description": "Binary score per trial: did the model obey the critical rule given the current layout? (SC-001, SC-002).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trial_id", "layout_strategy", "rule_id", "obeyed"],
+  "properties": {
+    "trial_id": { "type": "string" },
+    "layout_strategy": {
+      "type": "string",
+      "enum": ["edge_placed", "mid_buried", "edge_placed_with_compaction"]
+    },
+    "rule_id": { "type": "string" },
+    "obeyed": { "type": "boolean" },
+    "observed_evidence": {
+      "type": "string",
+      "description": "Short excerpt or structured signal supporting the obeyed flag. Audit-only."
+    }
+  }
+}

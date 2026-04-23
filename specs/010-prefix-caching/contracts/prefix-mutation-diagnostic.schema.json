@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-010/prefix-mutation-diagnostic.schema.json",
+  "title": "PrefixMutationDiagnostic",
+  "description": "Emitted by the AST/regex lint when a volatile token is detected inside a static region (FR-005, SC-003). CI step fails on severity=error.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["severity", "source_file", "line", "pattern", "region"],
+  "properties": {
+    "severity": { "type": "string", "enum": ["warning", "error"] },
+    "source_file": { "type": "string" },
+    "line": { "type": "integer", "minimum": 1 },
+    "pattern": {
+      "type": "string",
+      "description": "The volatile pattern detected, e.g. 'datetime.now()', 'os.environ', 'uuid4()'."
+    },
+    "region": {
+      "type": "string",
+      "enum": ["static_system_block", "static_context_block"]
+    },
+    "message": { "type": "string" }
+  }
+}

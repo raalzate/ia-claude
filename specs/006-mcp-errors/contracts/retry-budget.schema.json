@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-006/retry-budget.schema.json",
+  "title": "RetryBudget",
+  "description": "Declared local-recovery limit (FR-005). Exhaustion routes to escalation; the budget is carried on the ToolCall so replay is deterministic.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["max_attempts", "backoff_seconds", "retry_on"],
+  "properties": {
+    "max_attempts": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "backoff_seconds": {
+      "type": "array",
+      "items": { "type": "number", "minimum": 0 },
+      "description": "Backoff schedule per retry attempt, e.g. [0, 1, 3]. Must have length max_attempts."
+    },
+    "retry_on": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["transient", "validation", "auth", "quota", "internal"] },
+      "description": "errorCategory values that are eligible for local retry. 'validation' typically absent."
+    }
+  }
+}

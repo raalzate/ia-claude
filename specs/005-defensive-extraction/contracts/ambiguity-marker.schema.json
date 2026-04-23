@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-005/ambiguity-marker.schema.json",
+  "title": "AmbiguityMarker",
+  "description": "The auditable pairing of an enumerated field set to its escape option with the raw ambiguous value observed in the source. Constructed whenever an enumerated field routes to its escape option (FR-005). Surfaces ambiguity as a first-class signal rather than a silent coercion — Principle VII (Provenance & Self-Audit). SC-003 asserts 100% of ambiguous fixtures emit an AmbiguityMarker.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["field_name", "escape_value", "observed_value", "details"],
+  "properties": {
+    "field_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the enumerated field that routed to the escape option (e.g., 'status')."
+    },
+    "escape_value": {
+      "type": "string",
+      "enum": ["other", "unclear"],
+      "description": "The declared escape option the field was set to (FR-005)."
+    },
+    "observed_value": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The raw phrase from the source that triggered the escape. Preserved verbatim for human review (Principle VII)."
+    },
+    "details": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Non-empty human-readable capture of WHY the escape was chosen (e.g., 'value outside enum', 'contradictory statements'). Enforced as non-empty by the pydantic model_validator on ExtractedRecord (FR-005 pairing invariant)."
+    }
+  }
+}

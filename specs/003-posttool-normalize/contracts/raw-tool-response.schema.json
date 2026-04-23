@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-003/raw-tool-response.schema.json",
+  "title": "RawToolResponse",
+  "description": "Illustrative only: the opaque payload the legacy data source returns before the PostToolUse hook runs. Never reaches the model directly (FR-004). Retained verbatim in AuditRecord (FR-005, SC-004). Shape documented for audit-log roundtrip purposes only; the legacy source may emit arbitrary XML, so content_type / raw_bytes are intentionally loose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tool_use_id",
+    "tool_name",
+    "raw_bytes_b64",
+    "content_type",
+    "received_at"
+  ],
+  "properties": {
+    "tool_use_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Anthropic SDK tool_use_id — correlates this response with the originating tool_use block and with its AuditRecord."
+    },
+    "tool_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the legacy tool that produced this payload."
+    },
+    "raw_bytes_b64": {
+      "type": "string",
+      "contentEncoding": "base64",
+      "description": "Base64 of the exact bytes returned by the source. Losslessly recoverable for SC-004."
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "application/xml",
+        "text/xml",
+        "application/octet-stream"
+      ],
+      "description": "Declared MIME type. Non-XML bodies are permitted but will surface downstream as parse_degraded."
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC ISO-8601 timestamp when the hook observed the payload."
+    }
+  }
+}

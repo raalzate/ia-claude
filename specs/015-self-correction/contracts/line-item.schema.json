@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-015/line-item.schema.json",
+  "title": "LineItem",
+  "description": "One row of an invoice. line_total must equal quantity*unit_price within 1-cent tolerance (validator enforced).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["description", "quantity", "unit_price", "line_total"],
+  "properties": {
+    "sku": { "type": ["string", "null"] },
+    "description": { "type": "string", "minLength": 1 },
+    "quantity": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$", "description": "Decimal as string to avoid FP drift." },
+    "unit_price": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+    "line_total": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+    "source_page": { "type": ["integer", "null"], "minimum": 1 }
+  }
+}

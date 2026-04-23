@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-006/escalation-trigger.schema.json",
+  "title": "EscalationTrigger",
+  "description": "Emitted when retry budget exhausts or a non-retryable error surfaces (Principle VI + FR-006). Forward-compatible with Kata 16 handoff payload.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["call_id", "reason", "last_error", "attempts_made"],
+  "properties": {
+    "call_id": { "type": "string", "format": "uuid" },
+    "reason": {
+      "type": "string",
+      "enum": ["retry-budget-exhausted", "non-retryable-error", "chained-failure-cap"]
+    },
+    "last_error": { "$ref": "structured-error.schema.json" },
+    "attempts_made": { "type": "integer", "minimum": 1 },
+    "retry_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["attempt", "errorCategory", "timestamp"],
+        "properties": {
+          "attempt": { "type": "integer", "minimum": 1 },
+          "errorCategory": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

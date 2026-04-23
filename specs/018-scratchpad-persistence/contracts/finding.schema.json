@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-018/finding.schema.json",
+  "title": "Finding",
+  "description": "One captured observation inside a Scratchpad section (FR-001).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "timestamp", "category", "evidence"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "category": {
+      "type": "string",
+      "enum": ["architecture", "data", "bug", "decision", "question"]
+    },
+    "evidence": { "type": "string", "minLength": 1 },
+    "source_ref": { "type": ["string", "null"] }
+  }
+}

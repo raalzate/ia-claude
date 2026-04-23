@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-018/scratchpad-document.schema.json",
+  "title": "ScratchpadDocument",
+  "description": "Fixed-section structure. Unknown section keys rejected (FR-002).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pad_id", "version", "sections"],
+  "properties": {
+    "pad_id": { "type": "string", "format": "uuid" },
+    "version": { "type": "integer", "minimum": 1 },
+    "prior_pad": { "type": ["string", "null"], "format": "uuid" },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["map", "findings", "open_questions", "decisions", "conflicts"],
+      "properties": {
+        "map": { "type": "array", "items": { "$ref": "finding.schema.json" } },
+        "findings": { "type": "array", "items": { "$ref": "finding.schema.json" } },
+        "open_questions": { "type": "array", "items": { "$ref": "finding.schema.json" } },
+        "decisions": { "type": "array", "items": { "$ref": "finding.schema.json" } },
+        "conflicts": { "type": "array", "items": { "$ref": "finding.schema.json" } }
+      }
+    },
+    "size_bytes": { "type": "integer", "minimum": 0 }
+  }
+}

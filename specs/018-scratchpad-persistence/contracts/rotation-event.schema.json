@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-018/rotation-event.schema.json",
+  "title": "RotationEvent",
+  "description": "Emitted when the pad exceeds MAX_SCRATCHPAD_BYTES (FR-005, SC-004).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "rotated_from", "rotated_to", "size_at_rotation", "rotated_at"],
+  "properties": {
+    "event_id": { "type": "string", "format": "uuid" },
+    "rotated_from": { "type": "string" },
+    "rotated_to": { "type": "string" },
+    "size_at_rotation": { "type": "integer", "minimum": 0 },
+    "rotated_at": { "type": "string", "format": "date-time" }
+  }
+}

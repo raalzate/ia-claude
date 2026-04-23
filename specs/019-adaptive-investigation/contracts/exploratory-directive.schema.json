@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-019/exploratory-directive.schema.json",
+  "title": "ExploratoryDirective",
+  "description": "Input to the investigation run (FR-001).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["directive_id", "prompt", "target_path", "budget"],
+  "properties": {
+    "directive_id": { "type": "string", "format": "uuid" },
+    "prompt": { "type": "string", "minLength": 1 },
+    "target_path": { "type": "string", "minLength": 1 },
+    "budget": { "$ref": "budget.schema.json" }
+  }
+}

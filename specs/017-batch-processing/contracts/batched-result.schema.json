@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-017/batched-result.schema.json",
+  "title": "BatchedResult",
+  "description": "Per-item outcome from the batch API. Invariant: succeeded ↔ response is not None.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["custom_id", "result_type"],
+  "properties": {
+    "custom_id": { "type": "string", "minLength": 1 },
+    "result_type": {
+      "type": "string",
+      "enum": ["succeeded", "errored", "expired", "canceled"]
+    },
+    "response": { "type": ["object", "null"] },
+    "error_code": { "type": ["string", "null"] },
+    "error_message": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "result_type": { "const": "succeeded" } } },
+      "then": {
+        "required": ["response"],
+        "properties": { "response": { "type": "object" } }
+      }
+    },
+    {
+      "if": { "properties": { "result_type": { "enum": ["errored", "expired", "canceled"] } } },
+      "then": {
+        "required": ["error_code"],
+        "properties": { "error_code": { "type": "string", "minLength": 1 } }
+      }
+    }
+  ]
+}

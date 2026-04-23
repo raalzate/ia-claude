@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-012/intermediate-payload.schema.json",
+  "title": "IntermediatePayload",
+  "description": "Persisted to runs/<session>/stage-<n>.json. Malformed payload halts the chain — never silently swallowed (FR-004).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stage_name", "produced_by_task", "produced_at", "records"],
+  "properties": {
+    "stage_name": { "type": "string" },
+    "produced_by_task": { "type": "string" },
+    "produced_at": { "type": "string", "format": "date-time" },
+    "records": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Stage-specific records; each one validated against the stage's output_schema."
+    },
+    "stage_health": {
+      "type": "string",
+      "enum": ["ok", "partial", "error"],
+      "description": "`partial` means some records failed; chain decides whether to continue based on declared policy."
+    }
+  }
+}

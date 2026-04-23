@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-019/topology-map.schema.json",
+  "title": "TopologyMap",
+  "description": "Output of TopologyMapper — MUST exist before Planner.build_plan is legal (FR-002).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["generated_at", "modules", "dependency_graph", "coverage_flags"],
+  "properties": {
+    "generated_at": { "type": "string", "format": "date-time" },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "size_bytes"],
+        "properties": {
+          "id": { "type": "string" },
+          "path": { "type": "string" },
+          "size_bytes": { "type": "integer", "minimum": 0 },
+          "external_deps": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "dependency_graph": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "coverage_flags": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    }
+  }
+}

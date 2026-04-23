@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-010/prompt-composition.schema.json",
+  "title": "PromptComposition",
+  "description": "Declares the three-region prompt layout: static-system / static-context / dynamic-suffix (FR-001, FR-002, FR-003). Only static regions carry cache_control.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["static_system_block", "static_context_block", "dynamic_suffix_block"],
+  "properties": {
+    "static_system_block": {
+      "type": "string",
+      "description": "System instructions + CLAUDE.md + tool definitions. cache_control=ephemeral."
+    },
+    "static_context_block": {
+      "type": "string",
+      "description": "Heavy repo context (files, shared docs). cache_control=ephemeral."
+    },
+    "dynamic_suffix_block": {
+      "type": "string",
+      "description": "User turn, timestamps, volatile values. NEVER cache_control."
+    },
+    "expected_cache_control_blocks": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    }
+  }
+}

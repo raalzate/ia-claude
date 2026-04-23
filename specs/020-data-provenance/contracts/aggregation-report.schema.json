@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-020/aggregation-report.schema.json",
+  "title": "AggregationReport",
+  "description": "Top-level output of a provenance aggregation run (SC-004).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "claims", "conflicts", "orphan_claims", "aggregated_at"],
+  "properties": {
+    "run_id": { "type": "string", "format": "uuid" },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["canonical_key", "supporting_sources"],
+        "properties": {
+          "canonical_key": { "type": "string" },
+          "supporting_sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "claim.schema.json" }
+          }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "conflict-set.schema.json" }
+    },
+    "orphan_claims": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "aggregated_at": { "type": "string", "format": "date-time" }
+  }
+}

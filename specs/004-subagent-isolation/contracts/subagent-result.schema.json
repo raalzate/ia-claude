@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-004/subagent-result.schema.json",
+  "title": "SubagentResult",
+  "description": "The ONLY channel of information from Subagent back to Coordinator. FR-003 requires the coordinator to validate every subagent output against this schema before consuming it. FR-004 makes validation failure a terminal error; SC-002 requires 100% of outputs to be either valid or quarantined. additionalProperties:false implements spec Edge Case #2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "task_id", "role_name", "status"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Must match the paired SubtaskPayload.schema_version and HandoffContract.schema_version."
+    },
+    "task_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Echoes SubtaskPayload.task_id. Mismatch is a terminal validation error (defends swap wiring — FR-008 edge)."
+    },
+    "role_name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$",
+      "description": "Echoes SubtaskPayload.role_name."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error"],
+      "description": "Mechanical outcome. Never inferred from prose — Principle I."
+    },
+    "output": {
+      "type": "object",
+      "description": "Declared output fields for this role. Populated iff status == 'ok'. Validated against HandoffContract.output_schema."
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "detail"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["schema_violation", "tool_failure", "refusal", "other"],
+          "description": "Explicit escape value 'other' per Principle II (enumerations must carry an escape)."
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Auditor-facing context."
+        }
+      },
+      "description": "Populated iff status == 'error'."
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "ok"}}, "required": ["status"]},
+      "then": {"required": ["output"], "not": {"required": ["error"]}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "error"}}, "required": ["status"]},
+      "then": {"required": ["error"], "not": {"required": ["output"]}}
+    }
+  ]
+}

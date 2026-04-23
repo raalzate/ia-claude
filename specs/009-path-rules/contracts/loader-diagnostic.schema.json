@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-009/loader-diagnostic.schema.json",
+  "title": "LoaderDiagnostic",
+  "description": "Fail-loud diagnostic emitted by PathScopedRuleLoader (FR-003).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["severity", "code", "source_file", "message"],
+  "properties": {
+    "severity": { "type": "string", "enum": ["warning", "error"] },
+    "code": {
+      "type": "string",
+      "enum": [
+        "invalid_frontmatter",
+        "empty_pattern_list",
+        "unparseable_yaml",
+        "oversized_rule_file"
+      ]
+    },
+    "source_file": { "type": "string" },
+    "message": { "type": "string", "minLength": 1 },
+    "line": { "type": ["integer", "null"] }
+  }
+}

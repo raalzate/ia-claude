@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-002/tool-call-payload.schema.json",
+  "title": "ToolCallPayload",
+  "description": "The typed input the agent sends to the process_refund tool. Validated by the PreToolUseHook BEFORE dispatch to the external refund API (FR-001, FR-002). A validation failure is converted into a StructuredError with reason_code='schema_violation' and MUST result in zero external API calls (FR-006, SC-002). Constitution Principle II (Schema-Enforced Boundaries, NON-NEGOTIABLE).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tool_name", "correlation_id", "amount", "currency", "customer_id"],
+  "properties": {
+    "tool_name": {
+      "type": "string",
+      "const": "process_refund",
+      "description": "Only the refund tool is in scope for this kata."
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID4. Joins this invocation to its verdict, structured error, escalation event, and audit log entry (FR-009)."
+    },
+    "amount": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal-safe string representation of the refund amount in the declared currency. Negative, zero, non-numeric, and missing values all produce schema_violation per spec §Edge Cases. A string form is used at the schema boundary because JSON floats cannot represent monetary decimals exactly; the Python layer parses this into decimal.Decimal."
+    },
+    "currency": {
+      "type": "string",
+      "const": "USD",
+      "description": "Fixed to USD for this kata. Multi-currency is explicitly out of scope per data-model.md."
+    },
+    "customer_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opaque customer identifier passed through to the refund API stub on allow verdicts."
+    },
+    "reason": {
+      "type": ["string", "null"],
+      "description": "Optional model-supplied note. The hook MUST NOT parse this field (FR-008) — it exists for audit traceability only."
+    }
+  }
+}

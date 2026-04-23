@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-005/schema-definition.schema.json",
+  "title": "SchemaDefinition",
+  "description": "The extraction tool registered with the Claude Messages API. name is fixed at 'extract_record' for this kata; input_schema is the frozen output of ExtractedRecord.model_json_schema() (D-002), enforcing FR-001 (formal schema). The description field doubles as Principle VIII documentation of what the tool extracts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "description", "input_schema"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "extract_record",
+      "description": "Fixed tool name for this kata. Matched against the returned tool_use block's name."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tool description handed to the model. Also states which fields are guaranteed vs. optional and what the escape options mean (FR-009, Principle VIII)."
+    },
+    "input_schema": {
+      "$ref": "extracted-record.schema.json",
+      "description": "The input_schema passed to the tool is the ExtractedRecord schema itself — same object, no drift (D-002). FR-001, FR-010."
+    }
+  }
+}

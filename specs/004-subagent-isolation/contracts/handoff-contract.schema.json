@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-004/handoff-contract.schema.json",
+  "title": "HandoffContract",
+  "description": "Pairs one SubtaskPayload input schema with one SubagentResult output schema to define a swappable subagent role. FR-008 and SC-003 depend on this pairing being the sole basis for substitution: an implementation swap is safe iff it preserves both schemas and the role_name.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["role_name", "schema_version", "input_schema", "output_schema"],
+  "properties": {
+    "role_name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$",
+      "description": "Unique within a coordinator. Coordinator routes spawns by this name (FR-008)."
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Paired with SubtaskPayload.schema_version and SubagentResult.schema_version."
+    },
+    "input_schema": {
+      "type": "object",
+      "description": "JSON Schema applied to SubtaskPayload.inputs. Restricts coordinator→subagent information to declared fields (FR-001)."
+    },
+    "output_schema": {
+      "type": "object",
+      "description": "JSON Schema applied to SubagentResult.output on status=='ok'. Restricts subagent→coordinator information to declared fields (FR-003)."
+    }
+  }
+}

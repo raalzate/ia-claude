@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-012/macro-task.schema.json",
+  "title": "MacroTask",
+  "description": "Input to a multi-stage chain (FR-001).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "description", "inputs"],
+  "properties": {
+    "task_id": { "type": "string" },
+    "description": { "type": "string", "minLength": 1 },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "content"],
+        "properties": {
+          "id": { "type": "string" },
+          "content": { "type": "string" },
+          "kind": { "type": "string" }
+        }
+      }
+    }
+  }
+}

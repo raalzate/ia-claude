@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-003/normalized-payload.schema.json",
+  "title": "NormalizedPayload",
+  "description": "The minimal, flat, field-bounded object the model actually sees. Only artifact from the legacy data source that reaches conversation history (FR-002, FR-004, FR-006). Token count of this object must be <= 30% of the RawToolResponse it replaces (SC-001).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tool_use_id",
+    "status",
+    "content",
+    "parse_status",
+    "notes"
+  ],
+  "properties": {
+    "tool_use_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Same id as the originating RawToolResponse. Keeps the audit <-> context link inspectable."
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "raw"],
+      "description": "Resolved status. Flat, single-object by design (Principle III). When code == 'unknown', the raw arcane code is preserved in 'raw' (FR-003, SC-003).",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Either the human-readable label from the StatusMapping, or the literal 'unknown'. Never a guessed or fabricated label."
+        },
+        "raw": {
+          "type": ["string", "null"],
+          "description": "Non-null iff code == 'unknown'; carries the original arcane code. Null when the code was successfully resolved."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "code": { "const": "unknown" } } },
+          "then": {
+            "properties": {
+              "raw": { "type": "string", "minLength": 1 }
+            },
+            "required": ["raw"]
+          }
+        },
+        {
+          "if": { "not": { "properties": { "code": { "const": "unknown" } } } },
+          "then": {
+            "properties": {
+              "raw": { "type": "null" }
+            }
+          }
+        }
+      ]
+    },
+    "content": {
+      "type": "object",
+      "description": "Cleaned, legacy-markup-free content extracted from the raw payload. Flat or shallow by design: values are strings, numbers, booleans, or shallow arrays of those. No value may contain '<', '>', or CDATA sentinels (FR-004, SC-002).",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "pattern": "^[^<>]*$" },
+          { "type": "number" },
+          { "type": "boolean" },
+          { "type": "null" },
+          {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                { "type": "string", "pattern": "^[^<>]*$" },
+                { "type": "number" },
+                { "type": "boolean" },
+                { "type": "null" }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "parse_status": {
+      "type": "string",
+      "enum": ["ok", "degraded", "empty"],
+      "description": "'ok' on clean parse; 'degraded' on malformed input (Edge: malformed); 'empty' on no-body responses (Edge: empty)."
+    },
+    "notes": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120,
+        "pattern": "^[^<>]*$"
+      },
+      "description": "Short, bounded list of machine diagnostics (e.g. 'unclosed_tag_recovered'). Never contains model-facing prose or speculation."
+    }
+  }
+}

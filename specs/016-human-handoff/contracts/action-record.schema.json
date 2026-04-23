@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-016/action-record.schema.json",
+  "title": "ActionRecord",
+  "description": "One step the agent took before escalating.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["step_id", "action_type", "description", "outcome", "timestamp"],
+  "properties": {
+    "step_id": { "type": "string", "minLength": 1 },
+    "action_type": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "outcome": { "type": "string", "enum": ["ok", "error", "blocked"] },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}

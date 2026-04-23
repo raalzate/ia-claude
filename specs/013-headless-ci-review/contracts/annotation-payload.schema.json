@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-013/annotation-payload.schema.json",
+  "title": "AnnotationPayload",
+  "description": "Shape the mapper posts to GitHub's Checks API per finding (FR-005).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["path", "start_line", "end_line", "annotation_level", "message", "title"],
+  "properties": {
+    "path": { "type": "string" },
+    "start_line": { "type": "integer", "minimum": 1 },
+    "end_line": { "type": "integer", "minimum": 1 },
+    "annotation_level": { "type": "string", "enum": ["notice", "warning", "failure"] },
+    "message": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "raw_details": { "type": ["string", "null"] }
+  }
+}

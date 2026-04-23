@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-008/path-reference.schema.json",
+  "title": "PathReference",
+  "description": "An `@path` reference discovered inside a CLAUDE.md. Unresolved targets fail loud (FR-004).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["raw", "resolved_path", "exists"],
+  "properties": {
+    "raw": { "type": "string", "pattern": "^@" },
+    "resolved_path": { "type": "string" },
+    "exists": { "type": "boolean" },
+    "depth": { "type": "integer", "minimum": 0 }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-014/example-pair.schema.json",
+  "title": "ExamplePair",
+  "description": "One input/output calibration pair (FR-001).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["input", "output"],
+  "properties": {
+    "input": { "type": "string", "minLength": 1 },
+    "output": { "type": "object", "description": "Validates against the task's declared output schema." },
+    "notes": { "type": ["string", "null"] }
+  }
+}

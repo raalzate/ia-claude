@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-015/conflict-record.schema.json",
+  "title": "ConflictRecord",
+  "description": "Persisted snapshot per mismatch (FR-002, SC-003). Frozen at detection time to preserve audit integrity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_id", "invoice_id", "stated_total", "calculated_total", "delta", "line_items_snapshot", "detected_at"],
+  "properties": {
+    "record_id": { "type": "string", "format": "uuid" },
+    "invoice_id": { "type": "string" },
+    "stated_total": { "type": "string" },
+    "calculated_total": { "type": "string" },
+    "delta": { "type": "string", "description": "Signed decimal (stated - calculated)." },
+    "line_items_snapshot": {
+      "type": "array",
+      "items": { "$ref": "line-item.schema.json" }
+    },
+    "detected_at": { "type": "string", "format": "date-time" }
+  }
+}
