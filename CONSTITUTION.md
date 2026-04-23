@@ -1,14 +1,16 @@
 <!--
 Sync Impact Report
-Version change: (none) → 1.0.0
-Bump rationale: MAJOR — initial ratification.
-Modified principles: n/a (new document).
-Added sections: Core Principles (7), Kata Completion Standards, Development Workflow, Integrity, Governance.
+Version change: 1.1.0 → 1.2.0
+Bump rationale: MINOR — clarified FDD application: canonical FDD allows upfront "Build Feature List" and lightweight specs across all features; only the Build-by-Feature phases (plan → testify → tasks → implement → docs) remain strictly sequential per kata.
+Modified principles: Development Workflow FDD clause (scope refined, not redefined).
+Added sections: none.
 Removed sections: none.
 Follow-up TODOs:
+- Create per-kata `README.md` template under `specs/` (picked up during /iikit-01-specify).
 - Wire `verify-assertion-integrity.sh` into CI (post /iikit-04-testify for first kata).
 - Add CI gate running headless architect review on each PR (see Kata 13 derivative).
 - Confirm pre-commit hook installed on contributor machines before first implementation phase.
+- Decide linter/doc-coverage tool (enforce comment & README presence per kata module).
 -->
 
 # ia-claude Constitution
@@ -75,6 +77,29 @@ MUST be cross-checked against any stated value in the source and flagged on mism
 Rationale: provenance is the only defense against aggregated hallucination; silent
 "pick one" loses audit trail.
 
+### VIII. Mandatory Documentation (NON-NEGOTIABLE)
+
+Because this repository is a teaching workshop, every kata MUST ship with
+documentation in TWO forms, and no kata is considered complete without both:
+
+1. **In-code comments.** Every non-trivial function, hook, schema, and control-flow
+   branch MUST carry a comment that explains *why* the code exists (the kata
+   objective or anti-pattern it defends against), not merely what it does. Code-only
+   commits on a kata module are rejected.
+2. **Physical written docs.** Each kata MUST include at least a standalone
+   `README.md` (or equivalent Markdown document) inside its feature directory
+   covering: (a) objective restated in the student's own words, (b) step-by-step
+   walkthrough of the implementation decisions, (c) the anti-pattern being prevented
+   and how the code prevents it, (d) how to run the kata and interpret its outputs,
+   (e) a short reflection on what was learned.
+
+Documentation MUST be updated in the same commit as the code change that affects it;
+stale docs MUST be treated as a bug and block merge. Rationale: the value of a kata
+is the learning it transfers — undocumented working code is half-done pedagogy.
+
+This principle explicitly overrides any general preference for sparse commenting
+**inside the `ia-claude` workshop scope**; other repositories keep their own defaults.
+
 ## Kata Completion Standards
 
 A kata is DONE only when ALL of the following hold:
@@ -87,11 +112,27 @@ A kata is DONE only when ALL of the following hold:
 4. Anti-pattern tests exist and fail closed when the anti-pattern behavior is
    reintroduced.
 5. Assertion-integrity hashes in `.specify/context.json` match the locked test set.
-6. A short reflection note records the observed failure mode the kata was designed to
-   prevent.
+6. Per-kata `README.md` (or equivalent) exists covering objective, walkthrough,
+   anti-pattern defense, run instructions, and reflection (per Principle VIII).
+7. Every non-trivial function / hook / schema in the kata module carries a *why*
+   comment tied to the kata objective or anti-pattern (per Principle VIII).
+8. A short reflection note records the observed failure mode the kata was designed to
+   prevent (may live inside the README reflection section).
 
 ## Development Workflow
 
+- **Delivery methodology: FDD (Feature-Driven Development).** Workshop follows
+  canonical FDD staging:
+  1. **Develop Overall Model** — captured in `PREMISE.md`.
+  2. **Build Feature List** — the 20 katas enumerated from `PRD.md`.
+  3. **Lightweight Spec per Feature** — `/iikit-01-specify` MAY be executed
+     across all 20 katas upfront (in parallel if helpful). These specs are
+     scope-level documents only.
+  4. **Build by Feature (sequential, NON-NEGOTIABLE)** — everything *after*
+     spec for a given kata (plan → testify → tasks → implement → docs) MUST
+     complete for that kata before the next kata enters the Build phase.
+  No "all plans first, all code later" passes. No skipping docs to start the
+  next kata early. Vertical delivery per kata from plan through docs.
 - Workflow order is fixed: `/iikit-core init` → `/iikit-00-constitution` →
   `/iikit-01-specify` → `/iikit-clarify` (if needed) → `/iikit-02-plan` →
   `/iikit-03-checklist` → `/iikit-04-testify` → `/iikit-05-tasks` →
@@ -144,4 +185,4 @@ this document wins and the conflicting guidance MUST be updated or removed.
 - Runtime development guidance for agents and contributors lives in `AGENTS.md` and
   the `.tessl/RULES.md` chain; those files MUST NOT contradict this Constitution.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-23 | **Last Amended**: 2026-04-23
+**Version**: 1.2.0 | **Ratified**: 2026-04-23 | **Last Amended**: 2026-04-23
