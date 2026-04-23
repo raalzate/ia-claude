@@ -1,3 +1,13 @@
 {
-  "tdd_determination": "mandatory"
+  "tdd_determination": "mandatory",
+  "planview": {
+    "nodeClassifications": {
+      "Practitioner CLI": "client",
+      "Agentic Loop": "server",
+      "Tool Registry": "server",
+      "Anthropic Messages API": "external",
+      "Event Log (JSONL)": "storage",
+      "Recorded Fixtures": "storage"
+    }
+  }
 }

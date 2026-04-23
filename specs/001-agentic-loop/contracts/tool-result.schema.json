@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ia-claude.local/schemas/kata-001/tool-result.schema.json",
+  "title": "ToolResult",
+  "description": "Result appended to conversation history after executing a ToolCall (FR-002, FR-007).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tool_use_id", "status"],
+  "properties": {
+    "tool_use_id": {
+      "type": "string",
+      "description": "Correlates to the originating ToolCall.tool_use_id."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error"],
+      "description": "Structured outcome. Never inferred from text content."
+    },
+    "output": {
+      "description": "Tool return value when status=ok; structured error object when status=error.",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "object" },
+        { "type": "array" },
+        { "type": "null" }
+      ]
+    },
+    "error_category": {
+      "type": ["string", "null"],
+      "description": "MCP-style category. MUST be populated when status=error, null when status=ok. Forward-compatible with Kata 6."
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "error" } } },
+      "then": {
+        "required": ["error_category"],
+        "properties": {
+          "error_category": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "ok" } } },
+      "then": {
+        "properties": {
+          "error_category": { "type": "null" }
+        }
+      }
+    }
+  ]
+}
