@@ -187,6 +187,30 @@ artifacts land under `reviews/<run-id>/` (gitignored; uploaded via
 `actions/upload-artifact@v4`). This keeps the 20 katas independently buildable
 and testable, matching FDD cadence.
 
+## Architecture
+
+```
+┌────────────────────┐
+│   GitHub Actions   │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  Claude Code CLI   │───────│   Review Mapper    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Schema Validator│ │   Checks API   │ │ Artifact Store │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `GitHub Actions` is the kata entry point; `Claude Code CLI` owns the core control flow
+for this kata's objective; `Review Mapper` is the primary collaborator/policy reference;
+`Schema Validator`, `Checks API`, and `Artifact Store` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

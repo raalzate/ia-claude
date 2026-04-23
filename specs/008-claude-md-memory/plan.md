@@ -205,6 +205,30 @@ coupling the kata to the repo's own governance files.
 | pytest + pytest-bdd | all acceptance scenarios | V |
 | Canonical template + `standards/` as kata output | FR-001, FR-002 | VIII |
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  Memory Resolver   │───────│   Team CLAUDE.md   │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Standards Manua…│ │Personal CLAUDE…│ │ Diagnostic Log │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `Memory Resolver` owns the core control flow
+for this kata's objective; `Team CLAUDE.md` is the primary collaborator/policy reference;
+`Standards Manuals`, `Personal CLAUDE.md`, and `Diagnostic Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

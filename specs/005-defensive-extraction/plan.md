@@ -151,6 +151,30 @@ labeled (each `expected.json` encodes the null map and escape-enum map, not a
 text-identity expected output), which is the only way SC-001 / SC-003 / SC-004
 can be asserted mechanically.
 
+## Architecture
+
+```
+┌────────────────────┐
+│ Extraction Runner  │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  Schema Registry   │───────│    Messages API    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Fabrication Met…│ │ Ambiguity Sink │ │Extraction Audi…│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Extraction Runner` is the kata entry point; `Schema Registry` owns the core control flow
+for this kata's objective; `Messages API` is the primary collaborator/policy reference;
+`Fabrication Metric`, `Ambiguity Sink`, and `Extraction Audit Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

@@ -200,6 +200,30 @@ Until clarify runs, the testify step MUST NOT emit an assertion with a
 concrete percentage — it emits a tagged `@needs-clarify SC-003` scenario so
 the gap is visible in CI.
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│     MCP Client     │───────│  MCP Server Stub   │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│  Retry Budget  │ │Escalation Queue│ │ MCP Event Log  │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `MCP Client` owns the core control flow
+for this kata's objective; `MCP Server Stub` is the primary collaborator/policy reference;
+`Retry Budget`, `Escalation Queue`, and `MCP Event Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

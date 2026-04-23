@@ -170,6 +170,30 @@ one package under `katas/017_batch_processing/`, tests mirrored under
 `runs/<job_id>/` and are gitignored. Keeps the kata independently buildable and
 assertion-integrity-hashable, consistent with FDD vertical delivery per kata.
 
+## Architecture
+
+```
+┌────────────────────┐
+│Workload Classifier │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  Batch Submitter   │───────│    Batches API     │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Response Mapper │ │ Failure Bucket │ │  Cost Report   │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Workload Classifier` is the kata entry point; `Batch Submitter` owns the core control flow
+for this kata's objective; `Batches API` is the primary collaborator/policy reference;
+`Response Mapper`, `Failure Bucket`, and `Cost Report` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > Fill ONLY if Constitution Check has violations that must be justified.

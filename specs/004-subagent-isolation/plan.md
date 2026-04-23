@@ -152,6 +152,30 @@ Subagent live in **separate modules** so the AST lint
 swap test (FR-008) a pure dependency swap with no coordinator change. Runs
 written to `runs/<session-id>/` (gitignored) match Kata 1 provenance layout.
 
+## Architecture
+
+```
+┌────────────────────┐
+│    Coordinator     │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│    Task Spawner    │───────│   Subagent Pool    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Handoff Contract│ │Subagent Event …│ │  Messages API  │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Coordinator` is the kata entry point; `Task Spawner` owns the core control flow
+for this kata's objective; `Subagent Pool` is the primary collaborator/policy reference;
+`Handoff Contract`, `Subagent Event Log`, and `Messages API` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

@@ -149,6 +149,30 @@ introduced; the pydantic + anthropic + pytest baseline is declared once in
 `pyproject.toml`. This keeps katas independently buildable and preserves FDD's
 vertical-slice delivery cadence.
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  PostToolUse Hook  │───────│   Status Mapping   │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Legacy DB Stub │ │Normalized Payl…│ │   Audit Log    │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `PostToolUse Hook` owns the core control flow
+for this kata's objective; `Status Mapping` is the primary collaborator/policy reference;
+`Legacy DB Stub`, `Normalized Payload`, and `Audit Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > Fill ONLY if Constitution Check has violations that must be justified.

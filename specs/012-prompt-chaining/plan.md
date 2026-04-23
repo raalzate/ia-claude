@@ -161,6 +161,30 @@ Stages live in a `stages/` sub-package so adding `SecurityScanStage` is a
 pure file-add — the diff-based extension test (FR-005 / SC-004) becomes a
 natural check. Runs written to `runs/<session-id>/` (gitignored).
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│ Chain Orchestrator │───────│   Per-File Stage   │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Integration Sta…│ │Intermediate St…│ │Chain Messages …│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `Chain Orchestrator` owns the core control flow
+for this kata's objective; `Per-File Stage` is the primary collaborator/policy reference;
+`Integration Stage`, `Intermediate Store`, and `Chain Messages API` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified.**

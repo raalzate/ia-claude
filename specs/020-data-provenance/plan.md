@@ -192,6 +192,30 @@ forbidden winner-selection symbols. Runs written to `runs/<session-id>/`
 (gitignored) match the Kata 1 and Kata 4 provenance layouts so cross-kata
 tooling (e.g. dashboard summaries) sees a uniform shape.
 
+## Architecture
+
+```
+┌────────────────────┐
+│  Source Registry   │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│   Subagent Pool    │───────│    Coordinator     │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Provenance Aggr…│ │  Review Queue  │ │  Report Store  │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Source Registry` is the kata entry point; `Subagent Pool` owns the core control flow
+for this kata's objective; `Coordinator` is the primary collaborator/policy reference;
+`Provenance Aggregator`, `Review Queue`, and `Report Store` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

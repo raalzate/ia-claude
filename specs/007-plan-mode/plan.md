@@ -191,6 +191,30 @@ convention.
 | JSONL event log for mode transitions and blocked attempts | FR-005, FR-007, SC-002, Principle VII | Append-only, replayable, greppable — matches Kata 001 baseline. |
 | `.feature` files + `pytest-bdd` + recorded fixtures | Principle V (NN), every SC | Executable acceptance criteria; deterministic, offline, CI-friendly. |
 
+## Architecture
+
+```
+┌────────────────────┐
+│  Practitioner CLI  │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│ Plan Mode Session  │───────│  Read-Only Tools   │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Plan Document  │ │ Approval Sink  │ │ Write Executor │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Practitioner CLI` is the kata entry point; `Plan Mode Session` owns the core control flow
+for this kata's objective; `Read-Only Tools` is the primary collaborator/policy reference;
+`Plan Document`, `Approval Sink`, and `Write Executor` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

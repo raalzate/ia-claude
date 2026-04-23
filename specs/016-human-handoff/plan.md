@@ -232,6 +232,30 @@ kata is the **schema of record** for escalation, and cross-kata extraction
 is deferred until a second consumer concretely needs it (YAGNI, Kata 1
 precedent).
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│ Suspension Client  │───────│    Messages API    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│ Escalate Tool  │ │ Operator Queue │ │Handoff Event L…│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `Suspension Client` owns the core control flow
+for this kata's objective; `Messages API` is the primary collaborator/policy reference;
+`Escalate Tool`, `Operator Queue`, and `Handoff Event Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

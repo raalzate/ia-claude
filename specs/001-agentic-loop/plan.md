@@ -126,6 +126,30 @@ package under `katas/NNN_<slug>/`; tests mirror that structure under
 This keeps the 20 katas independently buildable and testable without cross-kata
 coupling — matching FDD delivery cadence.
 
+## Architecture
+
+```
+┌────────────────────┐
+│ Practitioner CLI   │
+└─────────┬──────────┘
+          │
+┌─────────┴──────────┐       ┌────────────────────┐
+│   Agentic Loop     │───────│   Tool Registry    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌─────────┴────────┐ ┌──┴───────────────┐ ┌───┴──────────────────┐
+│ Event Log (JSONL)│ │ Recorded Fixtures│ │Anthropic Messages API│
+└──────────────────┘ └──────────────────┘ └──────────────────────┘
+```
+
+Node roles: `Practitioner CLI` drives a session; the `Agentic Loop` is the
+single decision point and branches solely on `stop_reason`; the `Tool Registry`
+holds the declared tool schemas and is consulted synchronously per turn; the
+`Event Log (JSONL)` captures every iteration for replay; `Recorded Fixtures`
+stand in for `Anthropic Messages API` during offline test runs.
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

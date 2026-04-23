@@ -164,6 +164,30 @@ independently buildable per FDD delivery cadence.
 | Declared-change marker vs accidental mutation | FR-006 |
 | `CacheMetric` pydantic model + JSONL log | II, IV reporting obligation, FR-004 |
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  Prompt Composer   │───────│   Mutation Lint    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│  Messages API  │ │Cache Metric Log│ │Cache Fixture R…│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `Prompt Composer` owns the core control flow
+for this kata's objective; `Mutation Lint` is the primary collaborator/policy reference;
+`Messages API`, `Cache Metric Log`, and `Cache Fixture Replay` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

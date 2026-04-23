@@ -154,6 +154,30 @@ from `validator.py` (re-sum + flag) is deliberate: it is the seam the
 AST silent-overwrite lint rides on. Only `extractor.py` is allowed to
 assign `stated_total` or `calculated_total`.
 
+## Architecture
+
+```
+┌────────────────────┐
+│ Extraction Runner  │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│   Invoice Parser   │───────│Integrity Validator │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│  Messages API  │ │  Review Queue  │ │Invoice Audit L…│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Extraction Runner` is the kata entry point; `Invoice Parser` owns the core control flow
+for this kata's objective; `Integrity Validator` is the primary collaborator/policy reference;
+`Messages API`, `Review Queue`, and `Invoice Audit Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified.**

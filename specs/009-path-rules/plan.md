@@ -201,6 +201,30 @@ it in a follow-up PR without restructuring.
 | Host-repo `CLAUDE.md` leak test | FR-007 |
 | AST-free pure matching module | Principle I |
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│    Rule Loader     │───────│    Path Matcher    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│   Rule Files   │ │ Activation Log │ │Rule Diagnostic…│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `Rule Loader` owns the core control flow
+for this kata's objective; `Path Matcher` is the primary collaborator/policy reference;
+`Rule Files`, `Activation Log`, and `Rule Diagnostic Sink` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

@@ -184,6 +184,30 @@ library is introduced yet — YAGNI until a second kata concretely needs one of
 Kata 2's primitives (a future `guardrails-common/` extraction is noted but not
 built here).
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  PreToolUse Hook   │───────│   Policy Config    │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Refund API Stub │ │Escalation Sink │ │ Hook Event Log │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `PreToolUse Hook` owns the core control flow
+for this kata's objective; `Policy Config` is the primary collaborator/policy reference;
+`Refund API Stub`, `Escalation Sink`, and `Hook Event Log` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

@@ -182,6 +182,30 @@ premature coupling and matches the FDD "vertical delivery per kata" rule in
 Constitution §Development Workflow. Live runs write to
 `runs/kata-011/<session-id>/` (gitignored).
 
+## Architecture
+
+```
+┌────────────────────┐
+│   Agent Runtime    │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│   Prompt Builder   │───────│ Compaction Trigger │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│  Messages API  │ │ Compliance Log │ │ Rules Registry │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Agent Runtime` is the kata entry point; `Prompt Builder` owns the core control flow
+for this kata's objective; `Compaction Trigger` is the primary collaborator/policy reference;
+`Messages API`, `Compliance Log`, and `Rules Registry` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

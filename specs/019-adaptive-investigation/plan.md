@@ -202,6 +202,30 @@ provenance layout. Findings that must survive `/compact` are mirrored to the
 kata-18 scratchpad by the coordinator, not by the planner (keeps the planner
 pure).
 
+## Architecture
+
+```
+┌────────────────────┐
+│    Coordinator     │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  Topology Mapper   │───────│      Planner       │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Plan Revision L…│ │Budget Enforcer │ │   Filesystem   │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Coordinator` is the kata entry point; `Topology Mapper` owns the core control flow
+for this kata's objective; `Planner` is the primary collaborator/policy reference;
+`Plan Revision Log`, `Budget Enforcer`, and `Filesystem` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

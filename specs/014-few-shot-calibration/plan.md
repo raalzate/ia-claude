@@ -161,6 +161,30 @@ katas — `katas/014_few_shot_calibration/` with mirrored tests under
 buildable and testable, matching the FDD cadence in Constitution §Development
 Workflow.
 
+## Architecture
+
+```
+┌────────────────────┐
+│ Calibration Runner │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│  FewShot Builder   │───────│  Example Registry  │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│  Messages API  │ │   Trial Log    │ │  Report Store  │
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Calibration Runner` is the kata entry point; `FewShot Builder` owns the core control flow
+for this kata's objective; `Example Registry` is the primary collaborator/policy reference;
+`Messages API`, `Trial Log`, and `Report Store` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

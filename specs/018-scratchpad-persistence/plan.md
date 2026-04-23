@@ -213,6 +213,30 @@ couple two in-flight katas and violate the FDD "vertical delivery per kata"
 rule in Constitution §Development Workflow. Live runs write to
 `runs/kata-018/<session-id>/` (gitignored).
 
+## Architecture
+
+```
+┌────────────────────┐
+│ Investigator Agent │
+└─────────┬──────────┘
+          │
+┌────────────────────┐       ┌────────────────────┐
+│ Scratchpad Writer  │───────│  Scratchpad File   │
+└─────────┬──────────┘       └────────────────────┘
+          │
+          ├─────────────┬─────────────────────┐
+          │             │                     │
+┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+│Rotation Manager│ │ Context Anchor │ │Scratchpad Mess…│
+└────────────────┘ └────────────────┘ └────────────────┘
+```
+
+Node roles: `Investigator Agent` is the kata entry point; `Scratchpad Writer` owns the core control flow
+for this kata's objective; `Scratchpad File` is the primary collaborator/policy reference;
+`Rotation Manager`, `Context Anchor`, and `Scratchpad Messages API` are the persisted / external boundaries the kata
+touches. Classifications written to `.specify/context.json.planview.nodeClassifications`.
+
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
