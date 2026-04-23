@@ -41,9 +41,10 @@ planning, tracking, commit grouping, and documentation.
 
 **In scope:**
 - 20 katas as individual features/modules under `specs/` (one spec per kata).
-  FDD cadence: lightweight specs for all 20 are produced upfront (Build Feature
-  List phase); plan/testify/tasks/implement/docs happen strictly sequentially
-  per kata (Build-by-Feature phase).
+  FDD cadence: lightweight specs AND technical plans for all 20 are produced
+  upfront (canonical FDD phases "Build Feature List" and "Plan by Feature");
+  testify, tasks, implement, and per-kata docs happen strictly sequentially
+  per kata (canonical FDD phases "Design by Feature" and "Build by Feature").
 - Per-kata documentation deliverables: in-code comments explaining the
   *why* of each decision, plus a physical `README.md` (or equivalent) per
   kata narrating objective, steps, anti-pattern, and observed outcomes.

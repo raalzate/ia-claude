@@ -1,12 +1,12 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 → 1.2.0
-Bump rationale: MINOR — clarified FDD application: canonical FDD allows upfront "Build Feature List" and lightweight specs across all features; only the Build-by-Feature phases (plan → testify → tasks → implement → docs) remain strictly sequential per kata.
-Modified principles: Development Workflow FDD clause (scope refined, not redefined).
+Version change: 1.2.0 → 1.3.0
+Bump rationale: MINOR — further aligned FDD scope with canonical Jeff De Luca FDD. Canonical phase 3 "Plan by Feature" is an upfront activity across all features; it is now permitted (and encouraged) to run `/iikit-02-plan` across all katas in parallel. Only Design-by-Feature (testify) and Build-by-Feature (tasks → implement → docs) remain strictly sequential per kata.
+Modified principles: Development Workflow FDD clause (expanded parallel upfront scope to include plan).
 Added sections: none.
 Removed sections: none.
 Follow-up TODOs:
-- Create per-kata `README.md` template under `specs/` (picked up during /iikit-01-specify).
+- Create per-kata `README.md` template under `specs/` (picked up during /iikit-07-implement).
 - Wire `verify-assertion-integrity.sh` into CI (post /iikit-04-testify for first kata).
 - Add CI gate running headless architect review on each PR (see Kata 13 derivative).
 - Confirm pre-commit hook installed on contributor machines before first implementation phase.
@@ -122,17 +122,22 @@ A kata is DONE only when ALL of the following hold:
 ## Development Workflow
 
 - **Delivery methodology: FDD (Feature-Driven Development).** Workshop follows
-  canonical FDD staging:
+  canonical FDD staging (Jeff De Luca):
   1. **Develop Overall Model** — captured in `PREMISE.md`.
   2. **Build Feature List** — the 20 katas enumerated from `PRD.md`.
-  3. **Lightweight Spec per Feature** — `/iikit-01-specify` MAY be executed
-     across all 20 katas upfront (in parallel if helpful). These specs are
-     scope-level documents only.
-  4. **Build by Feature (sequential, NON-NEGOTIABLE)** — everything *after*
-     spec for a given kata (plan → testify → tasks → implement → docs) MUST
-     complete for that kata before the next kata enters the Build phase.
-  No "all plans first, all code later" passes. No skipping docs to start the
-  next kata early. Vertical delivery per kata from plan through docs.
+  3. **Plan by Feature (UPFRONT, parallel-friendly)** — `/iikit-01-specify`
+     AND `/iikit-02-plan` MAY run across all 20 katas in parallel. Specs and
+     technical plans are planning-phase artifacts; batching them upfront lets
+     shared technical decisions (languages, frameworks, test tooling, shared
+     schemas) be seen and reconciled before any code exists.
+  4. **Design by Feature (sequential per kata)** — `/iikit-04-testify`
+     (executable acceptance criteria + assertion-integrity hashes) MUST
+     complete for a kata before that kata's Build phase begins.
+  5. **Build by Feature (sequential, NON-NEGOTIABLE)** — `/iikit-05-tasks`,
+     `/iikit-07-implement`, and the Principle VIII docs for a kata MUST all
+     complete for that kata before the next kata enters Design/Build.
+  No "all tests first, all code later" across katas. No skipping docs to start
+  the next kata early. Vertical delivery per kata from testify through docs.
 - Workflow order is fixed: `/iikit-core init` → `/iikit-00-constitution` →
   `/iikit-01-specify` → `/iikit-clarify` (if needed) → `/iikit-02-plan` →
   `/iikit-03-checklist` → `/iikit-04-testify` → `/iikit-05-tasks` →
@@ -185,4 +190,4 @@ this document wins and the conflicting guidance MUST be updated or removed.
 - Runtime development guidance for agents and contributors lives in `AGENTS.md` and
   the `.tessl/RULES.md` chain; those files MUST NOT contradict this Constitution.
 
-**Version**: 1.2.0 | **Ratified**: 2026-04-23 | **Last Amended**: 2026-04-23
+**Version**: 1.3.0 | **Ratified**: 2026-04-23 | **Last Amended**: 2026-04-23
