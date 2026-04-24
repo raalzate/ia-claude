@@ -5,6 +5,14 @@
 **Status**: Draft
 **Input**: User description: "Kata 7 — Prevent destructive modifications to unfamiliar codebases during massive refactorings by enforcing a read-only exploration (Plan Mode) before any write. The agent must compile findings and a proposed architecture into a markdown document, obtain explicit human approval, and only then transition into Direct Execution."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **"Small, low-risk task" classifier threshold (F-001)**: A request qualifies for the Plan Mode bypass iff it (a) targets exactly one file, (b) introduces no new cross-package imports, and (c) does not modify any file declared under a governance path (`CONSTITUTION.md`, `CLAUDE.md`, `.tessl/**`, `.claude/**`). Anything failing any of the three tests enters full Plan Mode. The classifier is deterministic and lives in `session.classify_request` (tasks T025).
+- **FR-004 rename/move scope semantics (F-003)**: A rename or move is treated as editing the destination path — the destination MUST appear in `plan.affected_files` for the operation to proceed; source deletion is an additional affected-file entry. Directory-level `affected_files` entries apply to every file under that directory prefix at the time the plan is approved. Documented in README per T064.
+- **@FR-007 dedicated scenario (F-002)**: DEFERRED — FR-007 is indirectly tagged via @TS-009 today; adding a dedicated scenario requires re-running `/iikit-04-testify` (cannot hand-edit `.feature` files per assertion-integrity rule). Coverage is acceptable as-is.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Large Refactor Triggers a Read-Only Plan Document (Priority: P1)

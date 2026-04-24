@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 18 — Combat the cliff effect of memory loss by externalizing persistent cognitive discoveries from an exploratory agent into a durable, structured scratchpad file that survives `/compact` resets and session boundaries."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **US2 context-fill trigger**: Pinned the proactive-compaction trigger at `55%` context fill (matches plan.md D-003 and feature TS-008). The earlier "50–60%" narrative band is dropped.
+- **FR-005 size cap**: The declared size cap is `MAX_SCRATCHPAD_BYTES = 100_000` bytes (module constant — plan.md §Constraints, task T008). Rotation is emitted when the active file reaches that cap.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Long Investigation with Incremental Persistence (Priority: P1)
@@ -25,7 +32,7 @@ A practitioner launches an exploratory agent to navigate deep routing or archite
 
 ### User Story 2 - Compaction Survival and Non-Rediscovery (Priority: P2)
 
-A practitioner is deep in an investigation when the agent reaches 50–60% context fill and must apply `/compact` or start a fresh session. On reload, the agent reads the scratchpad as its context anchor before doing any new work. The practitioner then asks a follow-up question whose answer depends on earlier findings. The agent answers correctly from the scratchpad and does not re-run the exploratory steps that produced those findings.
+A practitioner is deep in an investigation when the agent reaches 55% context fill and must apply `/compact` or start a fresh session. On reload, the agent reads the scratchpad as its context anchor before doing any new work. The practitioner then asks a follow-up question whose answer depends on earlier findings. The agent answers correctly from the scratchpad and does not re-run the exploratory steps that produced those findings.
 
 **Why this priority**: This is the defining anti-pattern defense. The kata exists because agents that hold discoveries only inside the live conversation silently lose them after compaction, forcing wasteful rediscovery. A scratchpad that is written but never read back provides no value — this story proves the round trip.
 
@@ -72,7 +79,7 @@ A practitioner opens the scratchpad directly to audit what the agent has learned
 - **FR-002**: The scratchpad MUST conform to a declared section structure; every written finding belongs to exactly one named section.
 - **FR-003**: At session start, the agent MUST read the scratchpad if it exists and treat its contents as authoritative prior context before answering any new query.
 - **FR-004**: The system MUST detect when a new finding conflicts with an existing recorded finding and flag both entries rather than silently overwriting.
-- **FR-005**: The system MUST enforce a declared size cap on the scratchpad and trigger a rotation event when the cap is reached, preserving prior content in an archive rather than deleting it.
+- **FR-005**: The system MUST enforce a declared size cap on the scratchpad (`MAX_SCRATCHPAD_BYTES = 100_000` bytes) and trigger a rotation event when the cap is reached, preserving prior content in an archive rather than deleting it.
 - **FR-006**: Each finding MUST carry the metadata required by the declared section schema (for example: identifier, timestamp, source query, section tag) so it is interpretable out of conversational context.
 - **FR-007**: When the declared scratchpad path is missing at session start, the agent MUST proceed as a cold start and create the file on first write rather than erroring out.
 - **FR-008**: Writes to the scratchpad MUST be atomic with respect to process termination; a crashed write must leave the file in a parseable state.

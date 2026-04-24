@@ -25,19 +25,19 @@ pip install -e ".[dev]"   # pyproject.toml defines `anthropic`, `pydantic`, `pyt
 ## Run the kata against recorded fixtures (default — no API key needed)
 
 ```bash
-pytest tests/katas/001_agentic_loop -v
+pytest tests/katas/kata_001_agentic_loop -v
 ```
 
 You should see:
 - the Gherkin `agentic_loop.feature` scenarios pass,
-- the AST lint `tests/katas/001_agentic_loop/lint/test_no_prose_matching.py` pass
+- the AST lint `tests/katas/kata_001_agentic_loop/lint/test_no_prose_matching.py` pass
   (proving the loop source doesn't import `re` or call `str.find`),
 - the unit tests pass.
 
 ## Run the kata against the live API
 
 ```bash
-LIVE_API=1 python -m katas.001_agentic_loop.runner \
+LIVE_API=1 python -m katas.kata_001_agentic_loop.runner \
   --model claude-opus-4-7 \
   --prompt "What's the weather in Bogotá? Use the get_weather tool."
 ```

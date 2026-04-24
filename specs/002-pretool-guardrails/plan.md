@@ -42,16 +42,16 @@ v1.3.0 principles I, II (NN), V (NN), VI (NN), VII, VIII (NN).
   tests to assert zero calls on reject (FR-006, SC-002).
 **Testing**: pytest + pytest-bdd for acceptance scenarios; plain pytest for
 unit tests; an AST lint test (`test_prompt_has_no_limit.py`) that parses
-`katas/002_pretool_guardrails/prompts.py` and asserts no numeric literal equal
+`katas/kata_002_pretool_guardrails/prompts.py` and asserts no numeric literal equal
 to any configured `PolicyConfig.max_refund` appears inside the system-prompt
 string constants (FR-008 machine check). Fixture sessions recorded under
-`tests/katas/002_pretool_guardrails/fixtures/`; live SDK calls gated behind
+`tests/katas/kata_002_pretool_guardrails/fixtures/`; live SDK calls gated behind
 `LIVE_API=1` (same convention as Kata 1, per shared tech baseline).
 **Target Platform**: Developer local (macOS/Linux) and GitHub Actions CI
 (Linux). No server deployment.
 **Project Type**: Single project — one kata module at
-`katas/002_pretool_guardrails/` with tests at
-`tests/katas/002_pretool_guardrails/`.
+`katas/kata_002_pretool_guardrails/` with tests at
+`tests/katas/kata_002_pretool_guardrails/`.
 **Performance Goals**: Not latency-bound. Acceptance suite against recorded
 fixtures completes under 5s locally. Hook evaluation is O(1) per invocation.
 **Constraints**:
@@ -128,7 +128,7 @@ katas/
                          #   receives so tests can assert zero calls on reject (FR-006)
     prompts.py           # system-prompt string constants; MUST NOT contain the policy limit
                          #   (FR-008; enforced by AST lint)
-    runner.py            # CLI entrypoint: python -m katas.002_pretool_guardrails.runner
+    runner.py            # CLI entrypoint: python -m katas.kata_002_pretool_guardrails.runner
     events.py            # JSONL audit-log writer (shared shape with kata 1's EventLog)
     README.md            # kata narrative (written during /iikit-07)
 
@@ -178,7 +178,7 @@ runs/                    # gitignored; per-session JSONL output
 ```
 
 **Structure Decision**: Single-project layout, one package per kata under
-`katas/NNN_<slug>/`. Kata 2 reuses the same layout convention chosen in
+`katas/kata_NNN_<slug>/`. Kata 2 reuses the same layout convention chosen in
 Kata 1's plan so the 20-kata FDD cadence stays uniform. No shared `common/`
 library is introduced yet — YAGNI until a second kata concretely needs one of
 Kata 2's primitives (a future `guardrails-common/` extraction is noted but not

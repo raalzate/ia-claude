@@ -204,7 +204,7 @@ kata objective and would dilute the decomposition lesson.
 | `max_prompt_tokens` + `tiktoken` + `StageBudgetExceeded` | FR-003; SC-002 |
 | Ordered-list `Chain` orchestrator | FR-001, FR-005; SC-004 |
 | Diff-based extension test | FR-005; SC-004 |
-| Baseline-vs-chain fixture + delta assertion | US2-AS2; SC-001 |
+| Baseline-vs-chain fixture + delta assertion (chain coverage ≥ 25% above baseline per spec.md SC-001) | US2-AS2; SC-001 |
 | Fail-loud malformed-payload test | FR-004, FR-008; SC-003 |
 | `tests/.../conftest.py` + `LIVE_API` gate | Shared baseline (no API quota in CI) |
 | `pytest-bdd` `.feature` execution | Principle V (TDD); Constitution §Kata Completion Standards #2 |

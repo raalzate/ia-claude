@@ -32,15 +32,19 @@ unit tests. Fixture sessions for the Messages API are recorded once (VCR-style
 JSON fixtures under `tests/fixtures/`) so tests run offline and deterministically.
 **Target Platform**: Developer local machine (macOS/Linux) and GitHub Actions CI
 (Linux). No server deployment.
-**Project Type**: Single project — one kata module under `katas/001_agentic_loop/`
+**Project Type**: Single project — one kata module under `katas/kata_001_agentic_loop/`
 with its own tests alongside.
 **Performance Goals**: Not latency-bound. Acceptance runs against recorded
 fixtures complete in under 5 seconds locally.
 **Constraints**:
 - Event-log JSONL records MUST be schema-valid or the run fails loud.
-- Absolutely no `re`, `str.find`, `in` operator, or equivalent text search over
-  `response.content` text blocks is permitted in termination logic — enforced by
-  a lint step (see `tests/lint/no_prose_matching_test.py`).
+- Absolutely no `re`, `str.find`, `in` operator, `.startswith(`, `.endswith(`,
+  nor string `==` / equality comparison against response text, or equivalent
+  text search over `response.content` text blocks is permitted in termination
+  logic — enforced by a lint step (see `tests/lint/no_prose_matching_test.py`).
+  Scope of the gate: the AST lint walks `katas/kata_001_agentic_loop/loop.py`
+  and fails on any of these operators applied to assistant-text blocks; it is
+  deliberately broader than FR-004's minimum so regressions fail loudly.
 - All network calls live behind a thin injectable client so tests can swap a
   recorded-response client for the real SDK.
 **Scale/Scope**: One kata, ~300–500 LOC implementation + comparable test code;
@@ -88,19 +92,19 @@ specs/001-agentic-loop/
 
 ```text
 katas/
-  001_agentic_loop/
+  kata_001_agentic_loop/
     __init__.py
     loop.py              # agentic loop (branches on stop_reason only)
     client.py            # thin injectable Anthropic client wrapper
     tools.py             # tool registry + pydantic schemas for tool calls
     events.py            # EventLog writer (append-only JSONL)
     models.py            # pydantic models: Turn, StopSignal, ToolInvocation, EventRecord
-    runner.py            # CLI entrypoint: `python -m katas.001_agentic_loop.runner`
+    runner.py            # CLI entrypoint: `python -m katas.kata_001_agentic_loop.runner`
     README.md            # kata narrative (written during /iikit-07)
 
 tests/
   katas/
-    001_agentic_loop/
+    kata_001_agentic_loop/
       conftest.py        # fixture session loader, event-log assertions
       features/          # Gherkin files produced by /iikit-04-testify
         agentic_loop.feature
@@ -121,8 +125,8 @@ tests/
 ```
 
 **Structure Decision**: Single-project layout. Each kata is a first-class
-package under `katas/NNN_<slug>/`; tests mirror that structure under
-`tests/katas/NNN_<slug>/`. Runs are written to `runs/<session-id>/` (gitignored).
+package under `katas/kata_NNN_<slug>/`; tests mirror that structure under
+`tests/katas/kata_NNN_<slug>/`. Runs are written to `runs/<session-id>/` (gitignored).
 This keeps the 20 katas independently buildable and testable without cross-kata
 coupling — matching FDD delivery cadence.
 

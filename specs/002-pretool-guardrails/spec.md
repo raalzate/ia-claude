@@ -5,6 +5,12 @@
 **Status**: Draft
 **Input**: Kata 2 of the 20-kata workshop for Claude Certified Architect — physically block dangerous or out-of-policy tool invocations using deterministic logic at the PreToolUse boundary, not prompt-only enforcement.
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **At-limit comparison stance (Edge Cases — "Amount exactly at the limit")**: The chosen stance is `strict_less_than` (the hook allows iff `amount < policy.max_refund`; an amount exactly equal to the limit is rejected with `reason_code="policy_breach"`). This decision is canonical in `plan.md §Constraints` and locked in the `PolicyConfig.comparison_stance: Literal["strict_less_than"]` field, and is exercised by the corresponding test scenario in the feature suite. Any later change to this stance requires a spec amendment, not only a plan/test edit.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Refund Within Policy Proceeds Untouched (Priority: P1)

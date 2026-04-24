@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 19 — Enable a coordinator agent to generate an architectural plan on the fly in an unfamiliar domain rather than committing to a rigid upfront plan. The agent must first perform topological mapping (filename-pattern search and regex-search), emit a prioritized plan based on discovered structure, and re-adapt when new information invalidates the current plan — all within a bounded exploration budget."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-002 revision-trigger rate**: Pinned the concrete threshold at `≥ 90% of seeded-surprise runs trigger at least one plan revision` as the workshop default. Below that rate is a failure of the adaptation contract.
+- **FR-004 budget dimensions**: Narrowed from three (time, iterations, tool-call count) to the two dimensions plan.md actually implements — `max_wall_seconds` and `max_revisions`. "Tool-call count" is dropped from the spec; broadening back to a third dimension would require a `/iikit-04-testify` re-run and a `max_tool_calls` budget predicate.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Open Directive Triggers Topology-First Planning (Priority: P1)
@@ -70,7 +77,7 @@ A practitioner caps the agent's exploration budget (wall-clock time, iteration c
 - **FR-001**: The agent MUST perform topology mapping (at minimum one filename-pattern query and one regex-search query, or a documented equivalent) before emitting any plan.
 - **FR-002**: The agent MUST emit a structured, prioritized plan (ordered items with explicit priority markers), not free-form prose.
 - **FR-003**: The agent MUST re-plan when a new discovery invalidates the currently executing step, producing a new plan revision instead of mutating the prior revision in place.
-- **FR-004**: The agent MUST enforce an exploration budget (time, iterations, or tool calls) and terminate exploration at or before budget exhaustion.
+- **FR-004**: The agent MUST enforce an exploration budget along the two implemented dimensions (`max_wall_seconds`, `max_revisions` — plan.md §Constraints) and terminate exploration at or before budget exhaustion.
 - **FR-005**: The agent MUST log every plan revision with an explicit trigger reference (the discovery, tool failure, cycle, or budget event that caused the revision).
 - **FR-006**: The agent MUST annotate any plan produced under a truncated or incomplete topology pass as "partial" or "budget-limited" with a confidence indicator.
 - **FR-007**: The agent MUST, when a discovery contradicts the original directive, halt and surface the contradiction rather than silently continuing.
@@ -89,6 +96,6 @@ A practitioner caps the agent's exploration budget (wall-clock time, iteration c
 ### Measurable Outcomes
 
 - **SC-001**: 100% of runs produce a structured prioritized plan within the configured exploration budget.
-- **SC-002**: When a practitioner injects an unexpected external dependency, the agent triggers a plan revision that addresses it in at least the target percentage of runs (target defined per evaluation cohort; minimum acceptable baseline is the rate agreed during kata calibration).
+- **SC-002**: When a practitioner injects an unexpected external dependency, the agent triggers a plan revision that addresses it in ≥ 90% of seeded-surprise runs (workshop default — see Clarifications 2026-04-24).
 - **SC-003**: 0 runs in which the agent explores without ever emitting a plan (no endless-exploration runs across the evaluation cohort).
 - **SC-004**: 100% of plan revisions have a logged trigger that unambiguously identifies the discovery, tool failure, cycle, contradiction, or budget event that caused them.

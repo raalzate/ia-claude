@@ -27,8 +27,9 @@ NN), with I (Determinism), V (Test-First), VII (Provenance) in direct support.
 
 **Primary Dependencies**:
 - `anthropic` (official Claude SDK) — drives the agent loop that consumes
-  `StructuredError` payloads; re-used verbatim from Kata 1 to keep katas
-  compositional (FR-004, FR-008).
+  `StructuredError` payloads; same pattern as Kata 1 (no shared module — each
+  kata re-declares the client wrapper to preserve per-kata deletability)
+  (FR-004, FR-008).
 - `pydantic` v2 — `StructuredError`, `ToolCall`, `RetryBudget`,
   `RecoveryAction`, `EscalationTrigger` models. Every MCP response boundary
   runs through `model_validate` — satisfies Principle II (NN) directly and
@@ -103,7 +104,7 @@ one README (Principle VIII); 5 fixture files; 4 JSON Schema contracts.
 | FR-005 retry budget enforced | `RetryBudget` model + `retry_budget.schema.json` + exhaustion → escalation |
 | FR-006 log every structured error | JSONL `errors.jsonl` writer, one record per attempt |
 | FR-007 synthesize local structured error on transport/schema-violation failure | `ErrorSynthesizer` path; dedicated `errorCategory` values `transport`, `schema_violation` |
-| FR-008 escalation explicit and human-reviewable | `escalation_trigger.schema.json`; payload goes to declared sink |
+| FR-008 escalation explicit and human-reviewable | `escalation_trigger.schema.json`; payload goes to declared sink; human-review path (sink registry + on-disk `runs/<session-id>/escalations/<trigger_id>.json` per T044) documented in README §MCP Error Handling Contract (T056, T059) |
 | SC-001 100% of failures carry category+retryable | Schema validation rejects missing fields |
 | SC-002 0 generic strings | Lint + fixture transcript scan |
 | SC-003 X% retryable-resolve-within-budget | **UNRESOLVED placeholder in spec — see Open Questions §SC-003** |

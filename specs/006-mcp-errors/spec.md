@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 6 — Provide actionable feedback to the agent when an MCP-exposed tool fails, using structured error metadata (isError, errorCategory, isRetryable, explanation) so the agent can retry, escalate, or abort deterministically instead of looping blindly on generic failure strings."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-003 threshold (F-001)**: DEFERRED to `/iikit-clarify`. The "at least 95%" placeholder is preserved pending an explicit clarify session; T065 tracks removal of the `@needs-clarify SC-003` tag once clarify lands.
+- **@SC-003 dedicated corpus-ratio scenario (F-002)**: DEFERRED — adding the scenario requires re-running `/iikit-04-testify` (cannot hand-edit `.feature` files per assertion-integrity rule).
+
 ## User Stories *(mandatory)*
 
 <!--

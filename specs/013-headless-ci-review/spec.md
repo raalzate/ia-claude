@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Integrate a deterministic agentic reviewer directly into automated CI/CD pipelines using the Claude Code CLI, invoked non-interactively with structured JSON output, so that every pull request receives schema-validated inline annotations without free-form regex parsing."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-003 numeric gate**: default annotation-landing gate is `≥ 95%` — at least 95% of CI runs whose reviewer output is schema-valid AND has a non-empty findings set post at least one inline annotation on the pull request. This is an automated, checkable gate at kata run time.
+- **Oversized-context detection (FR-009)**: detection is a pre-CLI size check. The runner estimates input token count using the same tokenizer family used by the CLI (e.g. `tiktoken` with the configured model encoding), compares against the configurable constant `MAX_INPUT_TOKENS` (default `180_000`), and fails the job with a labeled `oversized-context` reason when the estimate exceeds the constant. This is authoritative; CLI-exit-signal detection is a secondary fallback only.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Automated inline review on every pull request (Priority: P1)
@@ -87,5 +94,5 @@ A practitioner changes the review prompt template (e.g., swaps "analyze for vuln
 
 - **SC-001**: 100% of CI runs either produce schema-valid reviewer output or fail closed; zero runs post annotations derived from unvalidated output.
 - **SC-002**: 0 instances of free-form regex parsing exist in the CI glue code, verified by review of the mapping script against the declared schema as the sole input contract.
-- **SC-003**: Findings land as inline annotations on the pull request in at least the workshop's target percentage of runs that produced a non-empty schema-valid findings set (target set by the practitioner at kata execution time).
+- **SC-003**: Findings land as inline annotations on the pull request in ≥ 95% of runs whose reviewer output is schema-valid and has a non-empty findings set (default numeric gate; see Clarifications).
 - **SC-004**: The raw reviewer response is retained as a CI artifact for 100% of runs, including runs that failed schema validation or exited non-zero.

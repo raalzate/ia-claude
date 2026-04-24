@@ -5,6 +5,14 @@
 **Status**: Draft
 **Input**: User description: "Kata 11 — Softmax Dilution Mitigation (Edge Placement + Proactive Compaction). Protect critical business rules from the 'lost in the middle' blind spot caused by the U-shaped attention curve in transformers by relocating hard constraints to the prompt edges and proactively compacting long sessions at 50–60% capacity."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **FR-002 / SC-003 trigger band**: the proactive-compaction band is the half-open interval `[0.55, 0.60)`. The trigger fires at `usage_fraction >= 0.55`; `CompactionEvent.fired_at_usage_fraction` MUST lie in `[0.55, 0.60)`; reaching `usage_fraction > 0.60` without a prior `CompactionEvent` is a fail-closed condition.
+- **SC-001 adversarial batch size**: the adversarial batch size is pinned at `N=30` trials per layout (matching `plan.md` Performance Goals and `tasks.md` T049/T052), so the ≥95% rate is reproducible.
+- **F-003 edit-time regression scenario (anti-pattern slips back in)**: SKIPPED — adding a render-time regression scenario for the "Anti-pattern slips back in" edge case requires `/iikit-04-testify` re-run to regenerate `.feature` files. Deferred.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Edge Placement of Critical Rule (Priority: P1)
@@ -58,7 +66,7 @@ During a long multi-turn session, context usage grows past roughly 55% of the mo
 - **Critical rule longer than edge budget**: A declared critical rule exceeds the token budget reserved for an edge region. The system must not silently truncate the rule; it must either reject the configuration or degrade in a declared, auditable way.
 - **Compaction collapses critical rule**: The summarizer rewrites or paraphrases the critical rule during compaction, weakening its guardrail semantics. The system must preserve critical rules verbatim and detect any drift.
 - **Multi-rule competition for edge real estate**: Multiple critical rules are declared and their combined size exceeds the available edge budget. The system must apply a declared priority ordering and surface which rules were placed versus deferred.
-- **Session reaches 100% before compaction fires**: The compaction trigger fails or is starved, and the session reaches the hard context limit with critical rules still buried in the middle. The system must fail closed (refuse the turn or force compaction) rather than silently drop edge anchoring.
+- **Session reaches 100% before compaction fires**: The compaction trigger fails or is starved, and the session reaches the hard context limit with critical rules still buried in the middle. The system must fail closed by refusing the turn via `CompactionOverdue` rather than silently dropping edge anchoring.
 - **Anti-pattern slips back in**: A later edit reintroduces mid-context burying of a critical rule. The system must detect this regression at render time and block or warn before the prompt is dispatched.
 
 ## Requirements *(mandatory)*
@@ -66,7 +74,7 @@ During a long multi-turn session, context usage grows past roughly 55% of the mo
 ### Functional Requirements
 
 - **FR-001**: System MUST place every declared critical rule at both the primacy edge (top) and the latency edge (bottom) of every rendered prompt.
-- **FR-002**: System MUST run automatic compaction when session context usage crosses a declared capacity threshold within the 50–60% band, and MUST complete compaction before usage exceeds 60%.
+- **FR-002**: System MUST run automatic compaction when session context usage crosses a declared capacity threshold within the half-open interval `[0.55, 0.60)` (fires at `usage_fraction >= 0.55`), and MUST complete compaction before usage exceeds 60%.
 - **FR-003**: System MUST re-anchor every declared critical rule verbatim at both edges of the post-compaction prompt.
 - **FR-004**: System MUST log every edge-placement decision and every compaction event with enough detail (rule identity, placement position, capacity at trigger, rules preserved) to audit compliance after the fact.
 - **FR-005**: System MUST reject, or fail closed on, any content or configuration that would push a declared critical rule out of an edge region or cause it to be buried in the middle of the prompt.
@@ -86,5 +94,5 @@ During a long multi-turn session, context usage grows past roughly 55% of the mo
 
 - **SC-001**: Rule compliance under edge placement is ≥ 95% across the adversarial batch.
 - **SC-002**: Compliance drop between edge placement and mid-placement is ≥ 20 percentage points (Δ ≥ 0.20), demonstrating the softmax-dilution effect on the practitioner's own workload.
-- **SC-003**: Every compaction event fires before session capacity exceeds 60%, with zero recorded instances of a session reaching the hard limit without a compaction attempt.
+- **SC-003**: Every compaction event fires inside the half-open interval `[0.55, 0.60)` (i.e. at `usage_fraction >= 0.55` and before capacity exceeds 60%), with zero recorded instances of a session reaching the hard limit without a compaction attempt.
 - **SC-004**: Every post-compaction prompt contains every declared critical rule verbatim at both the primacy and latency edges, verified by automated inspection on 100% of compaction events.

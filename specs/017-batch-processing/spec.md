@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 17 — Reduce capital expenditure on offline audit operations that do not require real-time responses by routing latency-tolerant workloads through the Message Batches API, preserving request/response correlation via a binding `custom_id` and handling partial failures through isolation and fragmentation."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-004 / `max_recovery_rounds`**: Pinned the bound at `max_recovery_rounds = 3` (plan.md §Constraints default). Convergence is measured against that fixed value across the test corpus — "N rounds" prose dropped in favour of the concrete number.
+- **FR-001 classifier inputs**: The "declared criteria" are the four typed fields enumerated in plan.md §Summary — `is_blocking`, `latency_budget_seconds`, `item_count`, `expected_cost_usd` — with concrete thresholds exercised by feature TS-005. Spec keeps the high-level criterion; plan carries the numeric cutoffs.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Classify and submit an async-tolerant workload via the batch API (Priority: P1)
@@ -65,7 +72,7 @@ A practitioner injects items that will deliberately fail (e.g. inputs that excee
 
 ### Functional Requirements
 
-- **FR-001**: System MUST classify each incoming workload as either batchable (async-tolerant, non-user-facing) or synchronous (blocking, user-facing) according to declared criteria before any submission decision is made.
+- **FR-001**: System MUST classify each incoming workload as either batchable (async-tolerant, non-user-facing) or synchronous (blocking, user-facing) according to declared criteria before any submission decision is made. (Concrete classifier inputs — `is_blocking`, `latency_budget_seconds`, `item_count`, `expected_cost_usd` — are defined in plan.md §Summary.)
 - **FR-002**: System MUST assign a unique `custom_id` to every item included in a batch submission.
 - **FR-003**: System MUST map every returned response back to its originating source item via the same `custom_id` used at submission.
 - **FR-004**: System MUST isolate items that failed within a batch into a dedicated failure bucket keyed by `custom_id`, without discarding successful items.
@@ -91,4 +98,4 @@ A practitioner injects items that will deliberately fail (e.g. inputs that excee
 - **SC-001**: Cost reduction of the batch-pathway run vs. the synchronous baseline for an identical corpus is ≥ 50%.
 - **SC-002**: 100% of responses returned by a completed batch are correlated to a submitted `custom_id` (no orphaned responses, no unanswered sources).
 - **SC-003**: 0 items are silently dropped across the test corpus — every submitted `custom_id` terminates in an accounted state (succeeded, failed, or timed out).
-- **SC-004**: Failed-item reprocessing via isolation and fragmentation converges (all items either succeed or are explicitly declared unrecoverable) within N rounds of re-submission for the test corpus.
+- **SC-004**: Failed-item reprocessing via isolation and fragmentation converges (all items either succeed or are explicitly declared unrecoverable) within `max_recovery_rounds = 3` rounds of re-submission for the test corpus. (Bound defined in plan.md §Constraints; see Clarifications 2026-04-24.)

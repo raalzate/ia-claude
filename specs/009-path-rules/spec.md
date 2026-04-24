@@ -5,6 +5,15 @@
 **Status**: Draft
 **Input**: User description: "Kata 9 — Path-Scoped Conditional Rules: save context-window space by loading programming heuristics only when the agent edits files matching a defined pattern."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-001 measurement tolerance (F-001)**: The "small measurement tolerance" is **0 bytes** — byte-level parity. The composed prompt byte size for a turn that edits only non-matching files MUST equal the baseline exactly (enforced by the zero-activation property test, tasks T028 / T031).
+- **"Very large rule file" threshold (F-002)**: The `large_rule_body` threshold is **20000 bytes** by default, overridable via the `KATA9_LARGE_RULE_BYTES` environment variable; owned by `plan.md` §Constraints / tasks.md T036, T049.
+- **FR-007 domain-heuristic keyword allowlist (F-004)**: The CLAUDE.md leak scan (tasks T027) uses a small, explicit keyword allowlist — governance/process keywords permitted at the repo-global level (e.g. `constitution`, `principle`, `TDD`, `schema`, `determinism`, `provenance`, `human-in-the-loop`, `context economy`); domain-specific keywords (language names, framework names, testing libraries, style-preferences such as tabs/spaces/semicolons) MUST NOT appear in the host repo's `CLAUDE.md` — any such term fails the lint. Full list documented in README per T055.
+- **MatchingEvent schema field reconciliation (F-003)**: DEFERRED — adjusting the @TS-005 `activated_rules` vs. contract `rule_file` naming requires regenerating the `.feature` file via `/iikit-04-testify` and, if needed, the `rule-activation-event.schema.json` contract (cannot hand-edit `.feature` files per assertion-integrity rule). Tracked for the next testify re-run.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Testing rules auto-inject on test edits (Priority: P1)

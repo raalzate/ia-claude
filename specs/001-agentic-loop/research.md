@@ -47,7 +47,7 @@
 ### D-004 — Recorded fixtures over live API calls in tests
 
 - **Decision**: Ship VCR-style JSON fixtures under
-  `tests/katas/001_agentic_loop/fixtures/` and inject a `RecordedClient` that
+  `tests/katas/kata_001_agentic_loop/fixtures/` and inject a `RecordedClient` that
   returns them. Live SDK calls are gated behind an env var (`LIVE_API=1`) and
   are not part of the default test run.
 - **Rationale**: Determinism and offline reproducibility. The tests verify
@@ -61,8 +61,8 @@
 
 ### D-005 — AST-based lint to forbid prose matching
 
-- **Decision**: A test at `tests/katas/001_agentic_loop/lint/test_no_prose_matching.py`
-  parses `katas/001_agentic_loop/loop.py` with the `ast` module and fails if it
+- **Decision**: A test at `tests/katas/kata_001_agentic_loop/lint/test_no_prose_matching.py`
+  parses `katas/kata_001_agentic_loop/loop.py` with the `ast` module and fails if it
   finds: `import re`, `from re import ...`, a `str.find` call, or an `in`
   operator where the right-hand side is a `str` literal. This operationalizes
   FR-004 as a machine-checkable gate.
@@ -77,8 +77,8 @@
 
 ### D-006 — Single project layout; 20 katas as sibling packages
 
-- **Decision**: All katas live under `katas/NNN_<slug>/`; tests under
-  `tests/katas/NNN_<slug>/`; per-kata README alongside source.
+- **Decision**: All katas live under `katas/kata_NNN_<slug>/`; tests under
+  `tests/katas/kata_NNN_<slug>/`; per-kata README alongside source.
 - **Rationale**: FDD cadence (Constitution v1.2.0 Development Workflow) is
   easier when each kata is a self-contained package that can be graded in
   isolation. Avoids premature shared libraries that would couple katas.

@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 16 — Create a clean Human-in-the-Loop transition when a subagent hits a policy gap or operational limit. Detect an escalation precondition, invoke an `escalate_to_human` tool, suspend conversational text generation, and force the model to emit a strictly typed JSON summary payload (customer_id, issue_summary, actions_taken, escalation_reason) so the human operator receives a self-contained package instead of a raw transcript."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-003**: Tagged *manually-verified*. No automated test enforces the 50% median-resolution-time target across ≥ 20 escalations; the pedagogic structured-vs-prose contrast is demonstrated in the README (plan §Complexity Tracking, `@needs-clarify SC-003`). The quantitative target remains a clarify follow-up.
+- **Edge Cases / unknown `customer_id`**: Committed to the explicit sentinel `unknown` (matches feature TS-008). The "or validation failure" alternative is dropped — the contract is singular.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Escalation suspends chat and emits schema-valid payload (Priority: P1)
@@ -55,7 +62,7 @@ A practitioner extends the handoff schema with a new required field (for example
 ### Edge Cases
 
 - Escalation precondition is tripped mid-tool-call (e.g., partway through a multi-step action). The in-flight tool call MUST be terminated or cleanly finalized before the handoff payload is emitted, and `actions_taken` MUST reflect only completed steps.
-- `customer_id` is unknown or not yet bound in the session. The schema MUST define explicit handling (either a required sentinel like `unknown` or a validation failure) rather than emitting an empty string.
+- `customer_id` is unknown or not yet bound in the session. The schema MUST emit the explicit sentinel `unknown` (matches feature TS-008) rather than an empty string.
 - `actions_taken` list is empty (escalation fires before the agent has taken any action). The payload MUST still validate with an empty list and the `escalation_reason` MUST explain the zero-action trigger.
 - Repeated escalations within a single session. Each escalation MUST produce a distinct traceable id; the system MUST NOT collapse duplicate escalations silently.
 - Escalation fires while the agent is generating a partial assistant message. Partial conversational output MUST be suppressed from the handoff payload and MUST NOT be delivered to the end user.
@@ -90,5 +97,5 @@ A practitioner extends the handoff schema with a new required field (for example
 
 - **SC-001**: 100% of escalations produce schema-valid payloads (zero escalations delivered to the operator queue without passing validation).
 - **SC-002**: 0 raw-transcript-only handoffs observed in the operator queue across the evaluation run.
-- **SC-003**: Median human resolution time on escalated cases is ≥ 50% lower than the transcript-based baseline, measured over a representative sample of at least 20 escalations.
+- **SC-003** *(manually-verified)*: Median human resolution time on escalated cases is ≥ 50% lower than the transcript-based baseline, measured over a representative sample of at least 20 escalations. No automated test enforces this threshold — see Clarifications (2026-04-24).
 - **SC-004**: Every escalation id is traceable end-to-end in the audit log, linking session, precondition, payload, and operator-queue delivery.

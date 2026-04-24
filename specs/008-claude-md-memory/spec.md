@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 8 — Establish universal team coding conventions within a repository (project-scope CLAUDE.md with modular `@path` references) without conflicting with individual user-level preferences (`~/.claude/CLAUDE.md`)."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-003 size budget anchor (F-001)**: The "declared size budget" is `TEAM_MEMORY_MAX_BYTES = 20 KB` (20 * 1024 bytes), owned by plan.md §Constraints and `katas/008_claude_md_memory/budget.py`. SC-003 measurement compares the aggregated team-scope bytes against that constant — the spec back-references the plan-owned value rather than hard-coding it here.
+- **Rule-key identity (F-002)**: A "rule" is identified by the slugified text of its Level-2 markdown heading (`## ...`) within a Team or Personal Memory File. Slugification: lowercase, strip leading/trailing whitespace, collapse internal whitespace to a single `-`. Two entries conflict iff their slugified heading sets intersect. Convention documented in README per T067.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Zero-Setup Team Conventions on Fresh Clone (Priority: P1)
@@ -85,5 +92,5 @@ A practitioner edits an external manual referenced from the project memory file 
 
 - **SC-001**: A fresh clone yields identical agent behavior across developers — 100% reproducibility on a defined test prompt set, with no developer-specific drift attributable to memory loading.
 - **SC-002**: Personal rules never override declared team rules on project tasks — 0 conflicts pass through to agent output in the conflict test matrix.
-- **SC-003**: The modular `@path` structure keeps `CLAUDE.md` under a declared size budget (top-level file size measured and compared to the budget on every commit).
+- **SC-003**: The modular `@path` structure keeps `CLAUDE.md` under a declared size budget — `TEAM_MEMORY_MAX_BYTES = 20 KB` (20 * 1024 bytes), owned by `plan.md` §Constraints and `katas/008_claude_md_memory/budget.py`; see §Clarifications. The top-level file size plus every `@path`-resolved team-scope manual is measured and compared to the budget on every commit.
 - **SC-004**: A missing `@path` target triggers an explicit diagnostic in 100% of cases — silent degradation is never observed in the failure test set.

@@ -88,6 +88,15 @@ out of scope.
   mapper's empty-list branch posts zero annotations and exits 0 (FR-008).
 - Non-zero CLI exit OR oversized-context detection MUST fail the job with a
   labeled reason; partial annotations are forbidden (FR-009).
+- Oversized-context detection is a **pre-CLI size check**: the runner counts
+  input tokens using `tiktoken` with the configured model encoding (same
+  tokenizer family as the CLI) and compares the estimate against the
+  configurable constant `MAX_INPUT_TOKENS` (default `180_000`). If the
+  estimate exceeds the constant, the runner fails the job with an
+  `oversized-context` reason string BEFORE invoking the CLI. CLI-exit-signal
+  detection (non-zero with an oversize marker in stderr) is a secondary
+  fallback only. `MAX_INPUT_TOKENS` is configurable via environment or
+  workflow input so it can track model changes without touching the mapper.
 
 **Scale/Scope**: One kata, ~200–400 LOC of Python (mapper + validator +
 lint test) + one GitHub Actions workflow (~80 lines YAML) + three JSON
