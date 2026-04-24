@@ -5,6 +5,13 @@
 **Status**: Draft
 **Input**: User description: "Kata 20 — Strictly maintain the mapping between factual claims and their original sources after executing massive aggregations across subagent-processed corporate manuals. Reject amalgamated prose summaries; reject silent conflict resolution; route conflicts to humans."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-003 (recall threshold)**: Conflict detection recall on the seeded conflict set MUST be `100%` — every planted contradiction MUST surface as a `conflict_detected=true` record (consistent with SC-002's no-silent-drops discipline). Missing even one seeded contradiction is a SC-003 failure.
+- **FR-003 (conflict-detection scope)**: FR-003 covers numeric-token divergence within a `canonical_key` group (the aggregator's supported detection path at T045). Categorical-contradiction detection (e.g., two sources asserting different policy owners) is out of scope for this kata and is deferred to a later kata / issue.
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Provenance-Preserving Aggregation (Priority: P1)
@@ -69,7 +76,7 @@ A practitioner removes one or more provenance fields (`source_url`, `source_name
 
 - **FR-001**: System MUST emit every factual claim as a structured record containing `claim`, `source_url`, `source_name`, and `publication_date` fields, all populated from the originating source.
 - **FR-002**: System MUST reject any claim that lacks one or more required provenance fields and MUST NOT emit orphan claims downstream.
-- **FR-003**: System MUST detect conflicts — defined as two or more claims asserting contradictory values for the same underlying fact — and mark them with an explicit `conflict_detected=true` flag in the output.
+- **FR-003**: System MUST detect conflicts — defined as numeric-token divergence within a `canonical_key` group (two or more claims asserting contradictory numeric values for the same underlying fact) — and mark them with an explicit `conflict_detected=true` flag in the output. Categorical-contradiction detection is out of scope for this kata (see Clarifications).
 - **FR-004**: System MUST NOT auto-resolve detected conflicts by picking a source heuristically, by recency, by majority vote, or by any model-internal preference.
 - **FR-005**: System MUST route every detected conflict to a human coordinator as an explicit review task, preserving both (or all) original provenance JSON blocks in the hand-off payload.
 - **FR-006**: System MUST log every aggregation pass with the set of source documents consulted, the number of claims emitted, and the number of conflicts surfaced, for self-audit and provenance replay.
@@ -90,5 +97,5 @@ A practitioner removes one or more provenance fields (`source_url`, `source_name
 
 - **SC-001**: 100% of emitted claims have populated `source_url`, `source_name`, and `publication_date` fields across the full labeled corpus.
 - **SC-002**: 0 auto-resolved conflicts across the labeled corpus — every seeded contradiction surfaces as an explicit `conflict_detected` record routed to human review.
-- **SC-003**: Conflict detection recall is at or above the workshop target on the seeded conflict set (no planted contradiction is missed).
+- **SC-003**: Conflict detection recall is `100%` on the seeded conflict set — every planted contradiction surfaces as a `conflict_detected=true` record and zero seeded contradictions are missed (see Clarifications).
 - **SC-004**: Orphan-claim rejection rate equals 100% on the negative test set — every schema request missing a required provenance field fails closed with a structured validation error.

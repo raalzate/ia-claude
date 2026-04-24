@@ -5,6 +5,14 @@
 **Status**: Draft
 **Input**: User description: "Kata 14 — Tune the model's attention weight toward highly subjective or unconventional output formats by providing 2–4 representative input/output examples in the prompt, escaping generic zero-shot defaults."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **FR-001 (zero-shot precondition enforcement)**: The "≥ 20% zero-shot inconsistency on the edge-case corpus" precondition is enforced by a runner-level gate. When the measured zero-shot inconsistency rate falls below 20%, calibration is skipped with a labeled `CalibrationNotIndicated` reason; when ≥ 20%, calibration proceeds. The gate is implemented in the harness (see tasks.md T027a, tasks.md T029a) and stamped on the `CalibrationReport`.
+- **FR-002 (coverage predicate)**: "Covers representative edge cases" is defined by the `validate_coverage(set_id, task_id)` predicate: the active `ExampleSet` MUST contain at least one `ExamplePair` for every edge-case class declared in the task schema's `edge_case_classes` list. Missing any declared class raises `MissingCoverageError` before the first API call. Predicate contract is declared in plan.md §Technical Context.
+- **Edge-case "leakage (verbatim canonical input/output)"**: BDD scenario coverage for the leakage-candidate flagger is deferred to `/iikit-04-testify`; the runtime flag is already exercised by the unit test at `tests/katas/014_few_shot_calibration/unit/test_size_guard_and_leakage_flag.py` (T063).
+
 ## User Stories *(mandatory)*
 
 ### User Story 1 - Zero-Shot Baseline vs. Calibrated Few-Shot on an Edge-Case Corpus (Priority: P1)
@@ -64,8 +72,8 @@ A practitioner swaps the active example set for an alternative set of the same s
 
 ### Functional Requirements
 
-- **FR-001**: System MUST include 2–4 input/output example pairs in the prompt when measured zero-shot inconsistency on the edge-case corpus is ≥ 20%.
-- **FR-002**: System MUST validate that the active example set covers representative edge cases for the task before that set is used in a calibrated run.
+- **FR-001**: System MUST include 2–4 input/output example pairs in the prompt when measured zero-shot inconsistency on the edge-case corpus is ≥ 20%. A runner-level gate MUST skip calibration with a labeled `CalibrationNotIndicated` reason when the measured zero-shot inconsistency rate is < 20% (see Clarifications).
+- **FR-002**: System MUST validate that the active example set covers representative edge cases for the task before that set is used in a calibrated run. Coverage is declared by the `validate_coverage(set_id, task_id)` predicate: the active `ExampleSet` MUST contain at least one `ExamplePair` per edge-case class declared in the task schema's `edge_case_classes` list; any gap raises `MissingCoverageError` before the first API call (see Clarifications).
 - **FR-003**: System MUST log which example set was active for each run, such that any recorded result can be traced to its calibration inputs.
 - **FR-004**: System MUST measure and record the zero-shot vs. few-shot delta on the same corpus, producing a single comparable metric per corpus.
 - **FR-005**: System MUST treat a contradictory example set as an error condition and refuse to run it silently; contradictions MUST surface as a validation failure rather than degraded output.

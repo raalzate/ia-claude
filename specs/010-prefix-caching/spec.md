@@ -87,3 +87,9 @@ A practitioner modifies only the dynamic suffix (user question, session state, t
 - **SC-002**: Billable input token cost per request after the first drops to ≤ 15% of the uncached baseline.
 - **SC-003**: Zero volatile tokens are detected in the static prefix region by the lint step across the entire repository.
 - **SC-004**: Pull requests that mutate the static prefix (without an explicit declared change) fail CI on the prefix-integrity check.
+
+## Clarifications
+
+- **FR-007 minimum cacheable prefix size**: The declared threshold is **1024 tokens** (Anthropic documented minimum for ephemeral cache). A static prefix below this size MUST NOT carry `cache_control`, and the composer MUST emit an explicit `under_min_size_warning` rather than silently falling back.
+- **Cache TTL window**: The ephemeral cache TTL is **5 minutes**. Runs 2..N asserted against SC-001 / SC-002 thresholds are required to execute within this window of the cold-start warmup run; beyond that, the next request behaves like a cold start per the edge-case rule.
+- **Cache breakpoint budget**: A single request MUST carry **≤ 4 cache breakpoints** (`cache_control` markers). This is the API-imposed budget; the composer's block builders are responsible for keeping the count at or under four across a composed `PromptComposition`.

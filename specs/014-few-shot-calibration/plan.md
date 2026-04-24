@@ -73,6 +73,19 @@ typical broadband link (corpus × 2 arms = 20 API calls).
   format-sensitive" MUST require an explicit `acknowledge_zero_shot=True`
   flag on the runner call (FR-007). Silent zero-shot on a calibratable task
   is the defended anti-pattern.
+- **Coverage predicate `validate_coverage(set_id, task_id)`** (FR-002):
+  resolves the active `ExampleSet` from the registry and the declared
+  `edge_case_classes: list[str]` from the task schema; returns `True` only
+  when every declared class has at least one `ExamplePair` mapped to it.
+  Any gap raises `MissingCoverageError(set_id, task_id, missing_classes)`
+  *before* the first API call. This is the machine-checkable reading of
+  "covers representative edge cases" cited by spec.md FR-002 Clarifications.
+- **Zero-shot precondition gate** (FR-001): the runner measures the zero-shot
+  inconsistency rate on the edge-case corpus first. When the measured rate
+  is < 20% the runner halts the calibration arm with a labeled
+  `CalibrationNotIndicated` reason stamped onto `CalibrationReport.skipped_reason`;
+  when ≥ 20% the runner proceeds to build the few-shot prompt. This makes
+  the FR-001 conditional machine-enforced rather than aspirational.
 **Scale/Scope**: One kata, ~400–600 LOC implementation + comparable test code;
 one README; fixture corpus: 10 informal-measure inputs × 2 arms, plus 4
 distinct example sets (calibrated, alternate, contradictory, over-long) and 1

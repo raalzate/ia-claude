@@ -61,6 +61,25 @@ Active set is recorded per run (FR-003, SC-004).
 | Contradictory set rejected | Edge #1, FR-005 | `contradictory_set/` |
 | Oversized example flagged | Edge #4 | `oversized_example/` |
 
+## Fixture-id mapping
+
+The `set_id` values used in the US3 Scenario Outline (`calibrated_primary`,
+`calibrated_alternate`) map to the on-disk fixtures under
+`tests/katas/014_few_shot_calibration/fixtures/` as follows:
+
+| `set_id` (scenario outline) | Fixture file |
+|-----------------------------|--------------|
+| `calibrated_primary` | `example_set_calibrated.json` |
+| `calibrated_alternate` | `example_set_alternate.json` |
+| `zero_shot` (reserved control) | — (no fixture; synthesized by runner) |
+| `contradictory` | `example_set_contradictory.json` |
+| `overlong` | `example_set_overlong.json` |
+| `missing_coverage` | `example_set_missing_coverage.json` |
+
+The `ExampleSetRegistry` loader wires each `set_id` above to its fixture path
+at test-session startup; any scenario referencing a `set_id` not in this table
+raises `UnknownExampleSetError` before any API call.
+
 ## "Done" checklist
 
 - [x] `spec.md`, `plan.md`.

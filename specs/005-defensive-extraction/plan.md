@@ -33,20 +33,20 @@ syntax consumed by pydantic v2 field introspection used in the schema lint).
   `/iikit-04-testify`; scenarios cover FR-002/FR-004/FR-005/FR-006/FR-007 and
   SC-001..SC-004.
 **Storage**: Local filesystem only. Fixture corpus under
-`tests/katas/005_defensive_extraction/fixtures/` — each fixture is a
+`tests/katas/kata_005_defensive_extraction/fixtures/` — each fixture is a
 `(source.txt, expected.json)` pair where `expected.json` encodes the
 labeled null map and escape-enum map (NOT a text-identity expected output).
 Run artifacts (if a live run is executed) written to
 `runs/<session-id>/extraction.jsonl` (gitignored).
 **Testing**: pytest + pytest-bdd for acceptance; plain pytest for the schema
-lint and for the fabrication-rate audit. Shared `tests/katas/005_defensive_extraction/conftest.py`
+lint and for the fabrication-rate audit. Shared `tests/katas/kata_005_defensive_extraction/conftest.py`
 exposes the fixture loader and the recorded-response client. Live API calls
 are gated by `LIVE_API=1` (baseline shared with Kata 1 per `specs/001-agentic-loop/plan.md`).
 **Target Platform**: Developer local machine (macOS/Linux) and GitHub Actions
 CI (Linux). No deployment target.
 **Project Type**: Single project — one kata module at
-`katas/005_defensive_extraction/` with tests at
-`tests/katas/005_defensive_extraction/`.
+`katas/kata_005_defensive_extraction/` with tests at
+`tests/katas/kata_005_defensive_extraction/`.
 **Performance Goals**: Not latency-bound. Offline fixture run completes in
 under 5 seconds locally (same budget as Kata 1).
 **Constraints**:
@@ -62,9 +62,10 @@ under 5 seconds locally (same budget as Kata 1).
   audited mechanically by `FabricationMetric` against the per-fixture null
   map.
 **Scale/Scope**: One kata, ~250–400 LOC implementation + comparable test code;
-one `README.md`; fixture corpus = six labeled items (well-formed,
-missing-optional, ambiguous, contradictory, empty, out-of-enum) per the spec's
-Edge Cases section.
+one `README.md`; fixture corpus = seven labeled items (well-formed,
+missing-optional, ambiguous, contradictory, empty, out-of-enum, mixed-language)
+covering the spec's Edge Cases section plus the mixed-language branch exercised
+by `[TS-014]`.
 
 ## Constitution Check
 
@@ -73,7 +74,7 @@ Edge Cases section.
 | Principle | How the plan satisfies it |
 |-----------|---------------------------|
 | I. Determinism Over Probability (NN) | Not load-bearing here (no multi-turn control flow) — but the branch on tool-call presence vs. absence still keys off the structured `content[0].type == "tool_use"` field, never on prose. |
-| II. Schema-Enforced Boundaries (NN) | `ExtractedRecord` is a pydantic v2 model with `extra="forbid"` (FR-010); its JSON Schema is the `input_schema` passed to the extraction tool (FR-001). Required vs. optional fields are declared at the type level. Optional fields use nullable unions (FR-004). Enumerated fields include the escape value (FR-005). |
+| II. Schema-Enforced Boundaries (NN) | `ExtractedRecord` is a pydantic v2 model with `extra="forbid"` (FR-010); its JSON Schema is the `input_schema` passed to the extraction tool (FR-001). Required vs. optional fields are declared at the type level. Optional fields use nullable unions (FR-004). Every enumerated field (every `Literal[...]` annotation walked by `SchemaDefinition` introspection at T044) includes the escape value paired with its details field (FR-005). |
 | III. Context Economy | Prompt construction follows stable-prefix (schema + instructions) / dynamic-suffix (source document) ordering so the schema portion of the prompt is cacheable across fixture runs. |
 | IV. Subagent Isolation | Not applicable — this kata runs a single agent invocation per extraction. |
 | V. Test-First Kata Delivery (NN) | `/iikit-04-testify` will run before any production code; `tasks.md` will cite `.feature` step IDs. |
@@ -108,7 +109,7 @@ specs/005-defensive-extraction/
 
 ```text
 katas/
-  005_defensive_extraction/
+  kata_005_defensive_extraction/
     __init__.py
     models.py            # pydantic v2: ExtractedRecord, SchemaDefinition,
                          # AmbiguityMarker, FabricationMetric
@@ -118,12 +119,12 @@ katas/
                          # (shared shape with Kata 1)
     audit.py             # fabricate-rate counter over a labeled fixture
                          # (SC-001)
-    runner.py            # CLI: python -m katas.005_defensive_extraction.runner
+    runner.py            # CLI: python -m katas.kata_005_defensive_extraction.runner
     README.md            # written at /iikit-07
 
 tests/
   katas/
-    005_defensive_extraction/
+    kata_005_defensive_extraction/
       conftest.py        # fixture loader, recorded-response client,
                          # live-API toggle on LIVE_API=1
       features/          # Gherkin produced by /iikit-04-testify
@@ -142,6 +143,7 @@ tests/
         contradictory/         source.txt, expected.json
         empty_source/          source.txt, expected.json
         out_of_enum_value/     source.txt, expected.json
+        mixed_language/        source.txt, expected.json
 ```
 
 **Structure Decision**: Single-project layout, sibling to Kata 1 per

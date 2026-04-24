@@ -37,14 +37,14 @@ mandatory *why* comments + README).
 module (`normalizer.py`) containing a `dict[str, str]` constant — extending
 coverage is a data change only (FR-003, US3-AS2).
 **Testing**: pytest + pytest-bdd for acceptance; plain pytest for unit tests.
-Recorded JSON fixtures under `tests/katas/003_posttool_normalize/fixtures/`
+Recorded JSON fixtures under `tests/katas/kata_003_posttool_normalize/fixtures/`
 cover representative legacy payloads (happy, malformed, unknown code, empty,
 oversized, nested). Live API is gated behind `LIVE_API=1` per shared baseline
 and is **not** required to exercise the hook — the hook operates on tool
 results, which are fixture-injectable.
 **Target Platform**: Developer local (macOS/Linux) + GitHub Actions Linux.
 **Project Type**: Single project — one kata package under
-`katas/003_posttool_normalize/` with mirrored tests.
+`katas/kata_003_posttool_normalize/` with mirrored tests.
 **Performance Goals**: Normalize a fixture payload in <50 ms on dev hardware.
 Not latency-bound; assertion is bounded memory on oversized input (Edge: very
 large) — streaming iter-parse where needed.
@@ -59,7 +59,9 @@ large) — streaming iter-parse where needed.
   the `unknown` marker shape.
 - SC-001: token count of normalized ≤ 30% of raw (i.e. ≥70% reduction)
   averaged over the fixture corpus. Measured with the `anthropic` tokenizer
-  when available and a documented stub counter otherwise (see D-006).
+  when available; the documented fallback is a deterministic whitespace-split
+  token count (`len(text.split())`) used identically on baseline and
+  normalized payloads when the `anthropic` tokenizer is unavailable (see D-006).
 - SC-004: 100% of raw payloads retrievable byte-for-byte from the audit log.
   Enforced by a test that SHA-256s every raw fixture, runs it through the
   hook, and reopens `audit.jsonl` to assert the stored raw matches.
@@ -109,7 +111,7 @@ specs/003-posttool-normalize/
 
 ```text
 katas/
-  003_posttool_normalize/
+  kata_003_posttool_normalize/
     __init__.py
     hook.py               # PostToolUseHook protocol + LegacyDBNormalizer impl
     normalizer.py         # STATUS_MAPPING: dict[str, str] + normalize() pure fn
@@ -122,7 +124,7 @@ katas/
 
 tests/
   katas/
-    003_posttool_normalize/
+    kata_003_posttool_normalize/
       conftest.py         # fixture loader, audit-log assertions, token-count harness
       features/           # Gherkin from /iikit-04-testify
         posttool_normalize.feature

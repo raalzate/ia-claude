@@ -5,6 +5,14 @@
 **Status**: Draft
 **Input**: User description: "Kata 15 — Prevent mathematical hallucinations by forcing the model to cross-audit its own internal computations against stated values in the source. Applied to an invoice-extraction scenario where the stated total must be reconciled against the sum of line items, with a conflict flag routing mismatches to human review."
 
+## Clarifications
+
+### 2026-04-24 (phase-06 analyze)
+
+- **SC-001 (numeric threshold)**: `conflict_detected` true-positive rate ≥ 95% AND true-negative rate ≥ 95% on the labeled test set. Both rates are measured independently (true-positive against the seeded-conflict partition; true-negative against the seeded-consistent partition) and both MUST clear 95% for SC-001 to pass.
+- **FR-008 (tolerance unit & default)**: Tolerance is declared in **integer cents** (non-negative `int`). Default `tolerance_cents = 1`. The unit is persisted verbatim alongside the extraction output and a single tolerance applies across the invoice; per-currency tolerance is out of scope for this kata.
+- **TS-011 defect-class scope**: Widening TS-011 to cover "structurally unparseable row beyond literal-string defects" is deferred to `/iikit-04-testify`; the existing TS-011 Scenario Outline covers the currently-declared defect tokens.
+
 ## User Stories *(mandatory)*
 
 <!--
@@ -81,7 +89,7 @@ A practitioner auditing the pipeline needs to guarantee that the extractor never
 - **FR-005**: System MUST route every record with `conflict_detected=true` to a human-review queue and MUST NOT return it as a clean extraction to downstream consumers.
 - **FR-006**: System MUST NEVER silently replace `stated_total` with `calculated_total`, nor `calculated_total` with `stated_total`, under any condition (anti-pattern defense).
 - **FR-007**: System MUST log a per-line-item calculation trace (each line's extracted amount and its contribution to the running sum) on every extraction, to satisfy Provenance & Self-Audit.
-- **FR-008**: System MUST declare and persist the tolerance value used for the conflict comparison alongside the extraction output.
+- **FR-008**: System MUST declare and persist the tolerance value used for the conflict comparison alongside the extraction output. Tolerance is declared in integer cents (non-negative `int`); default `tolerance_cents = 1` (see Clarifications).
 - **FR-009**: System MUST emit a machine-readable schema-conformant record; any extraction that cannot populate both totals MUST be flagged as a conflict rather than returned with null coerced to zero.
 - **FR-010**: System MUST preserve the sign of credit / refund / discount line items when computing `calculated_total`.
 
@@ -98,7 +106,7 @@ A practitioner auditing the pipeline needs to guarantee that the extractor never
 
 ### Measurable Outcomes
 
-- **SC-001**: `conflict_detected` accuracy is greater than or equal to the target threshold on the labeled test set (both true-positive and true-negative rates measured independently against curated consistent and conflicting invoices).
+- **SC-001**: `conflict_detected` true-positive rate ≥ 95% AND true-negative rate ≥ 95% on the labeled test set, each rate measured independently against the seeded-conflict and seeded-consistent partitions respectively (see Clarifications).
 - **SC-002**: Zero silent overwrites across the test corpus — for every record, `stated_total` equals the literal document value and `calculated_total` equals the independent recomputation, with no case of one field being substituted by the other.
 - **SC-003**: 100% of conflicts produce a traceable line-item calculation log sufficient for a human reviewer to locate the discrepancy without re-running the extraction.
 - **SC-004**: The human-review queue receives every record flagged with `conflict_detected=true`, with zero flagged records leaking to downstream "clean" consumers.

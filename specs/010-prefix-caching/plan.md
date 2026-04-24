@@ -34,7 +34,7 @@ Documentation, NN).
 - `pytest` + `pytest-bdd` — BDD runner consuming the `.feature` file
   produced by `/iikit-04-testify` (Principle V / TDD).
 **Storage**: Local filesystem only. Recorded fixtures under
-`tests/katas/010_prefix_caching/fixtures/` hold `response.usage` snapshots for
+`tests/katas/kata_010_prefix_caching/fixtures/` hold `response.usage` snapshots for
 offline runs. Live runs append per-call `CacheMetric` records to
 `runs/<session-id>/metrics.jsonl` (gitignored).
 **Testing**: pytest + pytest-bdd for acceptance scenarios; plain pytest for
@@ -43,15 +43,21 @@ runs are the default and MUST be green before any `LIVE_API=1` run.
 **Target Platform**: Developer local machine (macOS/Linux) and GitHub Actions
 CI (Linux). CI runs the offline suite only.
 **Project Type**: Single project — one kata module at
-`katas/010_prefix_caching/` with tests under `tests/katas/010_prefix_caching/`.
+`katas/kata_010_prefix_caching/` with tests under `tests/katas/kata_010_prefix_caching/`.
 **Performance Goals**: Not latency-bound. Offline acceptance run completes in
 under 5 seconds. Live `LIVE_API=1` measurement harness issues N ≥ 3 sequential
 calls with a shared static prefix and reports cache-hit rate within the
 provider's ephemeral-cache TTL window.
 **Constraints**:
-- Static blocks below the API's minimum cacheable size MUST NOT carry
+- Static blocks below the API's minimum cacheable size (**1024 tokens** per
+  Anthropic's documented ephemeral-cache minimum) MUST NOT carry
   `cache_control`; the composer MUST emit a typed warning in that case
   (FR-007).
+- Ephemeral cache entries live for **5 minutes** (declared TTL window); runs
+  asserted against SC-001 / SC-002 thresholds execute within this window of
+  the cold-start warmup call.
+- A composed request MUST carry **≤ 4 cache breakpoints** (Anthropic per-
+  request budget); the block builders enforce the count at composition time.
 - The composer MUST refuse to emit a prompt where dynamic values appear
   before, inside, or interleaved with static blocks — rejection is at
   composition time, not at runtime inspection (FR-001, FR-003, edge case
@@ -106,7 +112,7 @@ specs/010-prefix-caching/
 
 ```text
 katas/
-  010_prefix_caching/
+  kata_010_prefix_caching/
     __init__.py
     composer.py          # PromptComposer with static_system_block, static_context_block, dynamic_suffix_block
     blocks.py            # block builders; attaches cache_control only to static regions; min-size awareness
@@ -115,12 +121,12 @@ katas/
     mutation.py          # deliberate-mutation helper for the anti-pattern test
     client.py            # thin injectable Anthropic client wrapper (recorded-or-live)
     models.py            # pydantic models: PromptComposition, StaticPrefixRegion, DynamicSuffixRegion, CacheMetric
-    runner.py            # CLI: `python -m katas.010_prefix_caching.runner`
+    runner.py            # CLI: `python -m katas.kata_010_prefix_caching.runner`
     README.md            # kata narrative (written during /iikit-07)
 
 tests/
   katas/
-    010_prefix_caching/
+    kata_010_prefix_caching/
       conftest.py        # fixture loader, LIVE_API gate, hit-rate tolerance helpers
       features/          # Gherkin produced by /iikit-04-testify
         prefix_caching.feature

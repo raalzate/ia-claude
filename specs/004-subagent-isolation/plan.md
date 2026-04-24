@@ -5,7 +5,7 @@
 
 ## Summary
 
-Build a hub-and-spoke Python kata under `katas/004_subagent_isolation/` where a
+Build a hub-and-spoke Python kata under `katas/kata_004_subagent_isolation/` where a
 `Coordinator` owns the conversation history and delegates decomposable work to
 one or more `Subagent` instances through a `TaskSpawner` dependency. Each
 subagent runs in its own `anthropic.Anthropic().messages.create` session seeded
@@ -47,14 +47,14 @@ API runs are gated behind `LIVE_API=1`.
 **Target Platform**: Developer local machine (macOS/Linux) and GitHub Actions
 CI — no server deployment.
 **Project Type**: Single project. Kata lives at
-`katas/004_subagent_isolation/`; tests at `tests/katas/004_subagent_isolation/`.
+`katas/kata_004_subagent_isolation/`; tests at `tests/katas/kata_004_subagent_isolation/`.
 **Performance Goals**: Not latency-bound. Recorded-fixture acceptance suite
 completes in under 5 seconds locally (same target as Kata 1).
 **Constraints**:
-- `katas/004_subagent_isolation/subagent.py` MUST NOT import, reference, or
+- `katas/kata_004_subagent_isolation/subagent.py` MUST NOT import, reference, or
   read any attribute on the coordinator's history (notably
   `Coordinator._history` or equivalent). This is enforced by
-  `tests/katas/004_subagent_isolation/lint/test_no_history_leak.py`, an AST +
+  `tests/katas/kata_004_subagent_isolation/lint/test_no_history_leak.py`, an AST +
   grep test that fails the build on reintroduction (FR-002, Principle IV).
 - Any subagent output that fails `SubagentResult.model_validate_json` surfaces
   as a `SubagentResultValidationError` and halts the coordinator's
@@ -109,19 +109,19 @@ specs/004-subagent-isolation/
 
 ```text
 katas/
-  004_subagent_isolation/
+  kata_004_subagent_isolation/
     __init__.py
     coordinator.py         # Coordinator: owns history, holds TaskSpawner dep
     subagent.py            # Subagent.run(): seeds SDK call from SubtaskPayload ONLY
     task_spawner.py        # protocol + default spawner; injection point for swap test
     models.py              # pydantic: SubtaskPayload, SubagentResult, HandoffContract
     client.py              # thin injectable Anthropic client wrapper (mirrors Kata 1 D-001)
-    runner.py              # CLI: `python -m katas.004_subagent_isolation.runner`
+    runner.py              # CLI: `python -m katas.kata_004_subagent_isolation.runner`
     README.md              # kata narrative (written during /iikit-07)
 
 tests/
   katas/
-    004_subagent_isolation/
+    kata_004_subagent_isolation/
       conftest.py
       features/
         subagent_isolation.feature    # produced by /iikit-04-testify

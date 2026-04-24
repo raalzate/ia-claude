@@ -89,3 +89,7 @@ A practitioner discovers a new arcane status code emitted by the legacy source. 
 - **SC-002**: Zero raw legacy markup blocks reach model context across all runs with the hook enabled — verified by scanning every message appended to the conversation history.
 - **SC-003**: Unknown status codes surface in the normalized payload as an explicit "unknown" marker in 100% of cases, with no guessed or fabricated human-readable labels.
 - **SC-004**: The audit trail retains 100% of original tool responses, byte-for-byte recoverable, even when the normalized form delivered to the model is degraded, empty, or trimmed.
+
+## Clarifications
+
+- **SC-001 measurement shape**: The ≤30% ceiling (equivalently, ≥70% reduction) is a **corpus average**, not a per-fixture bound. Tiny or empty payloads may individually over- or undershoot the threshold; what is asserted is the mean normalized/raw token ratio across the representative fixture corpus.

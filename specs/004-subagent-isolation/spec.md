@@ -58,6 +58,7 @@ A practitioner replaces the implementation of one subagent with a different impl
 - **Extra or unexpected fields**: How does the system handle a subagent that returns additional fields beyond the declared Subagent Result schema? Such fields must be rejected or stripped according to the schema's policy, never implicitly absorbed into coordinator state.
 - **Empty task list**: What happens when the coordinator decomposes a task and the resulting subtask list is empty? The coordinator must return a defined "no-op" outcome rather than spawn zero subagents and hang, or fabricate work.
 - **Nested subagent spawning**: What happens when a subagent itself attempts to spawn further subagents? The isolation contract must apply recursively — a child subagent receives only its own scoped payload and returns its own typed result; it does not inherit the parent subagent's or the coordinator's history.
+- **Authorization handshake for nested spawning**: A parent MAY grant a nested subagent a narrower task-spawning allow-list via an explicit `SubtaskPayload.nested_spawn_authorizations` list; absence or empty list forbids nested spawn. The authorization is carried in the scoped payload itself so it is subject to the same `extra="forbid"` schema validation as every other field.
 - **Coordinator private history contains sensitive content**: What happens when the coordinator holds secrets or prior-turn context unrelated to the subtask? None of that content may cross the boundary into subagent input.
 
 ## Requirements *(mandatory)*

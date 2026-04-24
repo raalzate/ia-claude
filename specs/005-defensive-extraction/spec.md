@@ -78,7 +78,7 @@ A practitioner supplies a source document whose value for an enumerated field do
 - **FR-002**: The system MUST invoke the model with a schema-bound extraction tool and a forced tool choice that guarantees the model returns a tool call conforming to the schema (no free-text fallback).
 - **FR-003**: The system MUST mark a field as `required` only when that field is guaranteed present in every source document of the target domain.
 - **FR-004**: The system MUST declare optional fields using a nullable union type so the model can explicitly return absence, and MUST NOT declare optional fields as plain string types.
-- **FR-005**: The system MUST provide an escape enumeration option (e.g., `"other"`, `"unclear"`) on every enumerated field, and MUST pair it with a details field capable of capturing the ambiguous raw value.
+- **FR-005**: The system MUST provide an escape enumeration option (e.g., `"other"`, `"unclear"`) on every **enumerated field in the declared schema**, and MUST pair it with a details field capable of capturing the ambiguous raw value.
 - **FR-006**: The system MUST validate every model output against the declared extraction schema and MUST reject outputs that fail validation rather than silently coercing them.
 - **FR-007**: The system MUST NOT accept free-text "best guess" content for missing optional fields; any optional field without explicit evidence in the source MUST be `null`.
 - **FR-008**: The system MUST surface schema validation failures to the caller with sufficient context to audit which field failed and why (Principle VII, Provenance & Self-Audit).
@@ -96,7 +96,7 @@ A practitioner supplies a source document whose value for an enumerated field do
 
 ### Measurable Outcomes
 
-- **SC-001**: Zero fabricated values are observed across the full test corpus (no value in an extracted record lacks textual support in its source document).
+- **SC-001**: Zero fabricated values are observed across the full test corpus (no value in an extracted record lacks textual support in its source document). (Asserted on the labeled fixture corpus; the `LIVE_API=1` path is advisory.)
 - **SC-002**: 100% of extraction outputs that reach the caller are schema-valid against their declared Extraction Schema.
 - **SC-003**: 100% of ambiguous cases in the ambiguity fixture set are routed to the escape enum (with the paired details field populated) rather than forced into a concrete enumerated option.
 - **SC-004**: The null rate on absent optional fields is at least 99% across the test corpus (absent optionals are faithfully reported as `null` rather than fabricated).
