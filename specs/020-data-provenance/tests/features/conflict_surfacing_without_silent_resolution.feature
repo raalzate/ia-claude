@@ -68,3 +68,28 @@ Feature: Conflict Surfacing Without Silent Resolution
     Then the report records the set of source documents consulted
     And the report records the number of claims emitted
     And the report records the number of conflicts surfaced
+
+  @TS-021 @FR-003 @P2 @validation
+  Scenario: Conflict detection scope is numeric-token divergence within a canonical_key group only
+    Given two claims sharing the same canonical_key
+    And both claims carry string-valued fields that disagree categorically
+    And neither claim carries a numeric_token field that disagrees
+    When the aggregator inspects the canonical_key group
+    Then zero ConflictSet entries are produced for the group
+    And the aggregation_report.json artifact records a deferred_categorical_conflicts count that increments by one
+    And no silent reconciliation of the categorical disagreement occurs
+
+  @TS-022 @FR-003 @P2 @validation
+  Scenario Outline: Numeric-token divergence within a canonical_key group raises a conflict
+    Given two claims sharing canonical_key "<key>"
+    And claim_a carries numeric_token "<a>"
+    And claim_b carries numeric_token "<b>"
+    When the aggregator inspects the canonical_key group
+    Then exactly one ConflictSet is produced for "<key>"
+    And the ConflictSet preserves claim_a and claim_b verbatim
+
+    Examples:
+      | key          | a       | b       |
+      | total_usd    | 1250.00 | 1275.50 |
+      | count        | 12      | 14      |
+      | rate_bps     | 15      | 25      |

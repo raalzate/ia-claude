@@ -10,7 +10,7 @@
 ### 2026-04-24 (phase-06 analyze)
 
 - **SC-003 (recall threshold)**: Conflict detection recall on the seeded conflict set MUST be `100%` — every planted contradiction MUST surface as a `conflict_detected=true` record (consistent with SC-002's no-silent-drops discipline). Missing even one seeded contradiction is a SC-003 failure.
-- **FR-003 (conflict-detection scope)**: FR-003 covers numeric-token divergence within a `canonical_key` group (the aggregator's supported detection path at T045). Categorical-contradiction detection (e.g., two sources asserting different policy owners) is out of scope for this kata and is deferred to a later kata / issue.
+- **FR-003 (conflict-detection scope)**: FR-003 covers numeric-token divergence within a `canonical_key` group (the aggregator's supported detection path at T045). Categorical-contradiction detection (e.g., two sources asserting different policy owners) is out of scope for this kata and is deferred to a later kata / issue. RESOLVED (2026-04-24) — `/iikit-04-testify` re-run pinned the numeric-only scope with TS-021 (categorical-only disagreements produce zero ConflictSets and increment `deferred_categorical_conflicts`) and TS-022 (numeric-token divergence across `canonical_key` groups reliably raises a conflict). Assertion-integrity hash refreshed.
 
 ## User Stories *(mandatory)*
 

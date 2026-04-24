@@ -44,3 +44,20 @@ Feature: Anti-Pattern Demonstration of Rule Buried in the Middle
     Then the payload passes schema validation
     And min_delta_pct is present and at least 20
     And compliance_target_pct is present and at most 100
+
+  @TS-015 @FR-005 @P2 @validation
+  Scenario: Edit-time regression that buries a previously edge-placed rule is blocked at render
+    Given a PromptLayout previously rendered with label "edge_placed" whose critical_rule is anchored at both edges
+    And an edit that relocates the critical_rule out of primacy_region and latency_region into the mid-body
+    When the PromptBuilder re-renders the layout after the edit
+    Then construction raises an EdgePlacementViolation with regression_kind "mid_burying"
+    And no PromptLayout instance is returned
+    And the offending rule_id is recorded on the exception for audit
+
+  @TS-016 @FR-004 @FR-005 @P2 @acceptance
+  Scenario: Render-time regression detection carries the offending rule id and violation reason
+    Given a layout edit that would move a declared critical rule out of its edge region
+    When the render-time regression detector inspects the candidate PromptLayout
+    Then a structured RegressionFinding is logged
+    And the finding carries rule_id, previous_position, candidate_position equal to "mid", and detected_at equal to "render"
+    And the turn is refused before dispatch

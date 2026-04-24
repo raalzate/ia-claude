@@ -71,3 +71,21 @@ Feature: Conflicting Invoice Routes to Human Review
     When the queue entry is validated against contracts/review-queue-entry.schema.json
     Then the entry passes schema validation
     And the entry references a conflict_record_id that resolves to a conflict-record.schema.json record
+
+  @TS-021 @FR-009 @US-002 @P2 @acceptance
+  Scenario Outline: Structurally unparseable rows produce conflicts beyond literal-string defects
+    Given an invoice line with structural defect "<defect>"
+    When the extractor runs
+    Then conflict_detected is true
+    And cannot_populate_both_totals is true
+    And calculated_total is NOT silently coerced to zero
+    And the record is routed to the human-review queue
+
+    Examples:
+      | defect                                            |
+      | missing quantity field                            |
+      | missing unit_price field                          |
+      | quantity present but typed as non-numeric         |
+      | unit_price present but typed as non-numeric       |
+      | line item missing line_total and all derivable inputs |
+      | line item with negative quantity and no signed-credit declaration |

@@ -1,8 +1,8 @@
 {
   "testify": {
-    "assertion_hash": "077a89bb79e7c899f8bbf557678557de78399e886ca5b260ee93e131662fa28c",
-    "generated_at": "2026-04-23T21:37:12Z",
-    "features_dir": "/Users/raul.alzate/Documents/maestria/maestria/project/ia-claude/specs/011-softmax-mitigation//tests/features",
+    "assertion_hash": "c31a82a190d4b5c59f5c585b5c6daa308f13152667e6a1774443afc9fd243480",
+    "generated_at": "2026-04-24T23:15:16Z",
+    "features_dir": "specs/011-softmax-mitigation/tests/features",
     "file_count": 3
   }
 }

@@ -48,3 +48,32 @@ Feature: Chained Audit of a Multi-File Pull Request
     When the file is validated against contracts/intermediate-payload.schema.json
     Then validation passes
     And the payload carries stage_name, produced_by_task, produced_at, and records fields
+
+  @TS-011 @FR-003 @FR-008 @P1 @acceptance
+  Scenario: Conflicting per-file findings surface in the integration report rather than silent reconciliation
+    Given two per-file reports that assert contradictory facts about the same cross-file symbol
+    When the integration stage runs
+    Then the integration report contains an IntegrationConflict entry naming the symbol
+    And the entry lists both source files by path
+    And the entry preserves each per-file claim verbatim under claim_a and claim_b
+    And the integration report does NOT coerce the claims into a single reconciled value
+
+  @TS-012 @FR-003 @FR-008 @P1 @validation
+  Scenario: Silent reconciliation of conflicting findings is rejected at the integration boundary
+    Given per-file reports whose findings conflict on the same symbol
+    When an IntegrationFinding is constructed without a matching IntegrationConflict entry
+    Then construction raises a ConflictingFindingsNotSurfaced exception
+    And no FinalReport is persisted
+
+  @TS-013 @FR-001 @FR-003 @P1 @acceptance
+  Scenario Outline: Small-N corpora run the chain with an explicit integration-bypass note
+    Given a corpus of "<n>" input files staged for audit
+    When the chain runs to completion
+    Then the artifact set contains exactly "<n>" per-file reports
+    And the FinalReport carries a note equal to "integration-bypass: N<=2"
+    And the FinalReport lists zero inter_module_finding entries
+
+    Examples:
+      | n |
+      | 1 |
+      | 2 |

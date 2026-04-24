@@ -1,8 +1,8 @@
 {
   "testify": {
-    "assertion_hash": "0db5dbe93b3779462e7c57ca442063ca9319559bbbda214b8deab836842f4c0e",
-    "generated_at": "2026-04-23T21:37:12Z",
-    "features_dir": "/Users/raul.alzate/Documents/maestria/maestria/project/ia-claude/specs/012-prompt-chaining//tests/features",
+    "assertion_hash": "3e204887a06e3716d130f4ea536a08c603e9a4e366438e2370c75be39a630c0c",
+    "generated_at": "2026-04-24T23:16:00Z",
+    "features_dir": "specs/012-prompt-chaining/tests/features",
     "file_count": 3
   }
 }

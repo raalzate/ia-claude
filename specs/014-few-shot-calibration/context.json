@@ -1,8 +1,8 @@
 {
   "testify": {
-    "assertion_hash": "01b889ab97b2b8e9b6fd26a5d0c01ee40d95342fab0be05fba56b2665bd6a044",
-    "generated_at": "2026-04-23T21:37:12Z",
-    "features_dir": "/Users/raul.alzate/Documents/maestria/maestria/project/ia-claude/specs/014-few-shot-calibration//tests/features",
+    "assertion_hash": "8ba5ac37f094fb5007715f7ee4784386d4890e5cd75565098d2022906e002927",
+    "generated_at": "2026-04-24T23:16:44Z",
+    "features_dir": "specs/014-few-shot-calibration/tests/features",
     "file_count": 4
   }
 }

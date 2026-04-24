@@ -11,7 +11,7 @@
 
 - **FR-001 (zero-shot precondition enforcement)**: The "≥ 20% zero-shot inconsistency on the edge-case corpus" precondition is enforced by a runner-level gate. When the measured zero-shot inconsistency rate falls below 20%, calibration is skipped with a labeled `CalibrationNotIndicated` reason; when ≥ 20%, calibration proceeds. The gate is implemented in the harness (see tasks.md T027a, tasks.md T029a) and stamped on the `CalibrationReport`.
 - **FR-002 (coverage predicate)**: "Covers representative edge cases" is defined by the `validate_coverage(set_id, task_id)` predicate: the active `ExampleSet` MUST contain at least one `ExamplePair` for every edge-case class declared in the task schema's `edge_case_classes` list. Missing any declared class raises `MissingCoverageError` before the first API call. Predicate contract is declared in plan.md §Technical Context.
-- **Edge-case "leakage (verbatim canonical input/output)"**: BDD scenario coverage for the leakage-candidate flagger is deferred to `/iikit-04-testify`; the runtime flag is already exercised by the unit test at `tests/katas/014_few_shot_calibration/unit/test_size_guard_and_leakage_flag.py` (T063).
+- **Edge-case "leakage (verbatim canonical input/output)"**: RESOLVED (2026-04-24) — `/iikit-04-testify` re-run added TS-016 (verbatim input leakage), TS-017 (verbatim output leakage, non-fatal), and TS-018 (canonical-normalization alignment with contradiction detector) to `tests/features/example_set_invariants_and_contradictions.feature`. Assertion-integrity hash refreshed. Runtime flag continues to be exercised by the unit test at `tests/katas/014_few_shot_calibration/unit/test_size_guard_and_leakage_flag.py` (T063).
 
 ## User Stories *(mandatory)*
 

@@ -11,7 +11,7 @@
 
 - **SC-001 (numeric threshold)**: `conflict_detected` true-positive rate ≥ 95% AND true-negative rate ≥ 95% on the labeled test set. Both rates are measured independently (true-positive against the seeded-conflict partition; true-negative against the seeded-consistent partition) and both MUST clear 95% for SC-001 to pass.
 - **FR-008 (tolerance unit & default)**: Tolerance is declared in **integer cents** (non-negative `int`). Default `tolerance_cents = 1`. The unit is persisted verbatim alongside the extraction output and a single tolerance applies across the invoice; per-currency tolerance is out of scope for this kata.
-- **TS-011 defect-class scope**: Widening TS-011 to cover "structurally unparseable row beyond literal-string defects" is deferred to `/iikit-04-testify`; the existing TS-011 Scenario Outline covers the currently-declared defect tokens.
+- **TS-011 defect-class scope**: RESOLVED (2026-04-24) — `/iikit-04-testify` re-run added TS-021 (Scenario Outline) to `tests/features/conflicting_invoice_routes_to_review.feature` covering structural defects beyond literal-string tokens: missing quantity, missing unit_price, non-numeric quantity/unit_price, missing line_total with no derivable inputs, negative quantity without signed-credit declaration. All rows assert `conflict_detected=true`, `cannot_populate_both_totals=true`, no silent zero coercion, and routing to the review queue. Assertion-integrity hash refreshed.
 
 ## User Stories *(mandatory)*
 

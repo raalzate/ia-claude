@@ -10,7 +10,7 @@
 ### 2026-04-24 (phase-06 analyze)
 
 - **Edge case — very few files (N ≤ 2)**: the chain still runs. The per-file stage emits one `PerFileReport` per file as usual. The integration stage produces a pass-through `FinalReport` carrying a note `"integration-bypass: N<=2"` and no inter-module findings when fewer than two reports could plausibly interact. Stage-boundary schema validation and audit persistence proceed normally.
-- **F-003 cross-file conflict surfacing scenario**: SKIPPED — adding a scenario that asserts conflicting per-file findings surface rather than silently reconcile during integration requires `/iikit-04-testify` re-run to regenerate `.feature` files. Deferred.
+- **F-003 cross-file conflict surfacing scenario**: RESOLVED (2026-04-24) — `/iikit-04-testify` re-run added TS-011 (IntegrationConflict entry preserves both claims verbatim), TS-012 (`ConflictingFindingsNotSurfaced` exception when integration tries silent reconciliation), and TS-013 (small-N integration-bypass note) to `tests/features/chained_multi_file_audit.feature`. Assertion-integrity hash refreshed.
 
 ## User Stories *(mandatory)*
 

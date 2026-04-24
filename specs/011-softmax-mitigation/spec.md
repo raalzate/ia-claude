@@ -11,7 +11,7 @@
 
 - **FR-002 / SC-003 trigger band**: the proactive-compaction band is the half-open interval `[0.55, 0.60)`. The trigger fires at `usage_fraction >= 0.55`; `CompactionEvent.fired_at_usage_fraction` MUST lie in `[0.55, 0.60)`; reaching `usage_fraction > 0.60` without a prior `CompactionEvent` is a fail-closed condition.
 - **SC-001 adversarial batch size**: the adversarial batch size is pinned at `N=30` trials per layout (matching `plan.md` Performance Goals and `tasks.md` T049/T052), so the ≥95% rate is reproducible.
-- **F-003 edit-time regression scenario (anti-pattern slips back in)**: SKIPPED — adding a render-time regression scenario for the "Anti-pattern slips back in" edge case requires `/iikit-04-testify` re-run to regenerate `.feature` files. Deferred.
+- **F-003 edit-time regression scenario (anti-pattern slips back in)**: RESOLVED (2026-04-24) — `/iikit-04-testify` re-run added TS-015 and TS-016 to `tests/features/antipattern_mid_buried_rule.feature`: render-time detection raises `EdgePlacementViolation` with `regression_kind="mid_burying"` and logs a `RegressionFinding` carrying `rule_id`, `previous_position`, `candidate_position`, `detected_at`. Assertion-integrity hash refreshed.
 
 ## User Stories *(mandatory)*
 
