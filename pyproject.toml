@@ -1,0 +1,119 @@
+# Workshop-wide Python project config.
+# Decided lint + doc-coverage stack (Constitution sync-impact follow-up):
+#   - ruff   -> lint + format (replaces black/flake8/isort).
+#   - interrogate -> docstring coverage (Principle VIII enforcement).
+# Both run locally (CONTRIBUTING.md) and in CI.
+
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ia-claude"
+version = "0.1.0"
+description = "Anthropic agent-engineering kata workshop (20 katas)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+
+dependencies = [
+    "anthropic>=0.40",
+    "pydantic>=2.7",
+    "jsonschema>=4.21",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-bdd>=7.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "interrogate>=1.7",
+]
+
+[tool.hatch.build.targets.wheel]
+# `katas/` is a namespace package containing one sub-package per kata
+# (kata_001_agentic_loop, kata_002_pretool_guardrails, …). Hatch picks up
+# anything that exists at build time.
+packages = ["katas"]
+
+# ---------------------------------------------------------------------------
+# ruff — lint + format
+# Single source of truth for style; black/flake8/isort intentionally absent.
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [
+    "runs",                # gitignored kata run artifacts
+    "tests/fixtures",      # recorded API responses, never lint
+    ".tessl",              # vendored tile content
+    "specs/_templates",    # markdown-only templates
+]
+
+[tool.ruff.lint]
+# E,F: pycodestyle / pyflakes.
+# I:   import order (replaces isort).
+# B:   bugbear — catches common Python footguns.
+# UP:  pyupgrade — modern syntax.
+# D:   pydocstyle — docstring presence/format (Principle VIII).
+# PL:  pylint subset — pulls in pieces that catch determinism bugs.
+select = ["E", "F", "I", "B", "UP", "D", "PL"]
+
+ignore = [
+    "D203",   # one-blank-line-before-class — conflicts with D211
+    "D213",   # multi-line summary on second line — conflicts with D212
+    "PLR0913", # too-many-arguments — kata loops legitimately take 6+
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: relax docstring rules; assertions speak for themselves.
+"tests/**" = ["D"]
+# Schema modules: pydantic models often re-export field-only classes
+# without docstrings on the class itself.
+"**/models.py" = ["D101", "D102"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+# ---------------------------------------------------------------------------
+# interrogate — docstring coverage (Principle VIII gate)
+# Fail under 90% across the kata code; tests are excluded.
+# ---------------------------------------------------------------------------
+[tool.interrogate]
+fail-under = 90
+exclude = ["tests", "specs", ".tessl", "runs"]
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+ignore-private = false
+ignore-semiprivate = false
+ignore-property-decorators = true
+ignore-module = false
+ignore-nested-functions = false
+ignore-nested-classes = true
+ignore-setters = true
+verbose = 1
+quiet = false
+color = true
+
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+]
+markers = [
+    "live: hits the real Anthropic API; off by default",
+    "slow: longer than 5s on the CI runner",
+]

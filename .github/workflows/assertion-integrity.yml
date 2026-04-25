@@ -1,0 +1,61 @@
+name: assertion-integrity
+
+# Server-side enforcement of Constitution Principle V (Test-First Kata
+# Delivery, NON-NEGOTIABLE). Pre-commit hooks can be bypassed locally
+# (--no-verify, plumbing tricks); CI cannot. Every push and PR runs
+# verify-assertion-integrity.sh against the working tree to catch
+# tampered assertions or missing hashes before merge.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "specs/**"
+      - ".tessl/tiles/tessl-labs/intent-integrity-kit/**"
+      - ".github/workflows/assertion-integrity.yml"
+  push:
+    branches: [main]
+    paths:
+      - "specs/**"
+      - ".tessl/tiles/tessl-labs/intent-integrity-kit/**"
+
+jobs:
+  verify-hashes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout (with full history for git notes)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Pull git notes so the verify script can reach
+          # refs/notes/iikit-assertions when needed.
+          fetch-tags: true
+
+      - name: Fetch git notes (refs/notes/iikit-assertions)
+        run: |
+          git fetch origin "refs/notes/*:refs/notes/*" || true
+
+      - name: Install dependencies (jq, sha256sum)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq coreutils
+
+      - name: Verify assertion integrity
+        run: |
+          set -euo pipefail
+          script=".tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/verify-assertion-integrity.sh"
+          if [[ ! -x "$script" ]]; then
+            echo "::error::verify-assertion-integrity.sh missing or non-executable at $script"
+            exit 1
+          fi
+          bash "$script" --json --project-root "$GITHUB_WORKSPACE" | tee assertion-report.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assertion-integrity-report
+          path: assertion-report.json
+          if-no-files-found: ignore
+          retention-days: 30
