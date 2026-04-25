@@ -21,7 +21,7 @@ makes the lint test fail.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from katas.kata_001_agentic_loop.client import MessagesClient, RawResponse
@@ -35,7 +35,6 @@ from katas.kata_001_agentic_loop.models import (
 )
 from katas.kata_001_agentic_loop.session import RuntimeSession
 from katas.kata_001_agentic_loop.tools import MalformedToolUse
-
 
 # Why a Set, not a list, of recognized literal values: O(1) membership check
 # without the `in <string>` anti-pattern catching us out — this is a Set of
@@ -57,9 +56,7 @@ def _classify(stop_reason: str | None) -> StopSignal | UnhandledStopSignal:
         return UnhandledStopSignal(raw_value=None, reason_label="absent_signal")
     # Set membership on the recognized set is structural, not text-search.
     if stop_reason not in _RECOGNIZED_SIGNALS:
-        return UnhandledStopSignal(
-            raw_value=stop_reason, reason_label="unhandled_signal"
-        )
+        return UnhandledStopSignal(raw_value=stop_reason, reason_label="unhandled_signal")
     # Cast: stop_reason is now narrowed by structure to one of the literals.
     return stop_reason  # type: ignore[return-value]
 
@@ -122,7 +119,7 @@ def _emit(
         EventRecord(
             session_id=session.session_id,
             iteration=iteration,
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             stop_signal=signal_str,
             branch_taken=branch,  # type: ignore[arg-type]
             tool_name=tool_name,
@@ -253,9 +250,7 @@ def run(
     _emit(
         session,
         iteration=max_iterations,
-        stop_signal=UnhandledStopSignal(
-            raw_value=None, reason_label="unhandled_signal"
-        ),
+        stop_signal=UnhandledStopSignal(raw_value=None, reason_label="unhandled_signal"),
         branch="halt_unhandled",
         termination_cause="tool_error_unrecoverable",
     )

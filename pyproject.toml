@@ -67,11 +67,17 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Tests: relax docstring rules; assertions speak for themselves.
-"tests/**" = ["D"]
+# Tests: relax docstring rules and "magic value" complaints; assertions
+# speak for themselves and literal counts (e.g. `iterations == 2`) are the
+# whole point of acceptance tests.
+"tests/**" = ["D", "PLR2004", "PLC0415"]
 # Schema modules: pydantic models often re-export field-only classes
 # without docstrings on the class itself.
 "**/models.py" = ["D101", "D102"]
+# loop.py uses an explicit return-per-branch switch (Constitution Principle I
+# — every stop_signal terminates with a labeled cause). Collapsing returns
+# into a dispatch dict would obscure the structural exhaustiveness.
+"**/loop.py" = ["PLR0911"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

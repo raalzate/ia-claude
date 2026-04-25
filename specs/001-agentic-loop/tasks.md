@@ -113,16 +113,16 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T040 [P] Write `katas/kata_001_agentic_loop/README.md` with: kata objective, architecture walkthrough (CLI → Loop → Tool Registry → Event Log → Fixtures/SDK), anti-pattern defense explanation (how prose matching is structurally impossible here), run instructions mirroring `quickstart.md`, and the Principle VIII reflection section answering the two reflection prompts from `quickstart.md`
-- [ ] T041 [P] Add module-level docstrings to each of `katas/kata_001_agentic_loop/loop.py`, `client.py`, `tools.py`, `events.py`, `models.py`, `runner.py`, `replay.py` explaining the module's role in the signal-driven loop
-- [ ] T042 [P] Add why-comments (per Constitution Principle VIII) on every non-trivial function across `katas/kata_001_agentic_loop/*.py` — each comment must tie the code choice back to the kata objective (deterministic signal-driven control) rather than describing *what* the code does
-- [ ] T043 [P] Verify `specs/001-agentic-loop/quickstart.md` usage walkthrough is accurate against the final file layout; update paths or commands if drift was introduced during implementation
-- [ ] T044 Run `quickstart.md` end-to-end: `pytest tests/katas/kata_001_agentic_loop -v` against fixtures, then optional `LIVE_API=1 python -m katas.kata_001_agentic_loop.runner ...` smoke run; record both outputs as part of PR evidence
-- [ ] T045 [P] Add a "Reproducibility" section to `katas/kata_001_agentic_loop/README.md` documenting how `runs/<session-id>/events.jsonl` is the single source of truth, how `replay.py::reconstruct_trajectory` reads it, and how the SC-007 byte-identical diff is produced
-- [ ] T046 [P] Run `ruff check katas/kata_001_agentic_loop tests/katas/kata_001_agentic_loop` and `black --check` over the same paths; fix any findings
-- [ ] T047 [P] Produce a coverage report (`pytest --cov=katas.kata_001_agentic_loop`) and archive it at `runs/coverage/001_agentic_loop.txt`; target ≥ 90% line coverage on `loop.py`
-- [ ] T048 Final self-audit: read the emitted `events.jsonl` from the happy-path run and confirm it satisfies SC-001, SC-002, SC-003, SC-005, SC-007, SC-008 — record the check in the PR description
-- [ ] T049 [US1] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_history_replay_order.py` asserting that replay from the recorded conversation history reproduces the live run's stop-signal + branch-taken sequence in the same order (FR-010); input is a `history.json` captured from a happy-path run, expected output is the `stop_signal`/`branch_taken` column slice of its `events.jsonl`
+- [x] T040 [P] Write `katas/kata_001_agentic_loop/README.md` with: kata objective, architecture walkthrough (CLI → Loop → Tool Registry → Event Log → Fixtures/SDK), anti-pattern defense explanation (how prose matching is structurally impossible here), run instructions mirroring `quickstart.md`, and the Principle VIII reflection section answering the two reflection prompts from `quickstart.md`
+- [x] T041 [P] Add module-level docstrings to each of `katas/kata_001_agentic_loop/loop.py`, `client.py`, `tools.py`, `events.py`, `models.py`, `runner.py`, `replay.py` explaining the module's role in the signal-driven loop
+- [x] T042 [P] Add why-comments (per Constitution Principle VIII) on every non-trivial function across `katas/kata_001_agentic_loop/*.py` — each comment must tie the code choice back to the kata objective (deterministic signal-driven control) rather than describing *what* the code does
+- [x] T043 [P] Verify `specs/001-agentic-loop/quickstart.md` usage walkthrough is accurate against the final file layout; update paths or commands if drift was introduced during implementation
+- [x] T044 Run `quickstart.md` end-to-end: `pytest tests/katas/kata_001_agentic_loop -v` against fixtures, then optional `LIVE_API=1 python -m katas.kata_001_agentic_loop.runner ...` smoke run; record both outputs as part of PR evidence
+- [x] T045 [P] Add a "Reproducibility" section to `katas/kata_001_agentic_loop/README.md` documenting how `runs/<session-id>/events.jsonl` is the single source of truth, how `replay.py::reconstruct_trajectory` reads it, and how the SC-007 byte-identical diff is produced
+- [x] T046 [P] Run `ruff check katas/kata_001_agentic_loop tests/katas/kata_001_agentic_loop` and `black --check` over the same paths; fix any findings
+- [x] T047 [P] Produce a coverage report (`pytest --cov=katas.kata_001_agentic_loop`) and archive it at `runs/coverage/001_agentic_loop.txt`; target ≥ 90% line coverage on `loop.py`
+- [x] T048 Final self-audit: read the emitted `events.jsonl` from the happy-path run and confirm it satisfies SC-001, SC-002, SC-003, SC-005, SC-007, SC-008 — record the check in the PR description
+- [x] T049 [US1] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_history_replay_order.py` asserting that replay from the recorded conversation history reproduces the live run's stop-signal + branch-taken sequence in the same order (FR-010); input is a `history.json` captured from a happy-path run, expected output is the `stop_signal`/`branch_taken` column slice of its `events.jsonl`
 
 ---
 

@@ -22,9 +22,7 @@ from katas.kata_001_agentic_loop.session import RuntimeSession
 from katas.kata_001_agentic_loop.tools import ToolRegistry
 
 FEATURE_FILE = (
-    Path(__file__).resolve().parents[1]
-    / "features"
-    / "antipattern_prose_defense.feature"
+    Path(__file__).resolve().parents[1] / "features" / "antipattern_prose_defense.feature"
 )
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "fixtures"
 
@@ -47,6 +45,7 @@ def registry() -> ToolRegistry:
         ),
         handler=lambda payload: {"temp_c": 18, "city": payload["city"]},
     )
+
     # Why we register a handler that raises: the tool_error fixture invokes
     # `explode`. FR-007 says the loop wraps the failure as a structured
     # ToolResult and keeps going.
@@ -134,9 +133,7 @@ def given_iteration_completed(state):
 
 def _drive(state) -> None:
     client = RecordedClient(FIXTURES_DIR / f"{state['fixture_name']}.json")
-    state["result"] = run(
-        session=state["session"], client=client, initial_user_message="hi"
-    )
+    state["result"] = run(session=state["session"], client=client, initial_user_message="hi")
     state["session"].close(termination=state["result"])
 
 
@@ -184,10 +181,7 @@ def then_loop_continues_iter(state):
 @then("the event log shows zero early exits attributable to text matching")
 def then_zero_early_exits(state):
     records = _records(state)
-    early_exits = [
-        r for r in records[:-1]
-        if r.get("termination_cause") is not None
-    ]
+    early_exits = [r for r in records[:-1] if r.get("termination_cause") is not None]
     assert early_exits == []
 
 
@@ -228,10 +222,7 @@ def then_structured_failure(state):
         content = entry.get("content")
         if isinstance(content, list):
             for block in content:
-                if (
-                    block.get("type") == "tool_result"
-                    and block.get("is_error") is True
-                ):
+                if block.get("type") == "tool_result" and block.get("is_error") is True:
                     found_error = True
     assert found_error, "expected a tool_result block with is_error=True"
 
@@ -240,8 +231,7 @@ def then_structured_failure(state):
 def then_event_records_failure(state):
     records = _records(state)
     assert any(
-        r["branch_taken"] == "tool_dispatch" and r["tool_outcome"] == "error"
-        for r in records
+        r["branch_taken"] == "tool_dispatch" and r["tool_outcome"] == "error" for r in records
     )
 
 

@@ -9,13 +9,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from katas.kata_001_agentic_loop.client import RecordedClient
 from katas.kata_001_agentic_loop.models import ToolDefinition
 from katas.kata_001_agentic_loop.session import RuntimeSession
 from katas.kata_001_agentic_loop.tools import ToolRegistry
-
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 
@@ -83,8 +80,7 @@ def test_tool_use_dispatches_then_continues(tmp_path) -> None:
 
     records = _read_jsonl(session.event_log.path)
     assert any(
-        r["branch_taken"] == "tool_dispatch" and r["tool_name"] == "get_weather"
-        for r in records
+        r["branch_taken"] == "tool_dispatch" and r["tool_name"] == "get_weather" for r in records
     )
 
 

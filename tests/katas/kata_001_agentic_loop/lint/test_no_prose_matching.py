@@ -17,12 +17,7 @@ from pathlib import Path
 
 import pytest
 
-LOOP_PATH = (
-    Path(__file__).resolve().parents[4]
-    / "katas"
-    / "kata_001_agentic_loop"
-    / "loop.py"
-)
+LOOP_PATH = Path(__file__).resolve().parents[4] / "katas" / "kata_001_agentic_loop" / "loop.py"
 
 FORBIDDEN_IMPORTS = {"re"}
 FORBIDDEN_METHOD_NAMES = {"find", "rfind", "index", "search", "match", "fullmatch"}
@@ -71,17 +66,21 @@ def test_loop_does_not_use_in_against_string_literal() -> None:
     for node in ast.walk(module):
         if isinstance(node, ast.Compare):
             for op, comparator in zip(node.ops, node.comparators, strict=False):
-                if isinstance(op, (ast.In, ast.NotIn)) and isinstance(
-                    node.left, ast.Constant
-                ) and isinstance(node.left.value, str):
+                if (
+                    isinstance(op, (ast.In, ast.NotIn))
+                    and isinstance(node.left, ast.Constant)
+                    and isinstance(node.left.value, str)
+                ):
                     pytest.fail(
                         f"loop.py uses string-literal `in` membership at line "
                         f"{node.lineno}: {ast.unparse(node)}"
                     )
                 # Also catch the reverse: `something in "literal"`.
-                if isinstance(op, (ast.In, ast.NotIn)) and isinstance(
-                    comparator, ast.Constant
-                ) and isinstance(comparator.value, str):
+                if (
+                    isinstance(op, (ast.In, ast.NotIn))
+                    and isinstance(comparator, ast.Constant)
+                    and isinstance(comparator.value, str)
+                ):
                     pytest.fail(
                         f"loop.py uses string-literal `in` membership at line "
                         f"{node.lineno}: {ast.unparse(node)}"

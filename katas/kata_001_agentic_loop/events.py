@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from katas.kata_001_agentic_loop.models import EventRecord
@@ -31,6 +31,7 @@ class EventLog:
     """
 
     def __init__(self, path: str | Path) -> None:
+        """Open `path` in append mode, creating parent directories as needed."""
         self._path = Path(path)
         self._path.parent.mkdir(parents=True, exist_ok=True)
         # Why "a" + line-buffering: append-only is a hard requirement
@@ -40,6 +41,7 @@ class EventLog:
 
     @property
     def path(self) -> Path:
+        """Filesystem path of the JSONL log."""
         return self._path
 
     def emit(self, record: EventRecord) -> None:
@@ -54,9 +56,9 @@ class EventLog:
         # default ISO-8601 form drops microseconds when zero, making byte
         # diffs noisy. Stable formatting trumps default brevity here.
         if isinstance(record.timestamp, datetime):
-            payload["timestamp"] = record.timestamp.astimezone(
-                timezone.utc
-            ).isoformat(timespec="microseconds")
+            payload["timestamp"] = record.timestamp.astimezone(UTC).isoformat(
+                timespec="microseconds"
+            )
         line = json.dumps(payload, sort_keys=True, ensure_ascii=False)
         self._fh.write(line + "\n")
 
@@ -73,10 +75,12 @@ class EventLog:
         finally:
             self._fh.close()
 
-    def __enter__(self) -> "EventLog":
+    def __enter__(self) -> EventLog:
+        """Return self for use in a `with` block."""
         return self
 
     def __exit__(self, *exc_info: object) -> None:
+        """Flush and close on context exit."""
         self.close()
 
 

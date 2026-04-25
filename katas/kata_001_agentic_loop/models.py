@@ -13,7 +13,7 @@ also update those documents (Principle VIII — docs and code move together).
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, Literal
 from uuid import uuid4
 
@@ -103,7 +103,7 @@ class ToolResult(BaseModel):
     error_category: str | None = None
 
     @model_validator(mode="after")
-    def _check_error_category(self) -> "ToolResult":
+    def _check_error_category(self) -> ToolResult:
         # Why both directions are enforced: ok+error_category or error+null
         # would each break the contract in tool-result.schema.json. Failing
         # construction here means we cannot accidentally append a malformed
@@ -182,18 +182,16 @@ class EventRecord(BaseModel):
         # Why we coerce to UTC: SC-007 requires byte-identical event logs across
         # reruns. Mixed-tz timestamps would break that diff for no semantic gain.
         if value.tzinfo is None:
-            return value.replace(tzinfo=timezone.utc)
-        return value.astimezone(timezone.utc)
+            return value.replace(tzinfo=UTC)
+        return value.astimezone(UTC)
 
     @model_validator(mode="after")
-    def _branch_invariants(self) -> "EventRecord":
+    def _branch_invariants(self) -> EventRecord:
         # Why these invariants live here: the JSON Schema enforces them on
         # disk; the model enforces them in memory. Two layers, one truth.
         if self.branch_taken == "tool_dispatch":
             if not self.tool_name or self.tool_outcome is None:
-                raise ValueError(
-                    "branch_taken='tool_dispatch' requires tool_name + tool_outcome"
-                )
+                raise ValueError("branch_taken='tool_dispatch' requires tool_name + tool_outcome")
         if self.branch_taken in ("terminate", "halt_unhandled") and self.termination_cause is None:
             raise ValueError(
                 "branch_taken in {terminate, halt_unhandled} requires termination_cause"
@@ -219,7 +217,7 @@ class AgentSession(BaseModel):
     session_id: str = Field(default_factory=lambda: str(uuid4()))
     model: str
     registered_tools: list[ToolDefinition]
-    started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    started_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     completed_at: datetime | None = None
     termination: TerminationReason | None = None
 

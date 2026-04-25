@@ -11,7 +11,7 @@ guarantees.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +38,7 @@ class RuntimeSession:
         registry: ToolRegistry,
         runs_root: str | Path = "runs",
     ) -> None:
+        """Build the AgentSession record and open its event log."""
         # Why we construct the pydantic record FIRST: we need its
         # `session_id` to derive the run directory. If construction failed,
         # nothing has touched the filesystem yet.
@@ -53,9 +54,11 @@ class RuntimeSession:
 
     @property
     def session_id(self) -> str:
+        """UUID of the underlying AgentSession record."""
         return self.record.session_id
 
     def append_history(self, entry: dict[str, Any]) -> None:
+        """Append one role-tagged entry to the in-memory conversation history."""
         # Why a method (not direct list mutation by callers): centralising
         # writes makes it possible to mirror history to disk later (FR-010
         # replayability) without changing every call site.
@@ -74,11 +77,9 @@ class RuntimeSession:
             # mirrors the pydantic v2 invariant in data-model.md
             # ("completed_at populated on terminal halt").
             self.record.termination = termination  # type: ignore[assignment]
-            self.record.completed_at = datetime.now(timezone.utc)
+            self.record.completed_at = datetime.now(UTC)
         try:
-            self._history_path.write_text(
-                json.dumps(self.history, indent=2, ensure_ascii=False)
-            )
+            self._history_path.write_text(json.dumps(self.history, indent=2, ensure_ascii=False))
         finally:
             self.event_log.close()
 

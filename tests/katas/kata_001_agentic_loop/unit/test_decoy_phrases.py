@@ -80,11 +80,7 @@ def test_decoy_phrase_does_not_terminate_early(tmp_path, phrase):
     session.close(termination=result)
     assert result == "end_turn"
 
-    records = [
-        json.loads(line)
-        for line in session.event_log.path.read_text().splitlines()
-        if line
-    ]
+    records = [json.loads(line) for line in session.event_log.path.read_text().splitlines() if line]
     # First record must be a tool_dispatch (not a premature termination on
     # any of the decoy phrases above).
     assert records[0]["branch_taken"] == "tool_dispatch"

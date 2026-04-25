@@ -76,11 +76,7 @@ def test_every_record_validates_against_schema(
     result = run(session=session, client=client, initial_user_message="hi")
     session.close(termination=result)
 
-    records = [
-        json.loads(line)
-        for line in session.event_log.path.read_text().splitlines()
-        if line
-    ]
+    records = [json.loads(line) for line in session.event_log.path.read_text().splitlines() if line]
     for r in records:
         validate(instance=r, schema=schema)
 

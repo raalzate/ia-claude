@@ -58,8 +58,7 @@ def _build_client(args: argparse.Namespace) -> MessagesClient:
     fixture = Path(args.fixture) if args.fixture else None
     if fixture is None:
         raise SystemExit(
-            "no fixture supplied and LIVE_API is not set — pass --fixture "
-            "<path> or set LIVE_API=1"
+            "no fixture supplied and LIVE_API is not set — pass --fixture <path> or set LIVE_API=1"
         )
     return RecordedClient(fixture)
 
@@ -91,6 +90,7 @@ def _summary_from_log(events_path: Path) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """CLI entrypoint — drive a kata run and print a JSON summary."""
     parser = argparse.ArgumentParser(prog="kata_001_agentic_loop")
     parser.add_argument("--model", default="claude-opus-4-7")
     parser.add_argument("--prompt", default="What is the weather in Bogotá?")

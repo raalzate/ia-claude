@@ -20,9 +20,7 @@ from katas.kata_001_agentic_loop.session import RuntimeSession
 from katas.kata_001_agentic_loop.tools import ToolRegistry
 
 FEATURE_FILE = (
-    Path(__file__).resolve().parents[1]
-    / "features"
-    / "signal_driven_termination.feature"
+    Path(__file__).resolve().parents[1] / "features" / "signal_driven_termination.feature"
 )
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "fixtures"
 
@@ -97,9 +95,7 @@ def session_completes_with_signal(state, signal):
     }
     state["fixture_name"] = fixture_map[signal]
     client = RecordedClient(FIXTURES_DIR / f"{state['fixture_name']}.json")
-    state["result"] = run(
-        session=state["session"], client=client, initial_user_message="hi"
-    )
+    state["result"] = run(session=state["session"], client=client, initial_user_message="hi")
     state["session"].close(termination=state["result"])
 
 
@@ -109,19 +105,15 @@ def session_returns_tool_use(state):
     # termination here — the assertion looks at the first record only.
     client = RecordedClient(FIXTURES_DIR / "happy_path.json")
     state["fixture_name"] = "happy_path"
-    state["result"] = run(
-        session=state["session"], client=client, initial_user_message="hi"
-    )
+    state["result"] = run(session=state["session"], client=client, initial_user_message="hi")
     state["session"].close(termination=state["result"])
 
 
-@when("the session runs a multi-turn interaction alternating \"tool_use\" and \"end_turn\" signals")
+@when('the session runs a multi-turn interaction alternating "tool_use" and "end_turn" signals')
 def session_runs_multiturn(state):
     client = RecordedClient(FIXTURES_DIR / "happy_path.json")
     state["fixture_name"] = "happy_path"
-    state["result"] = run(
-        session=state["session"], client=client, initial_user_message="hi"
-    )
+    state["result"] = run(session=state["session"], client=client, initial_user_message="hi")
     state["session"].close(termination=state["result"])
 
 
@@ -129,9 +121,7 @@ def session_runs_multiturn(state):
 def session_returns_absent(state):
     client = RecordedClient(FIXTURES_DIR / "absent_signal.json")
     state["fixture_name"] = "absent_signal"
-    state["result"] = run(
-        session=state["session"], client=client, initial_user_message="hi"
-    )
+    state["result"] = run(session=state["session"], client=client, initial_user_message="hi")
     state["session"].close(termination=state["result"])
 
 
@@ -139,9 +129,7 @@ def session_returns_absent(state):
 def session_returns_unknown(state):
     client = RecordedClient(FIXTURES_DIR / "unknown_signal.json")
     state["fixture_name"] = "unknown_signal"
-    state["result"] = run(
-        session=state["session"], client=client, initial_user_message="hi"
-    )
+    state["result"] = run(session=state["session"], client=client, initial_user_message="hi")
     state["session"].close(termination=state["result"])
 
 
@@ -179,8 +167,7 @@ def event_log_termination_cause(state, signal):
 def tool_invoked(state):
     records = _records(state)
     assert any(
-        r["branch_taken"] == "tool_dispatch" and r["tool_name"] == "get_weather"
-        for r in records
+        r["branch_taken"] == "tool_dispatch" and r["tool_name"] == "get_weather" for r in records
     )
 
 
@@ -189,9 +176,7 @@ def tool_result_appended(state):
     history = state["session"].history
     assert any(
         isinstance(entry.get("content"), list)
-        and any(
-            block.get("type") == "tool_result" for block in entry["content"]
-        )
+        and any(block.get("type") == "tool_result" for block in entry["content"])
         for entry in history
     )
 

@@ -22,11 +22,7 @@ from katas.kata_001_agentic_loop.replay import reconstruct_trajectory
 from katas.kata_001_agentic_loop.session import RuntimeSession
 from katas.kata_001_agentic_loop.tools import ToolRegistry
 
-FEATURE_FILE = (
-    Path(__file__).resolve().parents[1]
-    / "features"
-    / "observable_event_log.feature"
-)
+FEATURE_FILE = Path(__file__).resolve().parents[1] / "features" / "observable_event_log.feature"
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "fixtures"
 SCHEMA_PATH = (
     Path(__file__).resolve().parents[4]
@@ -112,9 +108,7 @@ def given_event_log_file(state):
 @when("the event log is inspected")
 def when_inspect(state):
     state["records"] = [
-        json.loads(line)
-        for line in state["log_path"].read_text().splitlines()
-        if line
+        json.loads(line) for line in state["log_path"].read_text().splitlines() if line
     ]
 
 
@@ -133,9 +127,7 @@ def when_reconstruct(state):
 def when_validate_schema(state):
     schema = json.loads(SCHEMA_PATH.read_text())
     state["records"] = [
-        json.loads(line)
-        for line in state["log_path"].read_text().splitlines()
-        if line
+        json.loads(line) for line in state["log_path"].read_text().splitlines() if line
     ]
     for r in state["records"]:
         validate(instance=r, schema=schema)

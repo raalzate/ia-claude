@@ -46,9 +46,7 @@ def pytest_configure(config):
         config.addinivalue_line("markers", f"{tag}: user-story scope tag")
     for prefix in ("TS", "FR", "SC"):
         for n in range(1, 100):
-            config.addinivalue_line(
-                "markers", f"{prefix}-{n:03d}: traceability tag from spec"
-            )
+            config.addinivalue_line("markers", f"{prefix}-{n:03d}: traceability tag from spec")
     for tag in ("P1", "P2", "P3", "acceptance", "contract"):
         config.addinivalue_line("markers", f"{tag}: scenario classification")
 
@@ -91,12 +89,7 @@ def load_contract_schema():
     contract used in tests for validation; production code has its own pydantic
     models. Tests load the JSON Schema to assert shape compliance independently.
     """
-    contracts_dir = (
-        Path(__file__).resolve().parents[3]
-        / "specs"
-        / "001-agentic-loop"
-        / "contracts"
-    )
+    contracts_dir = Path(__file__).resolve().parents[3] / "specs" / "001-agentic-loop" / "contracts"
 
     def _loader(name: str) -> dict:
         path = contracts_dir / name

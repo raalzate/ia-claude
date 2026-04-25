@@ -33,6 +33,7 @@ class MalformedToolUse(Exception):
     """
 
     def __init__(self, reason: str, *, tool_name: str | None = None) -> None:
+        """Capture the reason and optionally the offending tool name."""
         super().__init__(reason)
         self.reason = reason
         self.tool_name = tool_name
@@ -48,6 +49,7 @@ class ToolRegistry:
     """
 
     def __init__(self) -> None:
+        """Initialize an empty registry."""
         self._defs: dict[str, ToolDefinition] = {}
         self._handlers: dict[str, Callable[[dict[str, Any]], Any]] = {}
 
@@ -56,6 +58,7 @@ class ToolRegistry:
         definition: ToolDefinition,
         handler: Callable[[dict[str, Any]], Any],
     ) -> None:
+        """Register a tool and its handler, rejecting duplicate names."""
         # Why duplicate names raise instead of overwrite: silent overwrite
         # would make the dispatch target depend on registration order — a
         # hidden source of non-determinism (Principle I).
@@ -66,6 +69,7 @@ class ToolRegistry:
 
     @property
     def definitions(self) -> list[ToolDefinition]:
+        """Return a fresh list of registered ToolDefinitions."""
         # Why we return a fresh list: callers (loop.py) pass this to the
         # client without mutating it; an internal mutation here would
         # otherwise leak across iterations.
@@ -91,9 +95,7 @@ class ToolRegistry:
         """
         definition = self._defs.get(call.tool_name)
         if definition is None:
-            raise MalformedToolUse(
-                f"unknown tool: {call.tool_name!r}", tool_name=call.tool_name
-            )
+            raise MalformedToolUse(f"unknown tool: {call.tool_name!r}", tool_name=call.tool_name)
         try:
             validate(instance=call.input, schema=definition.input_schema)
         except ValidationError as exc:

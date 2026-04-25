@@ -44,7 +44,9 @@ class MessagesClient(Protocol):
         model: str,
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
-    ) -> RawResponse: ...
+    ) -> RawResponse:
+        """Send messages to the model and return the structured response."""
+        ...
 
 
 class RecordedClient:
@@ -57,6 +59,7 @@ class RecordedClient:
     """
 
     def __init__(self, fixture_path: str | Path) -> None:
+        """Eagerly load the recorded session at `fixture_path`."""
         path = Path(fixture_path)
         if not path.exists():
             raise FileNotFoundError(f"recorded fixture missing: {path}")
@@ -73,10 +76,9 @@ class RecordedClient:
         messages: list[dict[str, Any]],  # noqa: ARG002
         tools: list[dict[str, Any]],  # noqa: ARG002
     ) -> RawResponse:
+        """Return the next pre-recorded response from the fixture."""
         if self._cursor >= len(self._responses):
-            raise RuntimeError(
-                "RecordedClient exhausted — fixture has no more recorded responses"
-            )
+            raise RuntimeError("RecordedClient exhausted — fixture has no more recorded responses")
         record = self._responses[self._cursor]
         self._cursor += 1
         # Why we tolerate `stop_reason` being absent in the recording: FR-006
@@ -98,6 +100,7 @@ class LiveClient:
     """
 
     def __init__(self, api_key: str | None = None) -> None:
+        """Lazily import and instantiate the official Anthropic SDK."""
         # Lazy import keeps the recorded-only path import-cheap.
         from anthropic import Anthropic  # noqa: PLC0415
 
@@ -110,6 +113,7 @@ class LiveClient:
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]],
     ) -> RawResponse:
+        """Forward the call to `messages.create` and unwrap the response."""
         # Why max_tokens is required by the SDK but kept implicit here: the
         # loop is signal-driven; truncation surfaces as `stop_reason=max_tokens`
         # which the loop already handles (FR-006). 1024 is a workshop default.
