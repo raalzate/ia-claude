@@ -24,12 +24,12 @@
 
 Shared infrastructure blocking all stories — pydantic models, JSON schemas, injectable SDK client, EventLog writer. No story label.
 
-- [ ] T006 [P] Implement shared pydantic v2 entities in `katas/kata_001_agentic_loop/models.py`: `StopSignal` (Literal), `UnhandledStopSignal`, `ToolDefinition`, `ToolCall`, `ToolResult`, `Turn`, `EventRecord`, `TerminationReason` (Literal), `AgentSession` — per `data-model.md`
-- [ ] T007 [P] Copy Phase-1 JSON schemas into the implementation validation path by referencing them from tests — no code change needed, but add a helper `tests/katas/kata_001_agentic_loop/conftest.py::load_contract_schema(name)` that resolves paths under `specs/001-agentic-loop/contracts/`
-- [ ] T008 [P] Implement the thin injectable Anthropic client wrapper in `katas/kata_001_agentic_loop/client.py` exposing a single `send(messages, tools) -> RawResponse` surface; real SDK behind a `LiveClient`, fixture replay behind a `RecordedClient` that reads `tests/katas/kata_001_agentic_loop/fixtures/<name>.json`
-- [ ] T009 [P] Implement the tool registry in `katas/kata_001_agentic_loop/tools.py`: `ToolDefinition` registration, duplicate-name rejection (`ValueError`), and a `dispatch(tool_call) -> ToolResult` interface that catches tool exceptions and returns a structured `ToolResult(status="error", ...)` per FR-007
-- [ ] T010 [P] Implement the EventLog writer in `katas/kata_001_agentic_loop/events.py`: opens `runs/<session_id>/events.jsonl` append-only; `emit(record: EventRecord)` serializes one JSONL line; `close()` fsyncs — enforces `EventRecord` schema (no prose fields allowed)
-- [ ] T011 Wire `AgentSession` construction in `katas/kata_001_agentic_loop/models.py` (or a new `session.py` imported by `loop.py`) so it owns the `EventLog`, the `ToolRegistry`, and the conversation `history: list[dict]` in memory
+- [x] T006 [P] Implement shared pydantic v2 entities in `katas/kata_001_agentic_loop/models.py`: `StopSignal` (Literal), `UnhandledStopSignal`, `ToolDefinition`, `ToolCall`, `ToolResult`, `Turn`, `EventRecord`, `TerminationReason` (Literal), `AgentSession` — per `data-model.md`
+- [x] T007 [P] Copy Phase-1 JSON schemas into the implementation validation path by referencing them from tests — no code change needed, but add a helper `tests/katas/kata_001_agentic_loop/conftest.py::load_contract_schema(name)` that resolves paths under `specs/001-agentic-loop/contracts/`
+- [x] T008 [P] Implement the thin injectable Anthropic client wrapper in `katas/kata_001_agentic_loop/client.py` exposing a single `send(messages, tools) -> RawResponse` surface; real SDK behind a `LiveClient`, fixture replay behind a `RecordedClient` that reads `tests/katas/kata_001_agentic_loop/fixtures/<name>.json`
+- [x] T009 [P] Implement the tool registry in `katas/kata_001_agentic_loop/tools.py`: `ToolDefinition` registration, duplicate-name rejection (`ValueError`), and a `dispatch(tool_call) -> ToolResult` interface that catches tool exceptions and returns a structured `ToolResult(status="error", ...)` per FR-007
+- [x] T010 [P] Implement the EventLog writer in `katas/kata_001_agentic_loop/events.py`: opens `runs/<session_id>/events.jsonl` append-only; `emit(record: EventRecord)` serializes one JSONL line; `close()` fsyncs — enforces `EventRecord` schema (no prose fields allowed)
+- [x] T011 Wire `AgentSession` construction in `katas/kata_001_agentic_loop/models.py` (or a new `session.py` imported by `loop.py`) so it owns the `EventLog`, the `ToolRegistry`, and the conversation `history: list[dict]` in memory
 
 **Checkpoint**: Foundation ready — models, contract schemas, injectable client, tool registry, and event-log writer are all in place. Loop logic can now be implemented against them.
 
