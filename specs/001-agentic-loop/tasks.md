@@ -96,16 +96,16 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 
 ### Tests for User Story 3
 
-- [ ] T033 [P] [US3] Copy/symlink `specs/001-agentic-loop/tests/features/observable_event_log.feature` to `tests/katas/kata_001_agentic_loop/features/observable_event_log.feature`
-- [ ] T034 [US3] Implement BDD step definitions for [TS-020, TS-021, TS-022, TS-023] in `tests/katas/kata_001_agentic_loop/step_defs/test_observable_event_log_steps.py` — steps run the kata twice against one fixture, diff event logs, and validate each record against the JSON Schema loaded from `specs/001-agentic-loop/contracts/event-log-record.schema.json`
-- [ ] T035 [P] [US3] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_event_log_shape.py` asserting every emitted `EventRecord` validates against `contracts/event-log-record.schema.json`; also asserts exactly one record per run carries a non-null `termination_cause`
-- [ ] T036 [P] [US3] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_trajectory_reconstruction.py` that takes a sample `events.jsonl` and reconstructs (iteration count, tool_invocations count, termination cause) without reading any other source — proves SC-008
+- [x] T033 [P] [US3] Copy/symlink `specs/001-agentic-loop/tests/features/observable_event_log.feature` to `tests/katas/kata_001_agentic_loop/features/observable_event_log.feature`
+- [x] T034 [US3] Implement BDD step definitions for [TS-020, TS-021, TS-022, TS-023] in `tests/katas/kata_001_agentic_loop/step_defs/test_observable_event_log_steps.py` — steps run the kata twice against one fixture, diff event logs, and validate each record against the JSON Schema loaded from `specs/001-agentic-loop/contracts/event-log-record.schema.json`
+- [x] T035 [P] [US3] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_event_log_shape.py` asserting every emitted `EventRecord` validates against `contracts/event-log-record.schema.json`; also asserts exactly one record per run carries a non-null `termination_cause`
+- [x] T036 [P] [US3] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_trajectory_reconstruction.py` that takes a sample `events.jsonl` and reconstructs (iteration count, tool_invocations count, termination cause) without reading any other source — proves SC-008
 
 ### Implementation for User Story 3
 
-- [ ] T037 [US3] In `katas/kata_001_agentic_loop/events.py`, ensure JSONL determinism: stable key ordering on serialization (sort or explicit tuple), UTC `timestamp` with fixed precision, and a `freeze_time`-aware mode the tests use to make the reproducibility diff (SC-007) byte-identical
-- [ ] T038 [US3] In `katas/kata_001_agentic_loop/runner.py`, on terminal halt emit a final summary line to stdout listing `session_id`, `iterations`, `tool_invocations`, `termination_cause` — all values read back from the event log, not from in-memory state (prove the log is sufficient)
-- [ ] T039 [US3] Write a tiny trajectory-reconstruction helper at `katas/kata_001_agentic_loop/replay.py::reconstruct_trajectory(events_path) -> TrajectorySummary` used by T036 and referenced from the README
+- [x] T037 [US3] In `katas/kata_001_agentic_loop/events.py`, ensure JSONL determinism: stable key ordering on serialization (sort or explicit tuple), UTC `timestamp` with fixed precision, and a `freeze_time`-aware mode the tests use to make the reproducibility diff (SC-007) byte-identical
+- [x] T038 [US3] In `katas/kata_001_agentic_loop/runner.py`, on terminal halt emit a final summary line to stdout listing `session_id`, `iterations`, `tool_invocations`, `termination_cause` — all values read back from the event log, not from in-memory state (prove the log is sufficient)
+- [x] T039 [US3] Write a tiny trajectory-reconstruction helper at `katas/kata_001_agentic_loop/replay.py::reconstruct_trajectory(events_path) -> TrajectorySummary` used by T036 and referenced from the README
 
 **Checkpoint**: US3 fully functional — two independent kata runs against the same fixture produce byte-identical `stop_signal` + `branch_taken` sequences; every record schema-validates; trajectory reconstruction works from the log alone. BDD scenarios [TS-020, TS-021, TS-022, TS-023] all pass.
 
