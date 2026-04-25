@@ -1,0 +1,18 @@
+{
+  "description": "tool_use turn naming a tool not in the registry. FR-008: loop halts with termination_cause=malformed_tool_use; no heuristic recovery.",
+  "responses": [
+    {
+      "id": "msg_malformed_001",
+      "stop_reason": "tool_use",
+      "content": [
+        {"type": "text", "text": "Calling a tool that doesn't exist."},
+        {
+          "type": "tool_use",
+          "id": "toolu_malformed_001",
+          "name": "delete_universe",
+          "input": {"confirm": true}
+        }
+      ]
+    }
+  ]
+}

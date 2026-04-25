@@ -71,18 +71,18 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 
 ### Tests for User Story 2
 
-- [ ] T024 [P] [US2] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/decoy_phrase.json` — intermediate turn text contains "task complete" / "we are done" / "finished" / "all done" while structured `stop_reason=tool_use`; final turn is genuine `end_turn`
-- [ ] T025 [P] [US2] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/malformed_tool_use.json` — `stop_reason=tool_use` but the `tool_use` block is missing required fields or names an unknown tool
-- [ ] T026 [P] [US2] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/tool_error.json` — `stop_reason=tool_use` where dispatch raises, to exercise FR-007 happy recovery
-- [ ] T027 [P] [US2] Copy/symlink `specs/001-agentic-loop/tests/features/antipattern_prose_defense.feature` to `tests/katas/kata_001_agentic_loop/features/antipattern_prose_defense.feature`
-- [ ] T028 [US2] Implement BDD step definitions for [TS-010, TS-011, TS-012, TS-013, TS-014] in `tests/katas/kata_001_agentic_loop/step_defs/test_antipattern_prose_defense_steps.py` — steps assert event-log termination-cause fields and that no record carries any text-derived column
+- [x] T024 [P] [US2] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/decoy_phrase.json` — intermediate turn text contains "task complete" / "we are done" / "finished" / "all done" while structured `stop_reason=tool_use`; final turn is genuine `end_turn`
+- [x] T025 [P] [US2] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/malformed_tool_use.json` — `stop_reason=tool_use` but the `tool_use` block is missing required fields or names an unknown tool
+- [x] T026 [P] [US2] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/tool_error.json` — `stop_reason=tool_use` where dispatch raises, to exercise FR-007 happy recovery
+- [x] T027 [P] [US2] Copy/symlink `specs/001-agentic-loop/tests/features/antipattern_prose_defense.feature` to `tests/katas/kata_001_agentic_loop/features/antipattern_prose_defense.feature`
+- [x] T028 [US2] Implement BDD step definitions for [TS-010, TS-011, TS-012, TS-013, TS-014] in `tests/katas/kata_001_agentic_loop/step_defs/test_antipattern_prose_defense_steps.py` — steps assert event-log termination-cause fields and that no record carries any text-derived column
 
 ### Implementation for User Story 2
 
-- [ ] T029 [US2] In `katas/kata_001_agentic_loop/loop.py`, implement the malformed-tool-use halt: when `ToolCall` validation fails (unknown tool OR input-schema failure), raise a `MalformedToolUse` exception inside the loop and emit a terminal `EventRecord` with `termination_cause="malformed_tool_use"` (FR-008)
-- [ ] T030 [US2] In `katas/kata_001_agentic_loop/tools.py`, strengthen `dispatch(tool_call)` so that a raised tool exception is caught and wrapped in `ToolResult(status="error", error_category=..., output=...)` and appended to history — and so that `dispatch` NEVER reads response text to decide anything (FR-007)
-- [ ] T031 [US2] In `katas/kata_001_agentic_loop/events.py`, reject any `EventRecord` whose payload contains a non-schema field (e.g. `prose_excerpt`, `completion_hint`) — relies on pydantic `extra="forbid"` on the model per data-model.md "no text-derived field is allowed"
-- [ ] T032 [US2] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_decoy_phrases.py` driving synthetic `Turn` objects whose `assistant_text_blocks` contain every phrase from `SC-004` while `stop_signal="tool_use"`; assert the loop continues in all cases
+- [x] T029 [US2] In `katas/kata_001_agentic_loop/loop.py`, implement the malformed-tool-use halt: when `ToolCall` validation fails (unknown tool OR input-schema failure), raise a `MalformedToolUse` exception inside the loop and emit a terminal `EventRecord` with `termination_cause="malformed_tool_use"` (FR-008)
+- [x] T030 [US2] In `katas/kata_001_agentic_loop/tools.py`, strengthen `dispatch(tool_call)` so that a raised tool exception is caught and wrapped in `ToolResult(status="error", error_category=..., output=...)` and appended to history — and so that `dispatch` NEVER reads response text to decide anything (FR-007)
+- [x] T031 [US2] In `katas/kata_001_agentic_loop/events.py`, reject any `EventRecord` whose payload contains a non-schema field (e.g. `prose_excerpt`, `completion_hint`) — relies on pydantic `extra="forbid"` on the model per data-model.md "no text-derived field is allowed"
+- [x] T032 [US2] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_decoy_phrases.py` driving synthetic `Turn` objects whose `assistant_text_blocks` contain every phrase from `SC-004` while `stop_signal="tool_use"`; assert the loop continues in all cases
 
 **Checkpoint**: US2 fully functional — decoy-phrase fixture produces exactly one `end_turn` termination; malformed-tool-use fixture halts with labeled reason; tool errors keep the loop running with a structured `ToolResult(error)`; AST lint still green. BDD scenarios [TS-010, TS-011, TS-012, TS-013, TS-014] all pass.
 
