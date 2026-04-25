@@ -1,0 +1,25 @@
+{
+  "description": "Two-turn happy path: model requests one tool call, then ends. Drives the canonical [tool_dispatch -> terminate] event-log sequence used by SC-001 / SC-005 / SC-007.",
+  "responses": [
+    {
+      "id": "msg_happy_001",
+      "stop_reason": "tool_use",
+      "content": [
+        {"type": "text", "text": "Let me check the weather."},
+        {
+          "type": "tool_use",
+          "id": "toolu_happy_001",
+          "name": "get_weather",
+          "input": {"city": "Bogotá"}
+        }
+      ]
+    },
+    {
+      "id": "msg_happy_002",
+      "stop_reason": "end_turn",
+      "content": [
+        {"type": "text", "text": "It is 18°C in Bogotá. Task complete."}
+      ]
+    }
+  ]
+}

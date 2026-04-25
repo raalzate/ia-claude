@@ -1,0 +1,12 @@
+{
+  "description": "Single turn carrying a stop_reason value the loop does not handle. Asserts FR-006 — silent continuation is forbidden; the loop halts with termination_cause=unhandled_signal.",
+  "responses": [
+    {
+      "id": "msg_unknown_001",
+      "stop_reason": "model_decided_to_emoji",
+      "content": [
+        {"type": "text", "text": "🦖"}
+      ]
+    }
+  ]
+}

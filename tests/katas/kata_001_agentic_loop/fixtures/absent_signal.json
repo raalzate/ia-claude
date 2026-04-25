@@ -1,0 +1,11 @@
+{
+  "description": "Response with stop_reason field absent. The loop must label this 'absent_signal' rather than guess from text (FR-006).",
+  "responses": [
+    {
+      "id": "msg_absent_001",
+      "content": [
+        {"type": "text", "text": "Truncated payload with no terminal signal."}
+      ]
+    }
+  ]
+}

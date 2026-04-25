@@ -43,21 +43,21 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 
 ### Tests for User Story 1
 
-- [ ] T012 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/happy_path.json` (one `tool_use` turn then one `end_turn` turn)
-- [ ] T013 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/max_tokens.json` (single turn with `stop_reason=max_tokens`)
-- [ ] T014 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/unknown_signal.json` (single turn with a made-up signal value)
-- [ ] T015 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/absent_signal.json` (single turn with `stop_reason` field absent)
-- [ ] T016 [P] [US1] Copy/symlink `specs/001-agentic-loop/tests/features/signal_driven_termination.feature` to `tests/katas/kata_001_agentic_loop/features/signal_driven_termination.feature` so pytest-bdd can discover it
-- [ ] T017 [US1] Implement BDD step definitions for [TS-001, TS-002, TS-003, TS-004, TS-005, TS-006] in `tests/katas/kata_001_agentic_loop/step_defs/test_signal_driven_termination_steps.py` — steps wire to the recorded-client fixtures and assert on event-log records
-- [ ] T018 [P] [US1] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_loop_branches.py` covering every branch of the loop's `stop_signal` switch (`end_turn`, `tool_use`, `max_tokens`, `stop_sequence`, unhandled, absent) with synthetic `Turn` inputs
-- [ ] T019 [P] [US1] Add AST lint test `tests/katas/kata_001_agentic_loop/lint/test_no_prose_matching.py` — parses `katas/kata_001_agentic_loop/loop.py` and fails if it imports `re`, calls `.find(`/`.index(`/`.search(`/`.match(` on text, or uses the `in` operator against a string literal against response text (plan.md constraint + FR-004)
+- [x] T012 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/happy_path.json` (one `tool_use` turn then one `end_turn` turn)
+- [x] T013 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/max_tokens.json` (single turn with `stop_reason=max_tokens`)
+- [x] T014 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/unknown_signal.json` (single turn with a made-up signal value)
+- [x] T015 [P] [US1] Record fixture session `tests/katas/kata_001_agentic_loop/fixtures/absent_signal.json` (single turn with `stop_reason` field absent)
+- [x] T016 [P] [US1] Copy/symlink `specs/001-agentic-loop/tests/features/signal_driven_termination.feature` to `tests/katas/kata_001_agentic_loop/features/signal_driven_termination.feature` so pytest-bdd can discover it
+- [x] T017 [US1] Implement BDD step definitions for [TS-001, TS-002, TS-003, TS-004, TS-005, TS-006] in `tests/katas/kata_001_agentic_loop/step_defs/test_signal_driven_termination_steps.py` — steps wire to the recorded-client fixtures and assert on event-log records
+- [x] T018 [P] [US1] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_loop_branches.py` covering every branch of the loop's `stop_signal` switch (`end_turn`, `tool_use`, `max_tokens`, `stop_sequence`, unhandled, absent) with synthetic `Turn` inputs
+- [x] T019 [P] [US1] Add AST lint test `tests/katas/kata_001_agentic_loop/lint/test_no_prose_matching.py` — parses `katas/kata_001_agentic_loop/loop.py` and fails if it imports `re`, calls `.find(`/`.index(`/`.search(`/`.match(` on text, or uses the `in` operator against a string literal against response text (plan.md constraint + FR-004)
 
 ### Implementation for User Story 1
 
-- [ ] T020 [US1] Implement the agentic loop in `katas/kata_001_agentic_loop/loop.py`: single `run(session, initial_user_message)` function that calls `client.send(...)`, constructs a `Turn` from the response, switches on `Turn.stop_signal`, and halts on `end_turn` / `max_tokens` / `stop_sequence` / unhandled / absent with the matching `TerminationReason` — MUST NOT read `Turn.assistant_text_blocks` for branching (FR-001, FR-003, FR-006)
-- [ ] T021 [US1] In `loop.py`, implement the `tool_use` branch: iterate extracted `ToolCall`s, call `tool_registry.dispatch(call)`, append each `ToolResult` to `session.history`, then start a new iteration — no termination decision made on this branch (FR-002)
-- [ ] T022 [US1] In `loop.py`, emit one `EventRecord` per iteration via `session.event_log.emit(...)` recording `iteration`, `stop_signal`, `branch_taken`, `tool_name`, `tool_outcome`, and — on the terminal iteration — `termination_cause` (FR-005)
-- [ ] T023 [US1] Implement the CLI entrypoint `katas/kata_001_agentic_loop/runner.py` with `python -m katas.kata_001_agentic_loop.runner --model ... --prompt ...`; reads `LIVE_API` env var to choose `LiveClient` vs `RecordedClient`; prints `runs/<session-id>/events.jsonl` path on exit
+- [x] T020 [US1] Implement the agentic loop in `katas/kata_001_agentic_loop/loop.py`: single `run(session, initial_user_message)` function that calls `client.send(...)`, constructs a `Turn` from the response, switches on `Turn.stop_signal`, and halts on `end_turn` / `max_tokens` / `stop_sequence` / unhandled / absent with the matching `TerminationReason` — MUST NOT read `Turn.assistant_text_blocks` for branching (FR-001, FR-003, FR-006)
+- [x] T021 [US1] In `loop.py`, implement the `tool_use` branch: iterate extracted `ToolCall`s, call `tool_registry.dispatch(call)`, append each `ToolResult` to `session.history`, then start a new iteration — no termination decision made on this branch (FR-002)
+- [x] T022 [US1] In `loop.py`, emit one `EventRecord` per iteration via `session.event_log.emit(...)` recording `iteration`, `stop_signal`, `branch_taken`, `tool_name`, `tool_outcome`, and — on the terminal iteration — `termination_cause` (FR-005)
+- [x] T023 [US1] Implement the CLI entrypoint `katas/kata_001_agentic_loop/runner.py` with `python -m katas.kata_001_agentic_loop.runner --model ... --prompt ...`; reads `LIVE_API` env var to choose `LiveClient` vs `RecordedClient`; prints `runs/<session-id>/events.jsonl` path on exit
 
 **Checkpoint**: US1 fully functional — practitioner can run the kata against `happy_path.json`, every edge fixture halts with a labeled termination reason, AST lint blocks any reintroduction of prose matching, and BDD scenarios [TS-001, TS-002, TS-003, TS-004, TS-005, TS-006] all pass.
 

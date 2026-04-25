@@ -1,0 +1,12 @@
+{
+  "description": "Single turn truncated by output budget. Verifies FR-006 / SC-006 — non-end_turn signals still halt the loop with a labeled cause.",
+  "responses": [
+    {
+      "id": "msg_maxtok_001",
+      "stop_reason": "max_tokens",
+      "content": [
+        {"type": "text", "text": "Reasoning that ran past the budget without a clean..."}
+      ]
+    }
+  ]
+}
