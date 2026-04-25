@@ -13,10 +13,10 @@
 ## Phase 1: Setup
 
 - [x] T001 Create kata package skeleton `katas/kata_001_agentic_loop/__init__.py` (empty marker) and mirror test package `tests/katas/kata_001_agentic_loop/__init__.py`
-- [ ] T002 [P] Add `pyproject.toml` at repo root declaring Python 3.11+ and the `[dev]` extra with `anthropic`, `pydantic>=2`, `pytest`, `pytest-bdd` per plan.md Technical Context
-- [ ] T003 [P] Configure lint/format tooling (`ruff` + `black`) in `pyproject.toml` with a rule set matching repo conventions; exclude `runs/` and `tests/fixtures/`
-- [ ] T004 [P] Add `runs/` to `.gitignore` (per plan.md: event logs are gitignored)
-- [ ] T005 [P] Create `tests/katas/kata_001_agentic_loop/conftest.py` stub that declares the `pytest-bdd` features directory `tests/katas/kata_001_agentic_loop/features/` and exposes a fixture-session loader helper
+- [x] T002 [P] Add `pyproject.toml` at repo root declaring Python 3.11+ and the `[dev]` extra with `anthropic`, `pydantic>=2`, `pytest`, `pytest-bdd` per plan.md Technical Context
+- [x] T003 [P] Configure lint/format tooling (`ruff` + `black`) in `pyproject.toml` with a rule set matching repo conventions; exclude `runs/` and `tests/fixtures/`
+- [x] T004 [P] Add `runs/` to `.gitignore` (per plan.md: event logs are gitignored)
+- [x] T005 [P] Create `tests/katas/kata_001_agentic_loop/conftest.py` stub that declares the `pytest-bdd` features directory `tests/katas/kata_001_agentic_loop/features/` and exposes a fixture-session loader helper
 
 ---
 
