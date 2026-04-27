@@ -1,8 +1,0 @@
-{
-  "tool_name": "process_refund",
-  "correlation_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
-  "amount": "250.00",
-  "currency": "USD",
-  "customer_id": "C-1010",
-  "reason": "Used by edge case: policy file changes mid-invocation; verdict pinned to entry snapshot."
-}

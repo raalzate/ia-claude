@@ -1,9 +1,0 @@
-{
-  "tool_name": "process_refund",
-  "correlation_id": "77777777-7777-4777-8777-777777777777",
-  "amount": "100.00",
-  "currency": "USD",
-  "customer_id": "C-1007",
-  "reason": "Extra unexpected field below.",
-  "note_extra": "Bypass attempt via prose embedded in an unknown field."
-}

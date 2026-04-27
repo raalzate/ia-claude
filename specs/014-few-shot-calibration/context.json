@@ -1,8 +1,0 @@
-{
-  "testify": {
-    "assertion_hash": "8ba5ac37f094fb5007715f7ee4784386d4890e5cd75565098d2022906e002927",
-    "generated_at": "2026-04-24T23:16:44Z",
-    "features_dir": "specs/014-few-shot-calibration/tests/features",
-    "file_count": 4
-  }
-}

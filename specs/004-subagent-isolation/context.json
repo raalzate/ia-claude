@@ -1,8 +1,0 @@
-{
-  "testify": {
-    "assertion_hash": "13b31ddeb4458a9052f5d37b07e65b75ad52d7fd911b6ead97bbee136c067be5",
-    "generated_at": "2026-04-23T21:37:10Z",
-    "features_dir": "/Users/raul.alzate/Documents/maestria/maestria/project/ia-claude/specs/004-subagent-isolation//tests/features",
-    "file_count": 3
-  }
-}

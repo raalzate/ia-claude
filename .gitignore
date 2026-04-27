@@ -15,10 +15,8 @@ venv/
 .coverage.*
 htmlcov/
 
-# --- Kata run artifacts ---------------------------------------------------
-# plan.md: event logs and per-session run dirs are gitignored — they are
-# reconstruction-only artifacts, never source of truth.
-runs/
+# --- Notebook artifacts ---------------------------------------------------
+.ipynb_checkpoints/
 
 # --- OS / IDE -------------------------------------------------------------
 .DS_Store

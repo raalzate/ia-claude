@@ -1,8 +1,0 @@
-{
-  "tool_name": "process_refund",
-  "correlation_id": "33333333-3333-4333-8333-333333333333",
-  "amount": "750.00",
-  "currency": "USD",
-  "customer_id": "C-1003",
-  "reason": "Customer demands large refund — must be blocked by policy."
-}

@@ -1,8 +1,0 @@
-{
-  "testify": {
-    "assertion_hash": "d8d103218d6dbd5404cd0596cb4447b7f6f0c9a2388484484a89bc0ce6f732bf",
-    "generated_at": "2026-04-24T23:17:56Z",
-    "features_dir": "specs/020-data-provenance/tests/features",
-    "file_count": 3
-  }
-}

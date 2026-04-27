@@ -1,7 +1,0 @@
-{
-  "tool_name": "process_refund",
-  "correlation_id": "44444444-4444-4444-8444-444444444444",
-  "currency": "USD",
-  "customer_id": "C-1004",
-  "reason": "Missing required amount field — schema_violation."
-}

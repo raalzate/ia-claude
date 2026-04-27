@@ -1,8 +1,0 @@
-{
-  "testify": {
-    "assertion_hash": "c31a82a190d4b5c59f5c585b5c6daa308f13152667e6a1774443afc9fd243480",
-    "generated_at": "2026-04-24T23:15:16Z",
-    "features_dir": "specs/011-softmax-mitigation/tests/features",
-    "file_count": 3
-  }
-}

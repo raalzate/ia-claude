@@ -1,8 +1,0 @@
-{
-  "testify": {
-    "assertion_hash": "f2d16d0b15ec96e17dfab7e6705ac5d9689f82b7afdaab1160d563591c9caed4",
-    "generated_at": "2026-04-24T23:17:16Z",
-    "features_dir": "specs/015-self-correction/tests/features",
-    "file_count": 3
-  }
-}
