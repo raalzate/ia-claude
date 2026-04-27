@@ -1,4 +1,4 @@
-# Specs — 20 katas para Claude Certified Architect
+# Specs — 30 katas para Claude Certified Architect
 
 Cada carpeta `NNN-<slug>/` contiene **un único archivo**: `spec.md`. Una página
 de concepto enfocada al examen.
@@ -6,7 +6,7 @@ de concepto enfocada al examen.
 El **entregable de cada kata** es un Jupyter notebook en
 `katas/kata_NNN_<slug>/notebook.ipynb`. La plantilla está en
 [`_templates/notebook-template.ipynb`](_templates/notebook-template.ipynb).
-La arquitectura común a los 20 notebooks (bootstrap, cliente real, presupuesto,
+La arquitectura común a los 30 notebooks (bootstrap, cliente real, presupuesto,
 log) está documentada en [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Estructura del `spec.md`
@@ -64,6 +64,16 @@ notebook es el documento, la prueba y el portafolio del practicante.
 | 18 | Scratchpad persistente              | Memoria                  |
 | 19 | Investigación adaptativa            | Memoria + Aislamiento    |
 | 20 | Provenance de datos                 | Provenance               |
+| 21 | Calidad de descripciones de tools   | Tools                    |
+| 22 | Configuración de MCP servers        | Tools / MCP              |
+| 23 | Selección de built-in tools         | Tools                    |
+| 24 | Slash commands & skills             | Claude Code              |
+| 25 | Sesiones (resume / fork)            | Memoria / sesión         |
+| 26 | Validation-retry con feedback       | Schemas                  |
+| 27 | Multi-pass review (independiente)   | Calidad pragmática       |
+| 28 | Multi-agent error propagation       | Aislamiento              |
+| 29 | Confidence calibration              | Provenance               |
+| 30 | Criterios explícitos / FP           | Calidad pragmática       |
 
 ## Conexiones entre katas
 

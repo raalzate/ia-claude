@@ -3,7 +3,7 @@
 ## What
 
 `ia-claude` is a concept-study workshop for the **Claude Certified
-Architect** credential. It covers 20 katas spanning the architect-level
+Architect** credential. It covers 30 katas spanning the architect-level
 syllabus: deterministic agentic loops, PreToolUse / PostToolUse hooks,
 subagent isolation, defensive structured extraction, MCP error contracts,
 Plan Mode, hierarchical `CLAUDE.md` memory, prefix caching, softmax

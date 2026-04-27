@@ -1,3 +1,11 @@
+---
+title: "Guía de Estudio Práctica — Claude Certified Architect (Foundations)"
+subtitle: "Workshop ia-claude · alineada a los 5 dominios oficiales"
+author: "raul.alzate@sofka.com.co"
+lang: es
+toc-title: "Índice"
+---
+
 # Cómo usar esta guía (TL;DR)
 
 Esta guía está organizada para **prepararte directamente al examen
