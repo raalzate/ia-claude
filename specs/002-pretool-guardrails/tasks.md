@@ -105,16 +105,16 @@
 
 ### Tests for User Story 3
 
-- [ ] T046 [P] [US3] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_policy_change_takes_effect.py` that: (1) writes L1 to tmp `config/policy.json`, evaluates amount A → allow; (2) overwrites with L2 (L2 < A < L1); (3) evaluates amount A again → reject with `reason_code="policy_breach"` and `policy_snapshot_version` equal to L2's version [TS-009, TS-011].
-- [ ] T047 [P] [US3] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_policy_change_no_prompt_or_schema_edit.py` asserting that before/after byte-digest of `katas/kata_002_pretool_guardrails/prompts.py` and the contract schema files under `specs/002-pretool-guardrails/contracts/` is unchanged across the policy edit [TS-010].
-- [ ] T048 [P] [US3] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_policy_config_frozen.py` — mutating a loaded `PolicyConfig` instance raises, and two sequential invocations each reload a fresh instance from disk [TS-023].
-- [ ] T049 [P] [US3] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_policy_hot_reload_steps.py` binding the clauses of `specs/002-pretool-guardrails/tests/features/policy_hot_reload.feature` [TS-009, TS-010, TS-011].
-- [ ] T050 [P] [US3] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_policy_config_schema_steps.py` validating `PolicyConfig` instances against `specs/002-pretool-guardrails/contracts/policy-config.schema.json` [TS-019].
+- [x] T046 [P] [US3] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_policy_change_takes_effect.py` that: (1) writes L1 to tmp `config/policy.json`, evaluates amount A → allow; (2) overwrites with L2 (L2 < A < L1); (3) evaluates amount A again → reject with `reason_code="policy_breach"` and `policy_snapshot_version` equal to L2's version [TS-009, TS-011].
+- [x] T047 [P] [US3] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_policy_change_no_prompt_or_schema_edit.py` asserting that before/after byte-digest of `katas/kata_002_pretool_guardrails/prompts.py` and the contract schema files under `specs/002-pretool-guardrails/contracts/` is unchanged across the policy edit [TS-010].
+- [x] T048 [P] [US3] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_policy_config_frozen.py` — mutating a loaded `PolicyConfig` instance raises, and two sequential invocations each reload a fresh instance from disk [TS-023].
+- [x] T049 [P] [US3] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_policy_hot_reload_steps.py` binding the clauses of `specs/002-pretool-guardrails/tests/features/policy_hot_reload.feature` [TS-009, TS-010, TS-011].
+- [x] T050 [P] [US3] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_policy_config_schema_steps.py` validating `PolicyConfig` instances against `specs/002-pretool-guardrails/contracts/policy-config.schema.json` [TS-019].
 
 ### Implementation for User Story 3
 
-- [ ] T051 [US3] Confirm the per-invocation reload path in `policy.py` is the only read site: no caching of `PolicyConfig` across invocations in `runner.py` or `hook.py` (FR-011, SC-004).
-- [ ] T052 [US3] Record `policy_snapshot_version` on every `HookVerdict`, `StructuredError`, and `EscalationEvent` emitted for a given invocation — all three must carry the same version for a single `correlation_id`.
+- [x] T051 [US3] Confirm the per-invocation reload path in `policy.py` is the only read site: no caching of `PolicyConfig` across invocations in `runner.py` or `hook.py` (FR-011, SC-004).
+- [x] T052 [US3] Record `policy_snapshot_version` on every `HookVerdict`, `StructuredError`, and `EscalationEvent` emitted for a given invocation — all three must carry the same version for a single `correlation_id`.
 
 **Checkpoint**: `pytest tests/katas/kata_002_pretool_guardrails/` fully green. TS-009, TS-010, TS-011, TS-019, TS-023 green. Manual: edit `config/policy.json`, re-run CLI — behavior changes without any source edit.
 
