@@ -1,0 +1,8 @@
+{
+  "tool_name": "process_refund",
+  "correlation_id": "88888888-8888-4888-8888-888888888888",
+  "amount": "100.00",
+  "currency": "USD",
+  "customer_id": "C-1008",
+  "reason": "Used by hook_failure test — policy file is corrupt at evaluation time."
+}

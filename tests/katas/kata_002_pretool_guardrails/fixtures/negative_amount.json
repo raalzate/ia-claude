@@ -1,0 +1,8 @@
+{
+  "tool_name": "process_refund",
+  "correlation_id": "55555555-5555-4555-8555-555555555555",
+  "amount": "-100.00",
+  "currency": "USD",
+  "customer_id": "C-1005",
+  "reason": "Negative amount — schema_violation (amount must be positive)."
+}

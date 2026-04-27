@@ -1,0 +1,8 @@
+{
+  "tool_name": "process_refund",
+  "correlation_id": "22222222-2222-4222-8222-222222222222",
+  "amount": "500.00",
+  "currency": "USD",
+  "customer_id": "C-1002",
+  "reason": "Boundary case — equals max_refund."
+}

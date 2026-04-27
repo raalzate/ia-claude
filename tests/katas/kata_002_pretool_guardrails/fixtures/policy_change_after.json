@@ -1,0 +1,8 @@
+{
+  "tool_name": "process_refund",
+  "correlation_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  "amount": "300.00",
+  "currency": "USD",
+  "customer_id": "C-1009",
+  "reason": "Same A=300.00 — rejected after L2=200.00 takes effect."
+}

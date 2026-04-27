@@ -1,0 +1,8 @@
+{
+  "tool_name": "process_refund",
+  "correlation_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+  "amount": "750.00",
+  "currency": "USD",
+  "customer_id": "C-1003",
+  "reason": "Identical retry of over_limit.json — used to verify determinism (FR-010)."
+}

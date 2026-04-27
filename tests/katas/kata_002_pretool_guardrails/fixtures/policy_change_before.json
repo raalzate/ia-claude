@@ -1,0 +1,8 @@
+{
+  "tool_name": "process_refund",
+  "correlation_id": "99999999-9999-4999-8999-999999999999",
+  "amount": "300.00",
+  "currency": "USD",
+  "customer_id": "C-1009",
+  "reason": "Allowed under L1=500.00 — used by US3 hot-reload test."
+}
