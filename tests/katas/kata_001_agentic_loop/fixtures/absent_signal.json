@@ -1,0 +1,16 @@
+{
+  "name": "absent_signal",
+  "description": "Response with stop_reason field absent — protocol violation.",
+  "turns": [
+    {
+      "id": "msg_absent_001",
+      "stop_reason": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "task complete (this is decoy text the loop must ignore)"
+        }
+      ]
+    }
+  ]
+}

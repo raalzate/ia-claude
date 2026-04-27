@@ -1,0 +1,18 @@
+{
+  "name": "malformed_tool_use",
+  "description": "stop_reason=tool_use but the named tool isn't registered with the kata session.",
+  "turns": [
+    {
+      "id": "msg_malformed_001",
+      "stop_reason": "tool_use",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "tu_malformed_001",
+          "name": "totally_unknown_tool",
+          "input": {"city": "Bogota"}
+        }
+      ]
+    }
+  ]
+}

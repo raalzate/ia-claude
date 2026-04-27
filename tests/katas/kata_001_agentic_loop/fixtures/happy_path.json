@@ -1,0 +1,32 @@
+{
+  "name": "happy_path",
+  "description": "tool_use → end_turn — the canonical kata flow.",
+  "turns": [
+    {
+      "id": "msg_happy_001",
+      "stop_reason": "tool_use",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll fetch the weather now."
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_happy_001",
+          "name": "get_weather",
+          "input": {"city": "Bogota"}
+        }
+      ]
+    },
+    {
+      "id": "msg_happy_002",
+      "stop_reason": "end_turn",
+      "content": [
+        {
+          "type": "text",
+          "text": "It is currently 18C and clear in Bogota."
+        }
+      ]
+    }
+  ]
+}
