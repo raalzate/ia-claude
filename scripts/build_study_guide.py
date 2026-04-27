@@ -112,20 +112,39 @@ respuesta correcta.
 
 SCENARIO_TO_KATA_MAP = """# Mapa escenario → kata
 
-Para cada escenario oficial, los katas que lo cubren directamente:
+Para cada escenario oficial, los katas (de los 30) que lo cubren
+directamente:
 
-| Escenario                          | Katas relevantes                        |
-|------------------------------------|-----------------------------------------|
-| Customer Support Agent             | 01, 02, 06, 15, 16                      |
-| Code Generation con Claude Code    | 07, 08, 09, 19                          |
-| Multi-Agent Research               | 04, 12, 19, 20                          |
-| Developer Productivity             | 07, 18, 19                              |
-| CI/CD Headless                     | 13, 17                                  |
-| Structured Data Extraction         | 05, 14, 15, 17                          |
+| Escenario                          | Katas relevantes                                       |
+|------------------------------------|--------------------------------------------------------|
+| Customer Support Agent             | 01, 02, 06, 15, 16, 21, 22, 25, 28, 30                 |
+| Code Generation con Claude Code    | 07, 08, 09, 19, 23, 24, 25, 27                         |
+| Multi-Agent Research               | 04, 12, 19, 20, 21, 28, 29                             |
+| Developer Productivity             | 07, 18, 19, 22, 23, 24, 25                             |
+| CI/CD Headless                     | 13, 17, 26, 27, 30                                     |
+| Structured Data Extraction         | 05, 14, 15, 17, 26, 29, 30                             |
 
 > **Tip de examen**: cuando te toque un escenario, recorre primero los
 > tres katas más asociados antes de mirar las opciones. Los distractores
 > a menudo "huelen bien" si los lees en abstracto.
+
+## Mapa temático — los 30 katas por hilo
+
+Una decisión técnica suele tocar varios hilos a la vez. Las conexiones
+inter-katas aparecen también al final de cada sección "Argumento de
+certificación" del kata.
+
+| Hilo                            | Katas                                       |
+|---------------------------------|---------------------------------------------|
+| Determinismo                    | 01, 02, 06, 13                              |
+| Tools & MCP                     | 02, 03, 06, 21, 22, 23, 24                  |
+| Schemas y contratos             | 05, 13, 15, 16, 20, 26, 29                  |
+| Economía de contexto            | 03, 08, 09, 10, 11, 12                      |
+| Memoria y sesión                | 08, 11, 18, 19, 25                          |
+| Aislamiento y subagentes        | 04, 12, 19, 28                              |
+| Human-in-the-loop               | 07, 15, 16, 30                              |
+| Calidad pragmática (false pos.) | 13, 14, 27, 30                              |
+| Provenance y confianza          | 15, 20, 29                                  |
 
 """
 
