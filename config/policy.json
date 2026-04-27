@@ -1,0 +1,8 @@
+{
+  "policy_id": "refund-policy",
+  "policy_snapshot_version": "v1",
+  "max_refund": "500.00",
+  "comparison_stance": "strict_less_than",
+  "escalation_pathway": "refund-review-queue",
+  "effective_from": "2026-04-23T00:00:00Z"
+}

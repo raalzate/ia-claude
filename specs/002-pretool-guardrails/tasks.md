@@ -12,12 +12,12 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Create package skeleton `katas/kata_002_pretool_guardrails/__init__.py` with empty `__all__` and a module docstring naming the kata and its anti-pattern defense (prompt-only enforcement).
-- [ ] T002 [P] Create test package skeleton `tests/katas/kata_002_pretool_guardrails/__init__.py` and empty `tests/katas/kata_002_pretool_guardrails/unit/__init__.py`, `tests/katas/kata_002_pretool_guardrails/lint/__init__.py`, `tests/katas/kata_002_pretool_guardrails/step_defs/__init__.py`.
-- [ ] T003 [P] Add dev-dependencies `anthropic`, `pydantic>=2`, `pytest`, `pytest-bdd` to the repository dependency manifest (pnpm not applicable — Python: `pyproject.toml` or `requirements-dev.txt`) and pin `python>=3.11`.
-- [ ] T004 [P] Create `config/policy.json` seed fixture with fields (`policy_id`, `policy_snapshot_version`, `max_refund`, `comparison_stance="strict_less_than"`, `escalation_pathway`, `effective_from`) per `data-model.md`.
-- [ ] T005 [P] Add `runs/` to `.gitignore` (per-session JSONL output directory per plan.md Storage section).
-- [ ] T006 [P] Configure `pytest-bdd` feature-file discovery to point at `specs/002-pretool-guardrails/tests/features/` in `tests/katas/kata_002_pretool_guardrails/conftest.py` (stub only — real fixtures added in Phase 2).
+- [x] T001 Create package skeleton `katas/kata_002_pretool_guardrails/__init__.py` with empty `__all__` and a module docstring naming the kata and its anti-pattern defense (prompt-only enforcement).
+- [x] T002 [P] Create test package skeleton `tests/katas/kata_002_pretool_guardrails/__init__.py` and empty `tests/katas/kata_002_pretool_guardrails/unit/__init__.py`, `tests/katas/kata_002_pretool_guardrails/lint/__init__.py`, `tests/katas/kata_002_pretool_guardrails/step_defs/__init__.py`.
+- [x] T003 [P] Add dev-dependencies `anthropic`, `pydantic>=2`, `pytest`, `pytest-bdd` to the repository dependency manifest (pnpm not applicable — Python: `pyproject.toml` or `requirements-dev.txt`) and pin `python>=3.11`.
+- [x] T004 [P] Create `config/policy.json` seed fixture with fields (`policy_id`, `policy_snapshot_version`, `max_refund`, `comparison_stance="strict_less_than"`, `escalation_pathway`, `effective_from`) per `data-model.md`.
+- [x] T005 [P] Add `runs/` to `.gitignore` (per-session JSONL output directory per plan.md Storage section).
+- [x] T006 [P] Configure `pytest-bdd` feature-file discovery to point at `specs/002-pretool-guardrails/tests/features/` in `tests/katas/kata_002_pretool_guardrails/conftest.py` (stub only — real fixtures added in Phase 2).
 
 ## Phase 2: Foundational (blocks all story phases)
 
