@@ -47,14 +47,14 @@
 
 ### Tests for User Story 1
 
-- [ ] T020 [P] [US1] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_hook_verdict_within_limit.py` asserting `RefundPolicyHook.evaluate` returns `HookVerdict(verdict="allow", reason_code=None)` for an amount strictly below `max_refund` [TS-001].
-- [ ] T021 [P] [US1] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_within_policy_refund_steps.py` binding the Gherkin clauses of `specs/002-pretool-guardrails/tests/features/within_policy_refund.feature` [TS-001, TS-002].
-- [ ] T022 [P] [US1] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_contracts_schemas_published_steps.py` that loads all five files under `specs/002-pretool-guardrails/contracts/` and asserts each is valid Draft 2020-12 JSON Schema [TS-021].
+- [x] T020 [P] [US1] Write unit test `tests/katas/kata_002_pretool_guardrails/unit/test_hook_verdict_within_limit.py` asserting `RefundPolicyHook.evaluate` returns `HookVerdict(verdict="allow", reason_code=None)` for an amount strictly below `max_refund` [TS-001].
+- [x] T021 [P] [US1] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_within_policy_refund_steps.py` binding the Gherkin clauses of `specs/002-pretool-guardrails/tests/features/within_policy_refund.feature` [TS-001, TS-002].
+- [x] T022 [P] [US1] Write step definitions in `tests/katas/kata_002_pretool_guardrails/step_defs/test_contracts_schemas_published_steps.py` that loads all five files under `specs/002-pretool-guardrails/contracts/` and asserts each is valid Draft 2020-12 JSON Schema [TS-021].
 
 ### Implementation for User Story 1
 
-- [ ] T023 [US1] Wire the happy-path branch in `katas/kata_002_pretool_guardrails/runner.py`: on `HookVerdict.allow`, dispatch the un-mutated payload to `refund_api_stub.process_refund` and surface the real stub response to the caller (FR-001, US1-AS1, US1-AS2).
-- [ ] T024 [US1] Ensure `events.jsonl` records `kind="invocation"`, `kind="verdict"` (allow), and `kind="refund_api_call"` in that order for the happy path (FR-009 invariant for allow verdicts).
+- [x] T023 [US1] Wire the happy-path branch in `katas/kata_002_pretool_guardrails/runner.py`: on `HookVerdict.allow`, dispatch the un-mutated payload to `refund_api_stub.process_refund` and surface the real stub response to the caller (FR-001, US1-AS1, US1-AS2).
+- [x] T024 [US1] Ensure `events.jsonl` records `kind="invocation"`, `kind="verdict"` (allow), and `kind="refund_api_call"` in that order for the happy path (FR-009 invariant for allow verdicts).
 
 **Checkpoint**: `pytest tests/katas/kata_002_pretool_guardrails/unit/test_hook_verdict_within_limit.py tests/katas/kata_002_pretool_guardrails/step_defs/test_within_policy_refund_steps.py` green. TS-001, TS-002, TS-021 green. Running the CLI with `within_limit.json` produces exactly one stub call.
 

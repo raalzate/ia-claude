@@ -122,4 +122,27 @@ addopts = [
 markers = [
     "live: hits the real Anthropic API; off by default",
     "slow: longer than 5s on the CI runner",
+    # ----- Gherkin tags surfaced as pytest markers by pytest-bdd ---------
+    # Story-level tags
+    "US-001: User Story 1 — within-policy refund proceeds",
+    "US-002: User Story 2 — over-limit / malformed / failure rejected pre-API",
+    "US-003: User Story 3 — policy hot-reload",
+    # Priority tags
+    "P1: priority 1 — MVP",
+    "P2: priority 2 — anti-pattern defense",
+    "P3: priority 3 — operational",
+    # Type tags
+    "acceptance: BDD acceptance scenario",
+    "contract: contract-validation scenario",
+    "validation: data-model invariant scenario",
+    # Test-spec id tags (TS-001..TS-023) for traceability
+    "TS-001", "TS-002", "TS-003", "TS-004", "TS-005", "TS-006",
+    "TS-007", "TS-008", "TS-009", "TS-010", "TS-011", "TS-012",
+    "TS-013", "TS-014", "TS-015", "TS-016", "TS-017", "TS-018",
+    "TS-019", "TS-020", "TS-021", "TS-022", "TS-023",
+    # Functional-requirement tags
+    "FR-001", "FR-002", "FR-003", "FR-004", "FR-005", "FR-006",
+    "FR-007", "FR-008", "FR-009", "FR-010", "FR-011", "FR-012", "FR-013",
+    # Success-criteria tags
+    "SC-001", "SC-002", "SC-003", "SC-004",
 ]
