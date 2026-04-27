@@ -13,14 +13,12 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 from decimal import Decimal
-from pathlib import Path
 
 import jsonschema
 import pytest
 from pydantic import ValidationError
 from pytest_bdd import given, parsers, scenario, then, when
 
-from katas.kata_002_pretool_guardrails.errors import ReasonCode
 from katas.kata_002_pretool_guardrails.escalation import (
     build_escalation_event,
     compute_payload_digest,
@@ -28,7 +26,6 @@ from katas.kata_002_pretool_guardrails.escalation import (
 from katas.kata_002_pretool_guardrails.hook import RefundPolicyHook
 from katas.kata_002_pretool_guardrails.models import (
     EscalationEvent,
-    HookVerdict,
     PolicyConfig,
     StructuredError,
     ToolCallPayload,

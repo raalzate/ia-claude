@@ -77,7 +77,8 @@ def load_policy(path: str | Path | None = None) -> PolicyConfig:
         try:
             data["max_refund"] = Decimal(data["max_refund"])
         except Exception as exc:  # pragma: no cover — caught below
-            raise PolicyLoadError(f"max_refund is not a valid decimal: {data['max_refund']}") from exc
+            raw = data["max_refund"]
+            raise PolicyLoadError(f"max_refund is not a valid decimal: {raw}") from exc
     try:
         return PolicyConfig.model_validate(data)
     except ValidationError as exc:

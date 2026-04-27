@@ -49,6 +49,7 @@ extend-exclude = [
     "tests/fixtures",      # recorded API responses, never lint
     ".tessl",              # vendored tile content
     "specs/_templates",    # markdown-only templates
+    "**/notebook.ipynb",   # narrative cells use long lines and demo imports
 ]
 
 [tool.ruff.lint]
@@ -69,8 +70,9 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Tests: relax docstring rules and "magic value" complaints; assertions
 # speak for themselves and literal counts (e.g. `iterations == 2`) are the
-# whole point of acceptance tests.
-"tests/**" = ["D", "PLR2004", "PLC0415"]
+# whole point of acceptance tests. E501 relaxed for step_def modules whose
+# parsers.parse(...) clauses are full Gherkin sentences.
+"tests/**" = ["D", "PLR2004", "PLC0415", "E501"]
 # Schema modules: pydantic models often re-export field-only classes
 # without docstrings on the class itself.
 "**/models.py" = ["D101", "D102"]

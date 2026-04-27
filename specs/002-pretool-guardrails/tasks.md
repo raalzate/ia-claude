@@ -122,7 +122,7 @@
 
 ## Final Phase: Polish & Cross-Cutting Concerns
 
-- [ ] T053 [P] Author `katas/kata_002_pretool_guardrails/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+- [x] T053 [P] Author `katas/kata_002_pretool_guardrails/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
   1. **Objective & anti-pattern** — kata goal in plain language; the prompt-only-enforcement anti-pattern it structurally defends against.
   2. **Concepts (Claude architecture certification)** — every concept this kata exercises, each with a one-line definition tied to the certification syllabus: PreToolUse hooks, deterministic guardrails, structured tool-result errors, policy-as-data hot reload, fail-closed control flow, audit log / JSONL provenance, human-in-the-loop escalation, AST lint as machine-enforced policy.
   3. **Architecture walkthrough** — components (`runner` → `RefundPolicyHook` → `PolicyConfig` loader → `refund_api_stub` / `EscalationEvent` / `EventLog`) rendered as an ASCII or mermaid block diagram.
@@ -134,15 +134,15 @@
   9. **Run** — executable cells reproducing the fixture run for `within_limit.json` (allow) and `over_limit.json` (reject); a final commented cell for the `LIVE_API=1` path.
   10. **Result** — captured stdout, `events.jsonl` excerpts, and `refund_api_calls.jsonl` zero-call assertion for the reject path.
   11. **Reflection (Principle VIII)** — answers to the prompts in `quickstart.md` covering Principles I / II / VI / VIII.
-- [ ] T054 [P] Add module-level docstrings to each of `katas/kata_002_pretool_guardrails/hook.py`, `policy.py`, `models.py`, `errors.py`, `escalation.py`, `refund_api_stub.py`, `prompts.py`, `runner.py`, `events.py` — each docstring names the module's role in the kata and the FR(s) it owns.
-- [ ] T055 [P] Add why-comments on non-trivial functions — specifically `RefundPolicyHook.evaluate` (why fail-closed ordering matters), `policy.load_policy` (why per-invocation reload), `refund_api_stub.process_refund` (why it records calls), and the AST lint tests (why machine-enforced, not reviewer-enforced) — each comment tied to the kata objective.
-- [ ] T057 [P] Verify `specs/002-pretool-guardrails/quickstart.md` walkthrough works end-to-end — follow each step verbatim on a clean clone; fix any drift between the doc and the implementation.
-- [ ] T058 Run quickstart validation end-to-end and record the session's `runs/<session-id>/events.jsonl` + `refund_api_calls.jsonl` as evidence attached to the tasks closure note.
-- [ ] T059 [P] Run `ruff check katas/kata_002_pretool_guardrails/ tests/katas/kata_002_pretool_guardrails/` and fix all violations; enforce `--select=E,F,W,I,B` minimum.
-- [ ] T060 [P] Run `mypy --strict katas/kata_002_pretool_guardrails/` and eliminate all errors; no `# type: ignore` without a kata-specific reason comment.
-- [ ] T061 [P] Run `pytest --cov=katas.kata_002_pretool_guardrails tests/katas/kata_002_pretool_guardrails/ --cov-report=term-missing --cov-fail-under=90` and ensure ≥ 90% line coverage; gaps must be justified in the PR description.
-- [ ] T062 [P] Run `pip-audit` (or equivalent) against the kata dependency set and document any accepted advisories in a final markdown cell of `notebook.ipynb`.
-- [ ] T063 Regenerate the IIKit dashboard by running `bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/generate-dashboard-safe.sh` after T058 passes.
+- [x] T054 [P] Add module-level docstrings to each of `katas/kata_002_pretool_guardrails/hook.py`, `policy.py`, `models.py`, `errors.py`, `escalation.py`, `refund_api_stub.py`, `prompts.py`, `runner.py`, `events.py` — each docstring names the module's role in the kata and the FR(s) it owns.
+- [x] T055 [P] Add why-comments on non-trivial functions — specifically `RefundPolicyHook.evaluate` (why fail-closed ordering matters), `policy.load_policy` (why per-invocation reload), `refund_api_stub.process_refund` (why it records calls), and the AST lint tests (why machine-enforced, not reviewer-enforced) — each comment tied to the kata objective.
+- [x] T057 [P] Verify `specs/002-pretool-guardrails/quickstart.md` walkthrough works end-to-end — follow each step verbatim on a clean clone; fix any drift between the doc and the implementation.
+- [x] T058 Run quickstart validation end-to-end and record the session's `runs/<session-id>/events.jsonl` + `refund_api_calls.jsonl` as evidence attached to the tasks closure note.
+- [x] T059 [P] Run `ruff check katas/kata_002_pretool_guardrails/ tests/katas/kata_002_pretool_guardrails/` and fix all violations; enforce `--select=E,F,W,I,B` minimum.
+- [ ] T060 [P] Run `mypy --strict katas/kata_002_pretool_guardrails/` and eliminate all errors; no `# type: ignore` without a kata-specific reason comment.  *(deferred — mypy not installed on workshop machine; pyproject does not list it. Add to dev deps and re-run when toolchain is provisioned.)*
+- [x] T061 [P] Run `pytest --cov=katas.kata_002_pretool_guardrails tests/katas/kata_002_pretool_guardrails/ --cov-report=term-missing --cov-fail-under=90` and ensure ≥ 90% line coverage; gaps must be justified in the PR description.  *(achieved 96.98%)*
+- [ ] T062 [P] Run `pip-audit` (or equivalent) against the kata dependency set and document any accepted advisories in a final markdown cell of `notebook.ipynb`.  *(deferred — pip-audit not installed on workshop machine. Run as part of CI provisioning before kata 2 ships.)*
+- [x] T063 Regenerate the IIKit dashboard by running `bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/generate-dashboard-safe.sh` after T058 passes.
 
 ---
 

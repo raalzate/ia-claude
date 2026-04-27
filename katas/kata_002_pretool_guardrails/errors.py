@@ -18,10 +18,10 @@ Why an explicit enum:
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class ReasonCode(str, Enum):
+class ReasonCode(StrEnum):
     """Reasons a HookVerdict may be ``reject``."""
 
     SCHEMA_VIOLATION = "schema_violation"

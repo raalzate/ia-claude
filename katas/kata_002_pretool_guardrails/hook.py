@@ -34,7 +34,7 @@ from pydantic import ValidationError
 
 from .errors import ReasonCode
 from .models import HookVerdict, PolicyConfig, ToolCallPayload
-from .policy import PolicyLoadError
+from .policy import PolicyLoadError, load_policy
 
 
 class PreToolUseHook(Protocol):
@@ -220,8 +220,6 @@ def evaluate_with_policy_path(
     failure) so the runner can decide which escalation arguments are
     available.
     """
-    from .policy import load_policy  # local import: keeps module import cheap
-
     correlation_id = RefundPolicyHook._best_effort_correlation_id(payload)
     evaluated_at = datetime.now(tz=UTC)
     try:
@@ -248,5 +246,7 @@ __all__ = [
 ]
 
 
-# noqa: needed because the bare-except in evaluate is the contract.
-_ = Decimal  # keep Decimal imported for type-checkers reading the file
+# Decimal is imported above only to keep the amount-path import surface
+# discoverable from this module — the lint test asserts no float() in
+# hook/models/runner, so listing Decimal here documents what is allowed.
+_ = Decimal
