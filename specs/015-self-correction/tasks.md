@@ -128,8 +128,16 @@
 
 ### Documentation (Principle VIII — Mandatory)
 
-- [ ] T053 [P] Write `katas/015_self_correction/README.md`: kata objective (numeric self-audit), self-correction loop (parse → independent recomputation in validator → mechanical conflict flag → review-queue routing) with an explicit bounded-retry note that the kata performs exactly ONE cross-audit pass per invoice (no infinite loops, no silent pass), anti-pattern defense (dual-total emission + AST silent-overwrite gate + pydantic forgery gate), run instructions (recorded + LIVE_API), and a reflection section that answers the two prompts in `quickstart.md` tied to Principle VIII.
-- [ ] T054 [P] In `katas/015_self_correction/README.md`, explicitly document the retry budget (single-pass cross-audit — conflicts are escalated to human review, never retried silently) and the divergence detection mechanism (`abs(stated_total - calculated_total) > tolerance_cents/100` computed inside the pydantic `model_validator`, not on prose).
+- [ ] T053 [P] Author `katas/015_self_correction/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — numeric self-audit, dual-total emission, independent recomputation in pydantic `model_validator`, mechanical conflict flag, single-pass cross-audit (no infinite loops), review-queue routing, AST silent-overwrite gate, pydantic forgery gate — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`models` → `extractor` → `validator` → `review_queue` → `client` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — dual-total-cross-audit, validator-over-prose-check, single-pass-bounded-retry, escalate-not-retry on conflict — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, V Test-First, VI Human-in-the-Loop, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — retry budget (single-pass cross-audit — conflicts are escalated to human review, never retried silently); divergence detection mechanism (`abs(stated_total - calculated_total) > tolerance_cents/100` computed inside the pydantic `model_validator`, not on prose) (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T055 [P] Add module-level docstrings to `katas/015_self_correction/models.py`, `extractor.py`, `validator.py`, `review_queue.py`, `client.py`, and `runner.py` explaining each file's role in the self-correction loop (schema source-of-truth, raw parse seam, re-sum + forgery gate, append-only review sink, recorded client, CLI orchestration).
 - [ ] T056 [P] Add *why*-comments on `build_extraction_tool`, the `InvoiceExtraction` `model_validator`, `compute_calculation_trace`, `append_review_entry`, `record_extraction`, and the AST lint walker — each tying to its FR-XXX / SC-XXX anchor and to Principle VII (Provenance & Self-Audit) / Principle VIII (Mandatory Documentation).
 - [ ] T057 [P] Verify `specs/015-self-correction/quickstart.md` — confirm every section (Install, recorded run, LIVE_API corpus run, scenario → spec mapping table, Kata Completion Standards checklist) matches the implemented layout and fixture filenames.
@@ -161,7 +169,7 @@
   - T016, T017, T018, T019 in US1 tests.
   - T028, T029, T030 in US2 tests (different files).
   - T040, T041, T042, T043 in US3 tests (different files).
-  - T053, T054, T055, T056, T057, T059, T060, T061 in the final Polish phase.
+  - T053, T055, T056, T057, T059, T060, T061 in the final Polish phase.
 - Within a story, step-def tasks (T023–T027, T033–T039, T044–T051) all write to the same file (`test_self_correction_steps.py`) and are therefore **sequential**, not parallel.
 
 ## Implementation Strategy (MVP)

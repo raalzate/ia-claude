@@ -109,7 +109,7 @@ enumerated in `spec.md`.
 | V. Test-First Kata Delivery (NN) | `/iikit-04-testify` will lock `.feature` files and assertion-integrity hashes before any production code. `tasks.md` (generated later by `/iikit-05-tasks`) will reference test IDs. This plan does NOT commit code. |
 | VI. Human-in-the-Loop Escalation | The reject-content gate (FR-005) halts composition with a typed exception rather than silently reordering the prompt — the human author is the escalation target. The `allow_anti_pattern` flag forces explicit opt-in to render the US2 mid-buried layout. |
 | VII. Provenance & Self-Audit | `runs/kata-011/<session-id>/` persists every rendered layout, every compaction event, and every compliance trial with its trial id, rule id, layout label, model id, and outcome — sufficient to re-derive SC-001, SC-002, SC-003, SC-004 from the files alone. |
-| VIII. Mandatory Documentation (NN) | Every non-trivial function / validator will carry a *why* comment tied to the FR or the anti-pattern it defends against. Kata `README.md` (produced during `/iikit-07-implement`) will cover objective, walkthrough, anti-pattern defense, run instructions, and reflection. |
+| VIII. Mandatory Documentation (NN) | Every non-trivial function / validator will carry a *why* comment tied to the FR or the anti-pattern it defends against. A single `notebook.ipynb` produced at `/iikit-07-implement` is the Principle VIII deliverable: it explains the kata, results, every Claude architecture concept exercised, the architecture walkthrough, applied patterns + principles, practitioner recommendations, the contract details, run cells, and the reflection. No separate README.md. |
 
 **Result:** PASS. Proceed to Phase 0 / 1 artifacts.
 
@@ -131,7 +131,7 @@ specs/011-softmax-mitigation/
   checklists/
     requirements.md    # (already present — produced by /iikit-01)
   tasks.md             # (generated later by /iikit-05-tasks)
-  README.md            # Principle VIII deliverable — written during /iikit-07
+  # (kata narrative lives in katas/.../notebook.ipynb — no spec-side README)
 ```
 
 ### Source Code (repository root)
@@ -146,7 +146,7 @@ katas/
     compliance.py          # Compliance harness: N trials × L layouts → ComplianceRecord rows
     client.py              # Thin injectable Anthropic client wrapper (shared shape with kata 001)
     runner.py              # CLI entrypoint: `python -m katas.011_softmax_mitigation.runner`
-    README.md              # kata narrative — written during /iikit-07
+    notebook.ipynb       # Principle VIII deliverable — kata narrative + Claude architecture certification concepts (written during /iikit-07)
 
 tests/
   katas/

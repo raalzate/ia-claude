@@ -152,13 +152,20 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T064 [P] Write `katas/014_few_shot_calibration/README.md` with: kata objective, few-shot selection + ordering strategy (hand-curated 2–4 pairs placed as a stable prefix), anti-pattern defense (silent zero-shot on subjective tasks, FR-007), run instructions mirroring `quickstart.md`, the example-selection contract + edge-case coverage table (contradictory, overlong, leakage-candidate, missing-coverage), and the Principle VIII reflection section answering the two reflection prompts from `quickstart.md`
+- [ ] T064 [P] Author `katas/014_few_shot_calibration/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — hand-curated 2–4 example pairs as stable prefix, ordering as part of contract, contradictory-set detection, overlong-example size guard, leakage-candidate flag, coverage validation, calibration-delta gate (≥ 40% relative reduction), zero-shot-as-baseline anti-pattern — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`models` → `builder` → `registry` → `validators` → `harness` → `client` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — stable-prefix few-shot, contradiction lint, leakage gate, calibration-delta as quality gate — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, III Context Economy, V Test-First, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — example-selection contract — entry criteria for an `ExamplePair`; size envelope for an `ExampleSet` (2–4); contradiction rule with canonical normalization; size-guard threshold; leakage-candidate flag; coverage validation rule; reproducibility — `runs/<session-id>/calibration.json` + `outputs.jsonl` as single source of truth, `set_id` stamping (FR-003, SC-004) for traceability, ≥ 40% relative-reduction gate enforced by `compute_delta` (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T065 [P] Add module-level docstrings to each of `katas/014_few_shot_calibration/models.py`, `builder.py`, `registry.py`, `validators.py`, `harness.py`, `client.py`, `runner.py` explaining each module's role in the zero-shot→few-shot calibration loop
 - [ ] T066 [P] Add why-comments (per Constitution Principle VIII) on every non-trivial function across `katas/014_few_shot_calibration/*.py` — each comment must tie the code choice back to the kata objective (escape zero-shot defaults on subjective/format-sensitive tasks) or to the specific anti-pattern it defends against (silent zero-shot, contradictory sets, overlong examples, leakage)
-- [ ] T067 [P] Document the example-selection contract in `katas/014_few_shot_calibration/README.md`: entry criteria for an `ExamplePair`, size envelope for an `ExampleSet` (2–4), contradiction rule with canonical normalization, size-guard threshold, leakage-candidate flag, and the coverage validation rule — each row citing its FR / SC
 - [ ] T068 [P] Verify `specs/014-few-shot-calibration/quickstart.md` usage walkthrough is accurate against the final file layout; update paths or commands if drift was introduced during implementation (runner name, fixture paths, set ids)
 - [ ] T069 Run `quickstart.md` end-to-end: `pytest tests/katas/014_few_shot_calibration -v` against fixtures, then optional `LIVE_API=1 python -m katas.014_few_shot_calibration.runner --task informal_measures --set-id v1_pinch_handful_splash` smoke run; archive both outputs as PR evidence
-- [ ] T070 [P] Add a "Reproducibility" section to `katas/014_few_shot_calibration/README.md` documenting how `runs/<session-id>/calibration.json` + `outputs.jsonl` are the single source of truth for any reported delta, how `set_id` stamping (FR-003, SC-004) makes any result traceable, and how the ≥ 40% relative-reduction gate is enforced by `compute_delta`
 - [ ] T071 [P] Run `ruff check katas/014_few_shot_calibration tests/katas/014_few_shot_calibration` and `black --check` over the same paths; fix any findings
 - [ ] T072 [P] Produce a coverage report (`pytest --cov=katas.014_few_shot_calibration`) and archive it at `runs/coverage/014_few_shot_calibration.txt`; target ≥ 90% line coverage on `harness.py`, `builder.py`, `validators.py`, `registry.py`
 - [ ] T073 Final self-audit: read the emitted `calibration.json` + `comparison.json` + `sensitivity.json` from the fixture-mode run and confirm they satisfy SC-001, SC-002, SC-003, SC-004 — record the check in the PR description
@@ -175,7 +182,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 - Phase 4: T032 is [P]. T033–T036 depend on T032 + T027/T028. T037 depends on T027. T038 is [P]. T039 depends on T027. T040 depends on T039. T041 depends on T027 + T028. T042 depends on T038 + T028.
 - Phase 5: T043–T046 are [P]. T047–T049 depend on T046 + T028 + T053. T050 depends on T012. T051 depends on T028. T052 depends on T051. T053 depends on T013 + T028.
 - Phase 6: T054–T057 are [P]. T058–T061 depend on T057 + T007 + T010. T062 depends on T007 + T010. T063 depends on T011.
-- Phase 7: T064–T068 and T070–T072 are [P]. T069 depends on all prior phases complete. T073 depends on T069.
+- Phase 7: T064–T066, T068, T071, T072 are [P]. T069 depends on all prior phases complete. T073 depends on T069.
 
 **Story dependencies:**
 - US2 extends the zero-shot arm built in US1 (anti-pattern guard, side-by-side comparison) — cannot start until T027 + T028 land.
@@ -198,7 +205,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 
 **Phase 6 [P]:** T054, T055, T056, T057 fixture/feature batch in parallel; T062, T063 in parallel once validators exist.
 
-**Phase 7 [P]:** T064, T065, T066, T067, T068, T070, T071, T072 all in parallel.
+**Phase 7 [P]:** T064, T065, T066, T068, T071, T072 all in parallel.
 
 ---
 

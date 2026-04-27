@@ -103,7 +103,7 @@ README; five fixture trees; three JSON schemas; one canonical template
 | V. Test-First Kata Delivery (NN) | `/iikit-04-testify` runs before any production code; tasks reference `.feature` test IDs; red→green→refactor enforced. |
 | VI. Human-in-the-Loop | Missing-target / cycle diagnostics halt the tool with a labelled exception; the reviewer is the escalation target. No silent degradation path exists. |
 | VII. Provenance & Self-Audit | Every `MemoryEntry` in `ResolvedMemory` carries `source_path` (absolute), `source_sha256`, and `declaration_order` so aggregated rules can always be traced back to the file they came from. Matches Principle VII. |
-| VIII. Mandatory Documentation (NN) | The kata IS a documentation kata — its whole output is governance manuals. The per-kata `README.md` covers objective, walkthrough, the personal-pollutes-team anti-pattern, run instructions, and reflection. |
+| VIII. Mandatory Documentation (NN) | The kata IS a documentation kata — its whole output is governance manuals. A single `notebook.ipynb` produced at `/iikit-07-implement` is the Principle VIII deliverable: it explains the kata, results, every Claude architecture concept exercised, the architecture walkthrough, applied patterns + principles, practitioner recommendations, the contract details, run cells, and the reflection. No separate `README.md`. |
 
 **Result:** PASS. Proceed.
 
@@ -125,7 +125,7 @@ specs/008-claude-md-memory/
   tasks.md                    # Phase 2 output (/iikit-05-tasks)
   checklists/
     requirements.md           # produced by /iikit-03-checklist (already present)
-  README.md                   # Principle VIII deliverable (written at /iikit-07)
+  # (kata narrative lives in katas/.../notebook.ipynb — no spec-side README)
 ```
 
 ### Source Code (repository root)
@@ -146,7 +146,7 @@ katas/
         coding-style.md
         testing.md
         commit-message.md
-    README.md                 # kata narrative (written during /iikit-07)
+    notebook.ipynb            # Principle VIII deliverable — kata narrative + Claude architecture certification concepts (written during /iikit-07)
 
 tests/
   katas/

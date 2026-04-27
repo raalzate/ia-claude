@@ -131,12 +131,20 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas wir
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T058 [P] Write `katas/011_softmax_mitigation/README.md` covering: kata objective, the softmax-collapse / "lost in the middle" problem statement, the edge-placement + proactive-compaction mitigation, anti-pattern defense (how the `mid_buried` A/B proves the dilution on the practitioner's own workload), structured-disambiguation strategy (how `compliance_probe_schema` keeps scoring signal-driven — D-006), run instructions mirroring `quickstart.md`, and the Principle VIII reflection section answering the two reflection prompts from `quickstart.md`
+- [ ] T058 [P] Author `katas/011_softmax_mitigation/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — softmax-collapse / lost-in-the-middle problem, edge-placement anchoring, proactive compaction at 55% trigger, structured-disambiguation probes (`compliance_probe_schema`), reject-content gate, signal-driven compliance scoring vs prose-coercion, A/B mid-buried fixture for self-proof — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`prompt_builder` → `models` → `compaction` → `compliance` → `tokenizer` → `client` → `runlog` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — edge-placement-over-middle, proactive-compaction-before-saturation, structured-probe-for-scoring, reject-undetermined-instead-of-coerce — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, III Context Economy, V Test-First, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — `runs/kata-011/<session-id>/{layouts,compliance.jsonl,compactions.jsonl,anti_pattern_report.md}` is the single source of truth; SC-001..SC-004 re-derivable from those files alone (Principle VII); structured-disambiguation strategy (D-006) — model emits JSON against `CriticalRule.compliance_probe_schema`, scorer reads typed fields only, ambiguous responses surface as `outcome="undetermined"` rather than coerced (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T059 [P] Add module-level docstrings to each of `katas/011_softmax_mitigation/models.py`, `prompt_builder.py`, `compaction.py`, `compliance.py`, `client.py`, `tokenizer.py`, `runlog.py`, `exceptions.py`, `runner.py` — each docstring states the module's role in the softmax-dilution defense (Principle VIII)
 - [ ] T060 [P] Add why-comments (per Constitution Principle VIII) on every non-trivial validator, builder branch, and trigger decision across `katas/011_softmax_mitigation/*.py` — each comment ties the code choice back to the kata's Principle III context-economy objective (edge anchoring / reject-content gate / 55% trigger / re-anchoring) rather than describing *what* the code does
 - [ ] T061 [P] Verify `specs/011-softmax-mitigation/quickstart.md` usage walkthrough is accurate against the final file layout; update paths, commands, and the scenario→spec mapping if drift was introduced during implementation
 - [ ] T062 Run `quickstart.md` end-to-end: `pytest tests/katas/011_softmax_mitigation -v` against fixtures, then optional `LIVE_API=1 python -m katas.011_softmax_mitigation.runner --compare --trials 20` smoke run; record both outputs as part of PR evidence
-- [ ] T063 [P] Add a "Reproducibility & Audit" section to `katas/011_softmax_mitigation/README.md` documenting how `runs/kata-011/<session-id>/{layouts,compliance.jsonl,compactions.jsonl,anti_pattern_report.md}` is the single source of truth and how SC-001, SC-002, SC-003, SC-004 can be re-derived from those files alone (Principle VII)
 - [ ] T064 [P] Run `ruff check katas/011_softmax_mitigation tests/katas/011_softmax_mitigation` and `black --check` over the same paths; fix any findings
 - [ ] T065 [P] Produce a coverage report (`pytest --cov=katas.011_softmax_mitigation`) and archive it at `runs/coverage/011_softmax_mitigation.txt`; target ≥ 90% line coverage on `prompt_builder.py`, `compaction.py`, and `compliance.py`
 - [ ] T066 Final self-audit: read the emitted `compliance.jsonl` + `compactions.jsonl` from a compare-mode run and confirm they satisfy SC-001, SC-002, SC-003, SC-004 — record the check in the PR description
@@ -152,7 +160,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas wir
 - Phase 3: T012–T016 (fixtures + feature copy) can run in parallel. T017–T021 all live in the same step-def file and must run sequentially. T022–T025 are [P] once T006/T007/T010 exist. T026 depends on T006, T007, T010. T027 depends on T026. T028 depends on T006, T009, T011. T029 depends on T026, T028.
 - Phase 4: T030, T031 are [P]. T032–T036 live in the same step-def file and must run sequentially. T037, T038 are [P] once T006/T007 exist. T039 depends on T026. T040 depends on T028, T011. T041 depends on T029, T039, T040.
 - Phase 5: T042, T043 are [P]. T044–T051 live in the same step-def file and must run sequentially. T052, T053 are [P] once T006/T007 exist. T054 depends on T006, T007, T010. T055 depends on T054. T056 depends on T026, T054. T057 depends on T029, T054, T056.
-- Phase 6: T058–T061, T063–T065 are [P]. T062 depends on all prior phases complete. T066 depends on T062.
+- Phase 6: T058–T061, T064, T065 are [P]. T062 depends on all prior phases complete. T066 depends on T062.
 
 **Story dependencies:**
 - US2 consumes the edge-placed baseline produced by US1 — cannot assert the 20 pp delta until T026–T029 land.
@@ -172,7 +180,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas wir
 
 **Phase 5 [P]:** T042, T043 in parallel; T052, T053 in parallel once foundational entities exist.
 
-**Phase 6 [P]:** T058, T059, T060, T061, T063, T064, T065 all in parallel.
+**Phase 6 [P]:** T058, T059, T060, T061, T064, T065 all in parallel.
 
 ---
 
@@ -190,4 +198,4 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas wir
 - Each user story is independently testable — US1 against `edge_placed_short.json` + boundary/contention fixtures, US2 against `mid_buried_short.json` + the US1 baseline, US3 against `compaction_event_boundary.json` + a scripted usage-fraction ramp.
 - Verify every `.feature` scenario fails before writing the matching production code (Constitution V — TDD). Do NOT make tests pass by editing assertions; fix the builder/trigger/scorer instead (assertion-integrity rule).
 - AST lint test `tests/katas/011_softmax_mitigation/lint/test_no_prose_matching.py` is the irreversible guardrail against regression into prose-matched scoring — keep it green at all times after T025.
-- Structured-disambiguation strategy (D-006) is what makes the compliance score signal-driven: the model emits JSON against `CriticalRule.compliance_probe_schema`, the scorer reads typed fields only, and ambiguous responses surface as `outcome="undetermined"` rather than being coerced — document this in `README.md` (T058) alongside the anti-pattern defense.
+- Structured-disambiguation strategy (D-006) is what makes the compliance score signal-driven: the model emits JSON against `CriticalRule.compliance_probe_schema`, the scorer reads typed fields only, and ambiguous responses surface as `outcome="undetermined"` rather than being coerced — document this in `notebook.ipynb` (T058) alongside the anti-pattern defense.

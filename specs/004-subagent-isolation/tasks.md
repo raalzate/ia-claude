@@ -121,10 +121,18 @@
 
 ### Documentation (Principle VIII — Mandatory Documentation)
 
-- [ ] T059 [P] Write `katas/kata_004_subagent_isolation/README.md`: kata objective (hub-and-spoke scoped fan-out), subagent isolation architecture (Coordinator / TaskSpawner / Subagent / HandoffContract), anti-pattern defense (leak-probe UUID scan + AST lint + pydantic `extra="forbid"`), run instructions (fixture run and `LIVE_API=1` run), and reflection section answering the quickstart's reflection prompts (Principle VIII)
+- [ ] T059 [P] Author `katas/kata_004_subagent_isolation/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — hub-and-spoke subagent orchestration, scoped fan-out, structured handoff contract (`SubtaskPayload` / `SubagentResult`), AST lint as governance, leak-probe UUID scan, pydantic `extra="forbid"` triple defense, fresh SDK session per subagent call — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`Coordinator` (hub) → `TaskSpawner` (injection seam) → `Subagent` (spoke) → `models` (HandoffContract) → `client` (Anthropic seam) → `runner` (CLI + audit)) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — closed-payload handoff, no-history-leak, fresh-session-per-spawn, ValidationError-as-terminal — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, IV Subagent Isolation, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — subagent isolation contract — context boundary (only `SubtaskPayload` crosses), return value (only `SubagentResult`), no-leakage triple defense (AST lint + leak-probe UUID + `extra="forbid"`) (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T060 [P] Add module-level docstrings to every file explaining its role in subagent orchestration: `coordinator.py` (hub, owns history), `subagent.py` (spoke, seeded from payload only), `task_spawner.py` (injection seam, swap point), `models.py` (typed handoff contract), `client.py` (Anthropic seam), `runner.py` (CLI + audit writer)
 - [ ] T061 [P] Add why-comments on non-trivial functions: `Coordinator.spawn_subtask` (Principle IV — why we build payload from a closed dict, not from history), `Coordinator.run` (why audit log is mandatory before returning, FR-005), `Subagent.run` (why fresh SDK session per call), `SubagentResult.model_validate_json` call site (why `ValidationError` is terminal, FR-004)
-- [ ] T062 [P] Document the subagent isolation contract in `katas/kata_004_subagent_isolation/README.md`: context boundary (nothing crosses except `SubtaskPayload`), return value (only `SubagentResult`), explicit no-leakage guarantee (AST lint + leak-probe UUID + `extra="forbid"` triple defense)
 - [ ] T063 [P] Verify `specs/004-subagent-isolation/quickstart.md` matches implemented CLI flags, fixture paths, and audit file layout; update any drift
 
 ### Validation
@@ -154,7 +162,7 @@ Within a single phase, tasks marked `[P]` touch disjoint files and may be run in
 - **Phase 3 tests**: T011, T012, T019, T020 parallel (feature copy, fixture, two unit tests — no overlap)
 - **Phase 4 tests**: T028, T029, T030, T037, T038, T039 parallel (feature copy + fixtures + lint + integration + nested-spawn unit)
 - **Phase 5 tests**: T044, T045, T046, T053, T054 parallel (feature copy + fixtures + two unit tests)
-- **Final Phase docs**: T059, T060, T061, T062, T063 parallel (README, docstrings, why-comments, contract doc, quickstart verify touch disjoint files)
+- **Final Phase docs**: T059, T060, T061, T063 parallel (notebook, docstrings, why-comments, quickstart verify touch disjoint files)
 - **Final Phase validation**: T065, T066 parallel after T064
 
 Step-definition files (T013–T018, T031–T036, T047–T052) are sequential within each file because they share a single Python module per feature.

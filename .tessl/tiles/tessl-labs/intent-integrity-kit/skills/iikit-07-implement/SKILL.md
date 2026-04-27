@@ -22,6 +22,49 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 > **Windows**: Replace `bash …/iikit-07-implement/scripts/bash/*.sh` with `pwsh …/iikit-07-implement/scripts/powershell/*.ps1` (same flags, `-PascalCase`).
 
+## Language Policy (MANDATORY)
+
+- **All user-facing output in Spanish**: progress reports, summaries, questions, approval prompts, error messages, dashboard descriptions, headings, tables, status updates, BDD chain explanations, commit-strategy prompts.
+- **Code stays in English**: identifiers (variables, functions, classes, types, files, directories), inline code comments, docstrings, log strings emitted by code, commit messages (Conventional Commits in English), git branch names, JSON keys, test names in `.feature` files (already locked — never translate), shell commands.
+- **Mixed artifacts**: when summarizing a code change, describe it in Spanish but keep code blocks, paths, and identifiers verbatim in English.
+- **Translation never overrides hashes**: `.feature` files, `test-specs.md`, and `context.json` are integrity-anchored — do not translate or alter.
+
+## Human-in-the-Loop Phase Gates (MANDATORY)
+
+Implementation runs as a **cycle of phases**. After each phase, halt and present a partial-results checkpoint in Spanish for user analysis before continuing.
+
+**Phase boundaries** (gate after each):
+1. **Setup** (dependencies, tiles, scaffolding — §3)
+2. **Foundational** (shared infra tasks before user stories)
+3. **Each User Story** (one gate per `[USn]` group)
+4. **Polish** (final cleanup tasks)
+
+**Gate protocol** (run at end of every phase, before starting next):
+
+1. Mark completed tasks `[x]` and commit per chosen strategy.
+2. Regenerate dashboard.
+3. Print a Spanish checkpoint with these sections:
+   - **Fase completada**: nombre + IDs de tareas terminadas.
+   - **Resumen de cambios**: archivos creados/modificados (rutas en inglés), una línea en español por archivo describiendo intención.
+   - **Tests ejecutados**: comando, resultado RED/GREEN, conteo pass/fail.
+   - **Decisiones tomadas por la IA**: elecciones no triviales (libs elegidas, patrones aplicados, supuestos asumidos).
+   - **Riesgos / dudas**: cualquier desviación del plan, ambigüedad detectada o suposición pendiente de validar.
+   - **Próxima fase**: nombre + tareas que se ejecutarán a continuación.
+4. Ask in Spanish using a numbered options table:
+
+   | Opción | Acción |
+   |--------|--------|
+   | **1) Continuar** | Avanzar a la siguiente fase sin cambios |
+   | **2) Ajustar** | Pausar para que el usuario indique correcciones (modificar archivos, replanificar tareas, cambiar enfoque) |
+   | **3) Detener** | Terminar la ejecución aquí, dejando estado consistente |
+
+5. **Wait for explicit user response** before proceeding. Do not auto-continue even in Auto Mode — phase gates are an irreversible-progress checkpoint that requires confirmation.
+6. On **2) Ajustar**: apply requested changes, re-run affected tasks, present a new gate. On **3) Detener**: report final state + how to resume (`/iikit-07-implement` re-entry).
+
+**Within a phase**: parallel batches and per-task commits proceed without interruption. The gate fires only at phase boundaries.
+
+**Bugfix-only runs**: treat the entire `T-B*` task list as a single phase — one gate at the end before commit/push.
+
 ## Constitution Loading
 
 Load constitution per [constitution-loading.md](./references/constitution-loading.md) (enforcement mode — extract rules, declare hard gate, validate before every file write).
@@ -137,8 +180,9 @@ If tasks.md contains `[P]` markers, you **MUST** use the `Task` tool to dispatch
 3. Dispatch — parallel: launch one `Task` tool subagent per `[P]` task in the batch; sequential: one at a time
 4. Collect results, checkpoint `[x]` in tasks.md per batch, then commit per chosen strategy (§6.6)
 5. Repeat until phase complete
+6. **Phase gate (HITL)**: at phase boundary, run the gate protocol from `Human-in-the-Loop Phase Gates` and **wait for user response** before starting the next phase. Cross-story parallel workstreams each fire their own gate when they finish.
 
-Cross-story parallelism: independent stories can run as parallel workstreams after Phase 2 (verify no shared file modifications).
+Cross-story parallelism: independent stories can run as parallel workstreams after Phase 2 (verify no shared file modifications). Each story still triggers its own HITL gate.
 
 **6.4 Rules**: install dependencies (§3) and Tessl tiles (§4) before writing code, query tiles before library code, tests before code if TDD, run tests after writing them, only orchestrator updates tasks.md.
 
@@ -181,7 +225,7 @@ Before writing ANY file: review against constitutional principles. On violation:
 
 ### 8. Progress Tracking
 
-Report after each task/batch. Mark completed `[x]` in tasks.md. Halt on failure.
+Report after each task/batch **in Spanish**. Mark completed `[x]` in tasks.md. Halt on failure. Fire the HITL phase gate (see top section) at every phase boundary and wait for explicit user input before the next phase.
 
 ### 9. Post-Fix GitHub Integration (Bug Fix Tasks)
 

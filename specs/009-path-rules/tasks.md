@@ -108,10 +108,18 @@
 
 ## Final Phase: Polish & Cross-Cutting Concerns
 
-- [ ] T052 [P] Write `katas/009_path_rules/README.md`: objective, path-rules architecture (write-allow / read-allow / deny patterns derived from `paths` globs + precedence), anti-pattern defense (always-on rule loading wastes tokens — this kata scopes injection per-edit), run instructions (`pytest tests/katas/009_path_rules -v` and runner CLI), reflection section citing Principle VIII and Context Economy.
+- [ ] T052 [P] Author `katas/009_path_rules/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — write-allow / read-allow / deny path patterns derived from `paths` globs, glob precedence, per-edit rule injection (vs always-on), frontmatter-validated rule files, deduplication by filename, read-only tool path exclusion — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`loader` → `frontmatter` → `models` → `matcher` → `audit` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — scoped-injection-per-edit, deterministic precedence ordering, frontmatter-as-contract, machine-validated rule files — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, III Context Economy, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — matching algorithm (`**` → `fnmatch.fnmatchcase`; no `**` → `PurePath.match`), ordering `(precedence asc, filename asc)`, deduplication by `filename`, read-only tool paths excluded (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T053 [P] Add module-level docstring to each `katas/009_path_rules/*.py` file (`loader.py`, `frontmatter.py`, `models.py`, `matcher.py`, `audit.py`, `runner.py`) stating purpose, FR/SC traces, and invariants owned.
 - [ ] T054 [P] Add why-comments on non-trivial functions: `PathScopedRuleLoader.activate`, `matcher.match`, `matcher.resolve_precedence`, `frontmatter.parse_frontmatter`, `frontmatter.validate_parsed`, `AuditWriter.append`. Each comment explains the anti-pattern being defended against.
-- [ ] T055 [P] Document path-rule precedence + glob semantics in `katas/009_path_rules/README.md`: (1) matching algorithm (`**` → `fnmatch.fnmatchcase`; no `**` → `PurePath.match`), (2) ordering `(precedence asc, filename asc)`, (3) deduplication by `filename`, (4) read-only tool paths excluded.
 - [ ] T056 [P] Verify `specs/009-path-rules/quickstart.md`: every scenario named in its table maps to an existing `@TS-NNN`, every fixture named (`single_match/`, `no_match/`, `multi_overlap/`, `invalid_frontmatter/`, `new_rule_pattern/`) exists under `tests/katas/009_path_rules/fixtures/rules/`.
 - [ ] T057 Run quickstart validation: execute the exact commands from `specs/009-path-rules/quickstart.md` (`pip install -e ".[dev]"`, `pytest tests/katas/009_path_rules -v`, `python -m katas.009_path_rules.runner --edited-path "src/components/button.test.tsx"`) — all must succeed on a fresh clone.
 - [ ] T058 [P] Run `ruff check katas/009_path_rules tests/katas/009_path_rules` and `ruff format --check` — zero findings.
@@ -134,7 +142,7 @@
 - T012, T013 (fixtures) run concurrently with T022, T033–T036 (fixtures for other stories).
 - T016, T018 (US1 outline + contract) parallel with T014–T015.
 - T040, T041, T044, T045, T046, T051 (US3 unit + contract + integration tests) parallel with step-def tasks.
-- All polish tasks T052–T055, T058–T060 run in parallel.
+- All polish tasks T052–T054, T058–T060 run in parallel.
 
 ## Implementation Strategy (MVP)
 

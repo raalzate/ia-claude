@@ -122,29 +122,26 @@
 
 ## Final Phase: Polish & Cross-Cutting Concerns
 
-- [ ] T053 [P] Write `katas/kata_002_pretool_guardrails/README.md` with the following named H2 subsections, each of which independently satisfies part of FR-013:
-  - `## Objective` — kata objective and anti-pattern defended.
-  - `## Architecture Walkthrough` — hook → policy → stub / escalation / audit.
-  - `## Policy Schema` — documents every field of `PolicyConfig` (policy_id, policy_snapshot_version, max_refund, comparison_stance, escalation_pathway, effective_from) and their invariants; cross-links `specs/002-pretool-guardrails/contracts/policy-config.schema.json`.
-  - `## Escalation Flow` — step-by-step narrative of how a `policy_breach` or `hook_failure` reject produces an `EscalationEvent`, where it is written, and what a human reviewer is expected to do with it.
-  - `## Hook Contract` — the PreToolUse hook contract (input `ToolCallPayload`, verdict values, reason codes, runner exit codes); cross-referenced by T056.
-  - `## Anti-Pattern Defense` — why prompt-only enforcement fails and how the AST lint locks it out.
-  - `## Run Instructions` — fixture run + `LIVE_API=1` live run.
-  - `## Reflection` — Principles I / II / VI / VIII per Constitution Principle VIII.
+- [ ] T053 [P] Author `katas/kata_002_pretool_guardrails/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the prompt-only-enforcement anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — every concept this kata exercises, each with a one-line definition tied to the certification syllabus: PreToolUse hooks, deterministic guardrails, structured tool-result errors, policy-as-data hot reload, fail-closed control flow, audit log / JSONL provenance, human-in-the-loop escalation, AST lint as machine-enforced policy.
+  3. **Architecture walkthrough** — components (`runner` → `RefundPolicyHook` → `PolicyConfig` loader → `refund_api_stub` / `EscalationEvent` / `EventLog`) rendered as an ASCII or mermaid block diagram.
+  4. **Patterns** — guardrail-before-tool, schema-first contract, fail-closed reject, snapshot-at-entry for policy, structured-error hand-back to model context — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, VI Human-in-the-Loop, VII Provenance, VIII Documentation) with the Anthropic engineering recommendations behind them; practitioner-facing checklist for applying these on a real refund / payments path.
+  6. **Hook contract** — full PreToolUse contract folded in from former T056: input `ToolCallPayload` (link to `contracts/tool-call-payload.schema.json`), `HookVerdict` decision values (`allow` / `reject`), reason codes (`schema_violation` / `policy_breach` / `hook_failure`) with one-line descriptions, runner CLI exit codes (`0` allow+success, `10` schema_violation, `11` policy_breach, `20` hook_failure), worked example payload → verdict → structured error trace.
+  7. **Policy schema** — every field of `PolicyConfig` (`policy_id`, `policy_snapshot_version`, `max_refund`, `comparison_stance`, `escalation_pathway`, `effective_from`), invariants, cross-link to `contracts/policy-config.schema.json`.
+  8. **Escalation flow** — step-by-step narrative of how a `policy_breach` or `hook_failure` reject produces an `EscalationEvent`, where it lands on disk, and the reviewer's expected next step.
+  9. **Run** — executable cells reproducing the fixture run for `within_limit.json` (allow) and `over_limit.json` (reject); a final commented cell for the `LIVE_API=1` path.
+  10. **Result** — captured stdout, `events.jsonl` excerpts, and `refund_api_calls.jsonl` zero-call assertion for the reject path.
+  11. **Reflection (Principle VIII)** — answers to the prompts in `quickstart.md` covering Principles I / II / VI / VIII.
 - [ ] T054 [P] Add module-level docstrings to each of `katas/kata_002_pretool_guardrails/hook.py`, `policy.py`, `models.py`, `errors.py`, `escalation.py`, `refund_api_stub.py`, `prompts.py`, `runner.py`, `events.py` — each docstring names the module's role in the kata and the FR(s) it owns.
 - [ ] T055 [P] Add why-comments on non-trivial functions — specifically `RefundPolicyHook.evaluate` (why fail-closed ordering matters), `policy.load_policy` (why per-invocation reload), `refund_api_stub.process_refund` (why it records calls), and the AST lint tests (why machine-enforced, not reviewer-enforced) — each comment tied to the kata objective.
-- [ ] T056 [P] Populate the `## Hook Contract` subsection authored in T053 of `katas/kata_002_pretool_guardrails/README.md` with concrete contract details:
-  - Input schema reference (`ToolCallPayload`) with a link to `contracts/tool-call-payload.schema.json`.
-  - Decision values (`allow` / `reject`) as pydantic `Literal[...]`.
-  - Reason codes (`schema_violation` / `policy_breach` / `hook_failure`) with one-line descriptions.
-  - Runner CLI exit-code semantics: `0` on `allow` + success, `10` on `schema_violation`, `11` on `policy_breach`, `20` on `hook_failure` (distinct code so ops can alert on hook failure specifically).
-  - A worked example JSON payload → verdict → structured error trace.
 - [ ] T057 [P] Verify `specs/002-pretool-guardrails/quickstart.md` walkthrough works end-to-end — follow each step verbatim on a clean clone; fix any drift between the doc and the implementation.
 - [ ] T058 Run quickstart validation end-to-end and record the session's `runs/<session-id>/events.jsonl` + `refund_api_calls.jsonl` as evidence attached to the tasks closure note.
 - [ ] T059 [P] Run `ruff check katas/kata_002_pretool_guardrails/ tests/katas/kata_002_pretool_guardrails/` and fix all violations; enforce `--select=E,F,W,I,B` minimum.
 - [ ] T060 [P] Run `mypy --strict katas/kata_002_pretool_guardrails/` and eliminate all errors; no `# type: ignore` without a kata-specific reason comment.
 - [ ] T061 [P] Run `pytest --cov=katas.kata_002_pretool_guardrails tests/katas/kata_002_pretool_guardrails/ --cov-report=term-missing --cov-fail-under=90` and ensure ≥ 90% line coverage; gaps must be justified in the PR description.
-- [ ] T062 [P] Run `pip-audit` (or equivalent) against the kata dependency set and document any accepted advisories in `README.md`.
+- [ ] T062 [P] Run `pip-audit` (or equivalent) against the kata dependency set and document any accepted advisories in a final markdown cell of `notebook.ipynb`.
 - [ ] T063 Regenerate the IIKit dashboard by running `bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/generate-dashboard-safe.sh` after T058 passes.
 
 ---

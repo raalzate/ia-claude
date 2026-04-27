@@ -110,7 +110,16 @@
 
 ### Documentation (Principle VIII — mandatory)
 
-- [ ] T040 [P] Write `katas/kata_003_posttool_normalize/README.md` covering: objective, walkthrough (baseline vs. normalized diff), anti-pattern defense, run instructions (fixture + live modes), reflection section answering the three quickstart prompts (Principle VIII, Constitution §Kata Completion Standards)
+- [ ] T040 [P] Author `katas/kata_003_posttool_normalize/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — PostToolUse hooks, schema-first parsing, defensive XML parsing (defused parser), structured-payload normalization, append-only audit ledger, token-reduction measurement, recorded-vs-LIVE_API seam — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`runner` → `PostToolUseHook` → `parser` → `normalizer` → `models.NormalizedPayload` → `audit` ledger → tokens metric) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — hook-after-tool, parse-then-normalize pipeline, append-only audit, raw-vs-normalized diff measurement — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, V Test-First, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — PostToolUse hook contract (Raw → Audit → Parse → Map → NormalizedPayload → history), normalization pipeline mirroring plan.md Architecture, `STATUS_MAPPING`, audit ledger crash-safety guarantees (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T041 [P] Add module-level docstring to `katas/kata_003_posttool_normalize/hook.py` explaining its role as the PostToolUse interception point (FR-001, FR-006)
 - [ ] T042 [P] Add module-level docstring to `katas/kata_003_posttool_normalize/normalizer.py` explaining its role as the pure normalization function + `STATUS_MAPPING` owner (FR-003)
 - [ ] T043 [P] Add module-level docstring to `katas/kata_003_posttool_normalize/parser.py` explaining its role as the defused malformed-tolerant XML boundary (FR-007)
@@ -119,7 +128,6 @@
 - [ ] T046 [P] Add module-level docstring to `katas/kata_003_posttool_normalize/tokens.py` explaining its role in measuring SC-001 reduction ratio
 - [ ] T047 [P] Add module-level docstring to `katas/kata_003_posttool_normalize/runner.py` explaining its role as the baseline-vs-normalized comparison harness (US2)
 - [ ] T048 [P] Add why-comments on non-trivial functions across `hook.py`, `normalizer.py`, `parser.py`, `audit.py` tying each branch / validator / guard to its FR-XXX / SC-XXX / anti-pattern (Principle VIII)
-- [ ] T049 [P] Document the PostToolUse hook contract and the normalization pipeline (Raw → Audit → Parse → Map → NormalizedPayload → history) as a dedicated section in `katas/kata_003_posttool_normalize/README.md` with a diagram mirroring plan.md Architecture
 
 ### Quickstart verification
 
@@ -130,7 +138,7 @@
 
 - [ ] T052 [P] Lint `katas/kata_003_posttool_normalize/` and `tests/katas/kata_003_posttool_normalize/` with ruff/black (or project linter), fix findings
 - [ ] T053 [P] Run coverage on `katas/kata_003_posttool_normalize/`; ensure ≥90% branch coverage on `hook.py`, `normalizer.py`, `parser.py`, `audit.py` (Constitution Kata Completion Standards)
-- [ ] T054 Performance check: normalize each fixture in < 50 ms on dev hardware (plan.md Performance Goals); record in README reflection section
+- [ ] T054 Performance check: normalize each fixture in < 50 ms on dev hardware (plan.md Performance Goals); record in the notebook Reflection cell
 - [ ] T055 Confirm assertion-integrity hashes in `specs/003-posttool-normalize/context.json` match the locked test set — pre-commit hook enforces; DO NOT bypass, re-run `/iikit-04-testify` if mismatched
 - [ ] T056 [P] Write unit test `tests/katas/kata_003_posttool_normalize/unit/test_normalized_payload_schema_closed.py` asserting that `NormalizedPayload.model_json_schema()` emits `additionalProperties: false` at the top level and on every nested object schema — operationalizes the FR-002 "bounded field set" guarantee beyond `extra="forbid"` (FR-002)
 
@@ -156,7 +164,7 @@ Phases 3 (US1) → 4 (US2) → 5 (US3) follow priority order; each phase is an i
 - **US1 tests**: T018, T019, T020, T021 all parallelizable (different files).
 - **US2 tests**: T027, T028, T029, T030 all parallelizable (different files).
 - **US3 tests**: T036, T037 parallelizable.
-- **Docs**: T040–T049 all parallelizable (different files / disjoint sections of README).
+- **Docs**: T040–T048 all parallelizable (different files / disjoint cells of the notebook).
 - **Polish**: T050, T052, T053 parallelizable; T051 and T054 serial.
 
 ---

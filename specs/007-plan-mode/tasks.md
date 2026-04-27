@@ -144,8 +144,16 @@ Shared infrastructure blocking all stories — pydantic models, JSON schema load
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T064 [P] Write `katas/007_plan_mode/README.md` (Principle VIII deliverable) covering: kata objective in own words; the plan-mode read-only boundary (ReadOnlyTools vs WriteTools, `select_tools` gate, `ExitPlanMode` / HumanApprovalEvent gate); the anti-pattern defense (jumping straight to edits on an unfamiliar codebase) explained via `write_attempt_in_plan_mode`, `plan_edit_after_approval`, `scope_creep_injection` fixtures; run instructions mirroring `quickstart.md`; reflection section answering the prompts recorded in `quickstart.md` section 7 — names the observed failure mode the kata prevents (advisory plan mode without structural write-gate; scope creep past approved file list); dedicated §Scope Semantics subsection covering FR-004 rename/move rules (destination path must appear in `plan.affected_files`; source deletion is an additional affected-file entry; directory-prefix entries apply to every file under the prefix at approval time) and the classifier bypass contract (single file + no new cross-package imports + no governance-path edits) per spec.md §Clarifications.
-- [ ] T065 [P] Document the plan-mode contract in `katas/007_plan_mode/README.md` — explicitly list the read-only tool set (`read_file`, `grep`, `glob`), the structural absence of write tools from SDK `tools=[...]` during plan mode, and the `HumanApprovalEvent` with matching `plan_hash` as the sole gate into execute mode (FR-001, FR-002, FR-006; Principle VI)
+- [ ] T064 [P] Author `katas/007_plan_mode/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — plan-mode vs execute-mode separation, ReadOnlyTools (`read_file`, `grep`, `glob`) vs WriteTools, structural absence of write tools from SDK `tools=[...]`, `select_tools` gate, `ExitPlanMode` + `HumanApprovalEvent` with matching `plan_hash`, scope semantics (rename/move rules, directory-prefix entries), classifier bypass contract — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`session` → `modes` (plan / execute) → `plan` → `approval` → `scope` → `events` → `client` → `models` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — read-before-write gate, plan-hash binding, scope-list as contract, structural-not-advisory mode separation — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, VI Human-in-the-Loop, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — read-only tool set (`read_file`, `grep`, `glob`); write tools structurally absent from `tools=[...]` during plan mode; `HumanApprovalEvent` with matching `plan_hash` is the sole gate into execute mode (FR-001, FR-002, FR-006); FR-004 scope semantics for rename/move (destination path must appear in `plan.affected_files`; source deletion is an additional affected-file entry; directory-prefix entries apply to every file under the prefix at approval time); classifier bypass contract (single file + no new cross-package imports + no governance-path edits) (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T066 [P] Add module-level docstrings to each of `katas/007_plan_mode/session.py`, `modes.py`, `plan.py`, `approval.py`, `scope.py`, `events.py`, `client.py`, `models.py`, `runner.py` explaining the module's role in plan→approval→execute gating
 - [ ] T067 [P] Add why-comments (per Constitution Principle VIII) on every non-trivial function across `katas/007_plan_mode/*.py` — each comment ties the code choice back to the kata objective (plan-mode gating) or the anti-pattern (jumping straight to edits on an unfamiliar codebase); never describes *what* the code does
 - [ ] T068 [P] Verify `specs/007-plan-mode/quickstart.md` usage walkthrough is accurate against the final file layout; update paths or commands only if drift was introduced during implementation
@@ -166,7 +174,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON schema load
 - Phase 4: T031, T032 are [P]. T033-T036 share `test_write_gate_enforcement_steps.py`. T037 is [P]. T038 depends on T009. T039 depends on T011 + T038. T040 depends on T009.
 - Phase 5: T041-T045 are [P]. T046-T051 share `test_approved_plan_unlocks_execution_steps.py`. T052, T053 are [P]. T054 depends on T010 + T011. T055 depends on T006. T056 depends on T054, T055, T009. T057 depends on T054. T058 depends on T030 + T054.
 - Phase 6: T059 is [P]. T060-T063 share `test_schema_contracts_steps.py` and depend on T059 + produced artifacts from Phases 3-5.
-- Phase 7: T064-T068, T070, T071 are [P]. T069 depends on all prior phases complete. T072 depends on T069.
+- Phase 7: T064, T066, T067, T068, T070, T071 are [P]. T069 depends on all prior phases complete. T072 depends on T069.
 
 **Story dependencies:**
 - US2 extends the mode gate built in US1 (Plan-mode tool registry, session loop) — cannot start until T025-T028 land.
@@ -189,7 +197,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON schema load
 
 **Phase 6 [P]:** T059 in parallel with Phase 5 polish; T060-T063 are sequential within the shared step-def file.
 
-**Phase 7 [P]:** T064, T065, T066, T067, T068, T070, T071 all in parallel.
+**Phase 7 [P]:** T064, T066, T067, T068, T070, T071 all in parallel.
 
 ---
 

@@ -121,10 +121,18 @@
 
 ### Documentation (Principle VIII — Mandatory)
 
-- [ ] T046 [P] Write `katas/kata_005_defensive_extraction/README.md`: kata objective, defensive-extraction architecture, anti-pattern defense (bare-`str` optionals + forced enum coercion), run instructions (recorded + LIVE_API), reflection section answering the three prompts in `quickstart.md` (Principle VIII).
+- [ ] T046 [P] Author `katas/kata_005_defensive_extraction/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — forced tool choice (`tool_choice` constrained), schema-governed structured output, fabrication audit, escape-enum + details fallback, surfaced `ValidationError`, prose-parsing-NOT-a-fallback principle — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`runner` → `client` (forced tool choice) → `extractor` → `models` (schema source-of-truth) → `audit` (fabrication audit)) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — schema-first extraction, escape-enum graceful degradation, no-prose-fallback, fail-loud on validation — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — extraction fallback ladder — schema-first (tool call validates), then structured fallbacks (escape enum + details, surfaced `ValidationError`); explicitly state prose parsing is NOT a fallback step (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T047 [P] Add module-level docstrings to `katas/kata_005_defensive_extraction/models.py`, `extractor.py`, `client.py`, `audit.py`, and `runner.py` explaining each file's defensive role (schema source-of-truth, forced tool choice, fabrication audit, etc.).
 - [ ] T048 [P] Add *why*-comments on `build_extraction_tool`, `run_extraction`, the `ExtractedRecord` `model_validator`, `FabricationMetric.compute`, `AmbiguityMarker.from_record`, and the schema-lint walker — each tying to its FR-XXX / SC-XXX anchor (Principle VIII).
-- [ ] T049 [P] Document the extraction fallback ladder in `katas/kata_005_defensive_extraction/README.md`: schema-first (tool call validates), then structured fallbacks (escape enum + details, surfaced `ValidationError`) — explicitly call out that prose parsing is NOT a fallback step.
 - [ ] T050 [P] Verify `specs/005-defensive-extraction/quickstart.md` — confirm every section (Install, recorded run, live run, fixture table, scenario map, Completion Standards checklist) matches the implemented layout.
 - [ ] T051 Run quickstart validation: execute `pytest tests/katas/kata_005_defensive_extraction -v` from repo root and confirm every `@TS-NNN` scenario and unit test passes; capture output.
 
@@ -153,7 +161,7 @@
   - T011, T012, T013, T014 in Foundational (after models are in place).
   - T015, T016, T017 in US1 tests.
   - T026, T027, T028 in US2 tests (different files).
-  - T046, T047, T048, T049, T050, T052, T053, T054 in the final Polish phase.
+  - T046, T047, T048, T050, T052, T053, T054 in the final Polish phase.
 - Within a story, step-def tasks (T020–T025, T030–T034, T037–T043) all write to the same file (`test_defensive_extraction_steps.py`) and are therefore **sequential**, not parallel.
 
 ## Implementation Strategy (MVP)

@@ -154,18 +154,26 @@
 
 ### Documentation (Principle VIII)
 
-- [ ] T064 [P] Write `katas/008_claude_md_memory/README.md` covering: objective, CLAUDE.md memory architecture (team / personal / standards layering), anti-pattern defense (personal-pollutes-team, monolithic memory), run instructions (`pip install -e ".[dev]"` then `pytest tests/katas/008_claude_md_memory -v`), reflection on Principle VIII
+- [ ] T064 [P] Author `katas/008_claude_md_memory/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — layered CLAUDE.md memory (team / personal / standards), precedence merge (team beats personal on rule-key collision), `@path` resolved in declaration order, slugified Level-2 heading as rule-key identity, scope-token scanning, fenced-block skip, DFS cycle detection (`_visiting` vs `_visited`), deterministic ordering for `effective_entries`, no-cache / no-hot-reload memory lifecycle — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`resolver` → `models` → `scope` → `budget` → `cli` → `__init__`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — layered memory precedence, slug-keyed rule identity, declaration-order resolution, deterministic merge — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, III Context Economy, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — precedence/merge rules (team beats personal on rule-key collision; non-conflicting personal survives; `@path` resolved in declaration order); rule-key identity convention (slugified Level-2 `##` heading: lowercase, strip + collapse whitespace to `-`; two entries conflict iff slugified heading sets intersect — spec.md §Clarifications F-002); memory lifecycle (read on resolve, never cached, never hot-reloaded) (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T065 [P] Add module-level docstrings to each of `katas/008_claude_md_memory/resolver.py`, `models.py`, `scope.py`, `budget.py`, `cli.py`, `__init__.py` stating the module's single responsibility and the FR/SC it anchors
 - [ ] T066 [P] Add why-comments on non-trivial functions: `_scan_path_tokens` (why fenced-block skip), DFS cycle detection (`_visiting` vs `_visited` distinction), `effective_entries` (why deterministic ordering matters for SC-001)
-- [ ] T067 [P] Document in `katas/008_claude_md_memory/README.md` the CLAUDE.md precedence/merge rules (team beats personal on rule-key collision; non-conflicting personal survives; `@path` resolved in declaration order), the rule-key identity convention (slugified Level-2 `##` markdown heading: lowercase, strip + collapse whitespace to `-`; two entries conflict iff slugified heading sets intersect — per spec.md §Clarifications F-002), and memory lifecycle (read on resolve, never cached, never hot-reloaded)
 - [ ] T068 [P] Verify `specs/008-claude-md-memory/quickstart.md` — mark `Done` checklist boxes that tasks.md now fulfills; confirm every scenario-to-fixture mapping row matches a fixture that exists under `tests/katas/008_claude_md_memory/fixtures/`
-- [ ] T069 Run quickstart validation: follow `quickstart.md` top-to-bottom from a clean checkout, capture any drift in a final note at the bottom of the kata `README.md`
+- [ ] T069 Run quickstart validation: follow `quickstart.md` top-to-bottom from a clean checkout, capture any drift in a final markdown cell of `notebook.ipynb`
 
 ### Standard polish
 
 - [ ] T070 [P] Run `ruff check katas/008_claude_md_memory tests/katas/008_claude_md_memory` and fix warnings
 - [ ] T071 [P] Run `mypy katas/008_claude_md_memory` with `--strict` on the kata package and resolve any issues
-- [ ] T072 [P] Measure `pytest tests/katas/008_claude_md_memory` wall-clock and assert < 3 s (plan performance goal); if slower, identify the slowest fixture and justify in `README.md`
+- [ ] T072 [P] Measure `pytest tests/katas/008_claude_md_memory` wall-clock and assert < 3 s (plan performance goal); if slower, identify the slowest fixture and justify in a final markdown cell of `notebook.ipynb`
 - [ ] T073 Verify `TEAM_MEMORY_MAX_BYTES` constant is imported from `budget.py` in every place that references it (no magic numbers)
 - [ ] T074 Regenerate dashboard: `bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/generate-dashboard-safe.sh`
 - [ ] T075 Final green run: `pytest tests/katas/008_claude_md_memory -v` with 100% of `@TS-NNN` scenarios passing
@@ -193,7 +201,7 @@
 - **US2 tests**: T026, T027, T028, T029 all [P].
 - **US3 tests**: T035, T036, T037, T038, T039, T040 all [P].
 - **Fail-Loud + Budget tests**: T044, T045, T046, T047, T048, T049, T050, T051, T052, T053, T054, T055 all [P].
-- **Polish**: T064, T065, T066, T067, T068 all [P]; T070, T071, T072 all [P].
+- **Polish**: T064, T065, T066, T068 all [P]; T070, T071, T072 all [P].
 
 ---
 

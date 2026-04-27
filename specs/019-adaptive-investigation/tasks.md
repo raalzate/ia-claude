@@ -143,11 +143,19 @@
 
 ### Documentation (Principle VIII — Mandatory Documentation)
 
-- [ ] T071 [P] Write `katas/019_adaptive_investigation/README.md`: kata objective (topology-first adaptive planning under a bounded exploration budget), the adaptive-investigation loop framed as evidence (TopologyMap sweep) → hypothesis (Plan emission) → probe (PlanStep execution + precondition re-check) with revision on trigger, anti-pattern defense (no speculative fix without evidence — the AST lint `test_topology_first.py` plus the `TopologyFirstViolation` runtime guard block `Plan` construction without a `TopologyMap`; budget enforcement blocks endless exploration), run instructions (fixture run `pytest tests/katas/019_adaptive_investigation -v`, `LIVE_API=1` CLI run from quickstart.md), and reflection section answering the quickstart reflection prompts (Principle VIII)
+- [ ] T071 [P] Author `katas/019_adaptive_investigation/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — topology-first sweep (filename-pattern + regex data-scan, `re` scoped to `topology_mapper`), adaptive loop (evidence → hypothesis → probe), `TopologyFirstViolation` runtime guard + `test_topology_first.py` AST lint, exploration budget (wall-clock + revision cap), plan revision triggers, `directive_contradiction` halt condition, signal-driven planner (no prose matching), append-only revision log with non-null trigger invariant — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`coordinator` → `topology_mapper` → `planner` → `budget` → `revision_log` → `models` → `client` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — evidence-before-hypothesis, bounded-exploration, structured-revision-trigger, fail-loud-on-budget-exhaustion — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (I Determinism, II Schema-First, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — `PlanStep` schema (`step_id`, `priority`, `description`, `affects_modules`, `preconditions`, `topology_refs`); `PlanRevision` schema with enumerated `TriggerCategory`; stopping condition — coordinator halts when EITHER `plan.budget_exhausted is True`, OR a `directive_contradiction` trigger fires, OR the plan has no unexecuted steps remaining (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T072 [P] Add module-level docstrings to every file explaining its role in the adaptive-investigation loop: `coordinator.py` (hub, owns budget + revision log + orchestration), `topology_mapper.py` (filename-pattern + regex data-scan — the ONLY module permitted to import `re`), `planner.py` (signal-driven plan/revise; prose-matching forbidden), `budget.py` (wall-clock + revision cap enforcer), `revision_log.py` (append-only JSONL with non-null trigger invariant), `models.py` (typed handoff contract with `extra="forbid"`), `client.py` (Anthropic seam), `runner.py` (CLI entry point)
 - [ ] T073 [P] Add why-comments on non-trivial functions: `TopologyMapper.sweep` (why `re` is scoped here per plan.md §Complexity Tracking — data scanning, not control-flow classification), `Planner.build_plan` (why the `TopologyFirstViolation` guard is load-bearing for FR-001 and US1 anti-pattern defense), `Planner.revise` (why a NEW immutable `Plan` per trigger, FR-003, TS-009), `Planner.finalize_best_effort` (why budget exhaustion must still emit a structured plan, SC-003), `RevisionLog.append` (why `trigger` is non-null before write, FR-005, SC-004), `ExplorationBudget.check` (why the loop trip is a `TriggerEvent`, not an exception, FR-004)
-- [ ] T074 [P] Document the investigation-step schema and stopping condition in `katas/019_adaptive_investigation/README.md`: the `PlanStep` schema (`step_id`, `priority`, `description`, `affects_modules`, `preconditions`, `topology_refs`), the `PlanRevision` schema with enumerated `TriggerCategory`, and the stopping condition — the coordinator halts when EITHER `plan.budget_exhausted is True`, OR a `directive_contradiction` trigger fires, OR the plan has no unexecuted steps remaining; ties each field back to the relevant FR/SC
-- [ ] T075 [P] Verify `specs/019-adaptive-investigation/quickstart.md` matches the implemented CLI flags, fixture paths, and `runs/<session-id>/` layout; update any drift (quickstart "Done" checklist items for `tasks.md`, `.feature`, `README.md`)
+- [ ] T075 [P] Verify `specs/019-adaptive-investigation/quickstart.md` matches the implemented CLI flags, fixture paths, and `runs/<session-id>/` layout; update any drift (quickstart "Done" checklist items for `tasks.md`, `.feature`, a final markdown cell of `notebook.ipynb`)
 
 ### Validation
 
@@ -178,7 +186,7 @@ Within a single phase, tasks marked `[P]` touch disjoint files and may be run in
 - **Phase 4 tests**: T029, T030, T036, T037, T038 parallel (feature copy, fixture, unit + two integration tests)
 - **Phase 5 tests**: T044, T045, T051, T052 parallel (feature copy, fixture, unit + integration)
 - **Phase 6 tests**: T057, T058, T064, T065 parallel (feature copy, fixtures, two unit tests)
-- **Final Phase docs**: T071, T072, T073, T074, T075 parallel (README, docstrings, why-comments, schema doc, quickstart verify touch disjoint files)
+- **Final Phase docs**: T071, T072, T073, T075 parallel (notebook, docstrings, why-comments, quickstart verify touch disjoint files)
 - **Final Phase validation**: T077, T078 parallel after T076
 
 Step-definition files (T013–T017, T031–T035, T046–T050, T059–T063) are sequential within each file because they share a single Python module per feature.
@@ -190,7 +198,7 @@ Step-definition files (T013–T017, T031–T035, T046–T050, T059–T063) are s
 3. Land **US2 re-adaptation** (Phase 4) — adds the observable proof that the plan is mutable under typed triggers; this is where the kata's pedagogical core (adaptive investigation loop) becomes testable.
 4. Land **US3 bounded exploration** (Phase 5) — adds the safety rail: the endless-exploration anti-pattern is observably blocked by `test_budget_enforcer.py`.
 5. Land **Phase 6 edge cases** — polishes the trigger taxonomy (cycle, contradiction, tooling-unavailable, duplicate, trivial topology).
-6. Close with **Final Phase** — Principle VIII README + docstrings + why-comments + investigation-step/stopping-condition schema doc, quickstart re-run, dashboard refresh.
+6. Close with **Final Phase** — Principle VIII `notebook.ipynb` + docstrings + why-comments, quickstart re-run, dashboard refresh.
 
 Suggested commit cadence: one commit per phase checkpoint; additional commits for doc polish are fine.
 

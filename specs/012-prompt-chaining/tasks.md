@@ -118,10 +118,18 @@ Shared infrastructure blocking all stories — pydantic models, exception types,
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T045 [P] Write `katas/012_prompt_chaining/README.md` covering (Principle VIII): kata objective (avoid cognitive saturation via multi-pass decomposition), chain architecture walkthrough (`Chain` → `PerFileAnalysisStage` → `IntegrationAnalysisStage` → optional `SecurityScanStage`, with `runs/<task_id>/stage-<n>.json` as the audit trail), handoff contract (inter-step pydantic schema at every boundary — `MacroTask` → `PerFileBundle` → `FinalReport` / `SecurityReport`), failure isolation (how `StageBudgetExceeded`, `MalformedIntermediatePayload`, and `PerFileAnalysisFailure` fail loud instead of silently degrading), anti-pattern defense (why the monolithic baseline is measurably worse, with the delta figure), run instructions mirroring `quickstart.md`, and a Reflection section answering the two reflection prompts from `quickstart.md`
+- [ ] T045 [P] Author `katas/012_prompt_chaining/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — multi-pass decomposition, stage-as-cognitive-budget, inter-step typed handoff (`MacroTask` → `PerFileBundle` → `FinalReport` / `SecurityReport`), per-stage budget enforcement, halt-record taxonomy, fail-loud over silent-degrade, monolithic-baseline as anti-pattern measurement — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`chain` → `payloads` → `errors` → `budget` → `client` → `runner` → `stages/base` → `stages/per_file` → `stages/integration` → `stages/security`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — stage-decomposition over monolith, typed-handoff at every boundary, bounded-budget per stage, halt-record over silent fail — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, III Context Economy, V Test-First, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — inter-step payload schema header (`task_id`, `stage_index`, `stage_name`, `emitted_at`); stage-specific body classes; halt-record taxonomy (`stage_budget_exceeded` | `malformed_intermediate_payload` | `per_file_analysis_failure`); JSON-schema contract refs under `specs/012-prompt-chaining/contracts/` (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T046 [P] Add module-level docstrings to each of `katas/012_prompt_chaining/chain.py`, `payloads.py`, `errors.py`, `budget.py`, `client.py`, `runner.py`, `stages/base.py`, `stages/per_file.py`, `stages/integration.py`, `stages/security.py` — each docstring explains the module's role in the multi-pass decomposition and cites the FR / SC it serves
 - [ ] T047 [P] Add why-comments (per Constitution Principle VIII) on every non-trivial function and class across `katas/012_prompt_chaining/**/*.py` — comments tie the code choice back to the saturation anti-pattern (e.g. "integration stage reads ONLY the per-file bundle because feeding raw files would recreate the saturation the chain is designed to avoid")
-- [ ] T048 [P] Document the inter-step payload schema and failure-isolation model in a dedicated `README.md` section listing: header fields (`task_id`, `stage_index`, `stage_name`, `emitted_at`), stage-specific body classes, halt-record taxonomy (`stage_budget_exceeded` | `malformed_intermediate_payload` | `per_file_analysis_failure`), and the JSON-schema contract references under `specs/012-prompt-chaining/contracts/`
 - [ ] T049 [P] Verify `specs/012-prompt-chaining/quickstart.md` usage walkthrough is accurate against the final file layout; update paths, `--stages` names, or commands if drift was introduced during implementation
 - [ ] T050 Run `quickstart.md` end-to-end: `pytest tests/katas/012_prompt_chaining -v` against fixtures, then optional `LIVE_API=1 python -m katas.012_prompt_chaining.runner --pr-dir tests/katas/012_prompt_chaining/fixtures/corpus_15_files/ --stages per_file_analysis,integration_analysis` smoke run; record both outputs as part of PR evidence
 - [ ] T051 [P] Run `ruff check katas/012_prompt_chaining tests/katas/012_prompt_chaining` and `black --check` over the same paths; fix any findings
@@ -140,7 +148,7 @@ Shared infrastructure blocking all stories — pydantic models, exception types,
 - Phase 3: T014, T015, T016 are [P]. T017 depends on T012 + T016 + T014 + T015 + T021 + T022 + T023. T018, T019, T020 are [P] once T007 + T012 exist. T021 depends on T011. T022 depends on T011 + T021 (schema cross-check against upstream bundle). T023 depends on T021 + T022 + T012. T024 depends on T023 + T010.
 - Phase 4: T025, T026, T027 are [P]. T028 depends on T027 + T031 + T032 + T033 + fixtures. T029 depends on T031 + T023. T030 depends on T009 + T011. T031 depends on T012 + T010. T032 depends on T031 + T023. T033 depends on T012 + T009.
 - Phase 5: T034, T035, T036 are [P]. T037 depends on T036 + T041 + T042 + T043 + T044 + fixtures. T038 depends on T041. T039 depends on T044 + T012. T040 depends on T043 + T022. T041 is a pure file-add depending only on T011 + T007. T042 depends on T041 + T023. T043 depends on T022. T044 depends on T012.
-- Phase 6: T045, T046, T047, T048, T049, T051, T052 are [P]. T050 depends on every prior phase complete. T053 depends on T050.
+- Phase 6: T045, T046, T047, T049, T051, T052 are [P]. T050 depends on every prior phase complete. T053 depends on T050.
 
 **Story dependencies:**
 - US2 compares against the chain built in US1 — cannot start until T021–T023 land.
@@ -160,7 +168,7 @@ Shared infrastructure blocking all stories — pydantic models, exception types,
 
 **Phase 5 [P]:** fixture + feature batch — T034, T035, T036 in parallel. T038, T039, T040 parallel once T041–T044 are landed.
 
-**Phase 6 [P]:** T045, T046, T047, T048, T049, T051, T052 all in parallel.
+**Phase 6 [P]:** T045, T046, T047, T049, T051, T052 all in parallel.
 
 ---
 

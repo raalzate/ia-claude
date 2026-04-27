@@ -123,6 +123,11 @@ Shared infrastructure blocking all stories — pydantic models, JSON schemas, in
 - [x] T047 [P] Produce a coverage report (`pytest --cov=katas.kata_001_agentic_loop`) and archive it at `runs/coverage/001_agentic_loop.txt`; target ≥ 90% line coverage on `loop.py`
 - [x] T048 Final self-audit: read the emitted `events.jsonl` from the happy-path run and confirm it satisfies SC-001, SC-002, SC-003, SC-005, SC-007, SC-008 — record the check in the PR description
 - [x] T049 [US1] Add unit test `tests/katas/kata_001_agentic_loop/unit/test_history_replay_order.py` asserting that replay from the recorded conversation history reproduces the live run's stop-signal + branch-taken sequence in the same order (FR-010); input is a `history.json` captured from a happy-path run, expected output is the `stop_signal`/`branch_taken` column slice of its `events.jsonl`
+- [ ] T050 [P] Enrich `katas/kata_001_agentic_loop/notebook.ipynb` with Claude architecture certification content — additive, keeps existing cells. New ordered sections:
+  1. **Concepts (Claude architecture certification)** — every Claude / Anthropic concept this kata exercises with a one-line definition tied to the certification syllabus: agentic loop, signal-driven control via `stop_reason`, tool use round-trip (`tool_use` ↔ `tool_result`), structured output, event-log provenance, deterministic replay, fixture-vs-live SDK seam.
+  2. **Architecture walkthrough** — components (CLI → `Loop` → Tool Registry → `EventLog` → Fixtures/SDK) as an ASCII or mermaid block diagram.
+  3. **Patterns** — signal-over-prose, schema-first contract, pure-function transition, append-only event log, replay-from-log determinism — each with the trade-off it solves.
+  4. **Principles & recommendations** — Constitution principles enforced (I Determinism, II Schema-First, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner checklist for applying signal-driven loops on a real agent. Notebook becomes the Claude-architecture-cert reference for this kata; the existing `README.md` stays as the in-repo summary.
 
 ---
 

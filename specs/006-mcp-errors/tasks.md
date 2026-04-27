@@ -129,10 +129,18 @@ Shared infrastructure that blocks every user story: pydantic models, injectable 
 
 ## Final Phase: Polish & Cross-Cutting Concerns
 
-- [ ] T056 [P] Write `katas/006_mcp_errors/README.md` — Principle VIII deliverable covering: (a) kata objective, (b) architecture walkthrough mirroring plan.md §Architecture, (c) MCP error taxonomy (the seven `errorCategory` values) with the branch table (category × `isRetryable` × `outcome`), (d) anti-pattern defense explaining how the AST lint on `server.py` plus pydantic rejection at `MCPResponse.model_validate` structurally prevent generic failure strings, (e) run instructions mirroring `quickstart.md`, (f) reflection section answering the two prompts in `quickstart.md`, (g) FR-008 human-review path — document how escalation sinks (`human_handoff`, `clarification_prompt`, `abort_with_explanation`) surface an `EscalationTrigger` to a reviewer, point readers at `runs/<session-id>/escalations/<trigger_id>.json` for the reviewable payload, and link this section from the FR-008 trace row in plan.md.
+- [ ] T056 [P] Author `katas/006_mcp_errors/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — Model Context Protocol (MCP), typed error categories (the seven `errorCategory` values), retry budgets with exhaustion → `budget_exhausted`, escalation triggers (human_handoff / clarification_prompt / abort_with_explanation), structured error contract via pydantic, AST lint banning generic failure strings, fail-closed via `MCPResponse.model_validate` — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`runner` → `client` → MCP `server` → `models.MCPResponse` → `policy` (retry + escalate) → `synthesizer` → `log` (ErrorLogRecord JSONL) → `clock` + `session`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — typed-error-over-string, retry-budget bounding, escalation sink routing, structural anti-pattern lint — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (I Determinism, II Schema-First, V Test-First, VI Human-in-the-Loop, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — MCP error-handling contract — `StructuredError` schema, the 7 errorCategory values × `isRetryable` × `outcome` branch table, `RetryBudget` (`max_attempts`, exhaustion → `budget_exhausted`), `EscalationTrigger` sink options, `ErrorLogRecord` closed-set `outcome` vocabulary, AST lint + schema rejection as the two structural defenses, FR-008 human-review path with `runs/<session-id>/escalations/<trigger_id>.json` (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T057 [P] Add module-level docstrings to every file under `katas/006_mcp_errors/`: `__init__.py`, `server.py`, `client.py`, `models.py`, `policy.py`, `synthesizer.py`, `log.py`, `runner.py`, `clock.py`, `session.py` — each docstring names the FR / SC the module implements.
 - [ ] T058 [P] Add *why*-comments (Principle VIII) on every non-trivial function: `policy.decide`, `RetryBudget.attempt`, `ErrorSynthesizer.from_transport_exception`, `ErrorSynthesizer.from_malformed_payload`, `log.iter_records`, `runner.run_scenario`. Each comment ties the choice back to the kata objective (typed branching) rather than describing *what* the code does.
-- [ ] T059 [P] Document the MCP error-handling contract in a dedicated `## MCP Error Handling Contract` section of `katas/006_mcp_errors/README.md`: the `StructuredError` schema fields, the category-to-retryability invariants enforced by the pydantic validator, the `RetryBudget` contract (`max_attempts`, exhaustion → `budget_exhausted`), the `EscalationTrigger` sink options, and the `ErrorLogRecord` closed-set `outcome` vocabulary — plus the two structural defenses (AST lint + schema rejection) against the generic-string anti-pattern.
 - [ ] T060 [P] Verify `specs/006-mcp-errors/quickstart.md` against the final implementation: every command runs, every row in the scenario-to-spec table maps to an existing fixture under `tests/katas/006_mcp_errors/fixtures/`, and the artifact path (`runs/<session-id>/errors.jsonl`) is reconciled with the code — update quickstart text if the implementation settled on a different filename.
 - [ ] T061 Run the quickstart end to end: `pip install -e ".[dev]"` → `pytest tests/katas/006_mcp_errors -v` → `python -m katas.006_mcp_errors.runner --scenario transient-recover` → open `runs/<session-id>/errors.jsonl` and confirm it contains both the failed and the successful attempt records with matching `call_id`. Archive the outputs as PR evidence.
 - [ ] T062 [P] Scan the repo (both `katas/006_mcp_errors/` source and a sample `runs/` directory from the quickstart run) for the strings `"Operation failed"`, `"Something went wrong"`, and bare `"Error"` completions; zero occurrences required (SC-002).
@@ -141,7 +149,7 @@ Shared infrastructure that blocks every user story: pydantic models, injectable 
 - [ ] T065 [P] Confirm SC-003 resolution: once `/iikit-clarify` has fixed the threshold at 95% on eligible fixtures, regenerate the feature file via `/iikit-04-testify` (never by hand) so the `@needs-clarify SC-003` tag is removed.
 - [ ] T066 [P] Run `ruff check katas/006_mcp_errors tests/katas/006_mcp_errors` and `black --check` on the same paths; fix findings.
 - [ ] T067 [P] Produce a coverage report (`pytest --cov=katas.006_mcp_errors`) and archive it at `runs/coverage/006_mcp_errors.txt`; target ≥ 90% line coverage on `policy.py`, `synthesizer.py`, and `log.py`.
-- [ ] T068 Final Constitution self-audit: for each of principles I, II, V, VI, VII, VIII, record in README §Reflection which artifact demonstrates compliance (e.g. "II: `MCPResponse.model_validate` at `client.py` line N rejects the anti-pattern").
+- [ ] T068 Final Constitution self-audit: for each of principles I, II, V, VI, VII, VIII, record in the notebook Reflection cell which artifact demonstrates compliance (e.g. "II: `MCPResponse.model_validate` at `client.py` line N rejects the anti-pattern").
 - [ ] T069 Regenerate the IIKit dashboard: `bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/generate-dashboard-safe.sh` (required by `dashboard-refresh` rule after any `specs/` change).
 
 ---
@@ -168,7 +176,7 @@ Final Phase (T056..T069)
 - Phase 3: T013–T020 run in parallel (distinct files). T021 depends on T008 + T009. T022 depends on T009 + T021. T023 depends on T008 + T009 + T010. T024 depends on T009 + T012. T025 depends on T022 + T023 + T024. T026 depends on T025 + T013.
 - Phase 4: T027–T038 parallel. T039 depends on T008. T040 and T041 depend on T022 + T039. T042 depends on T023 + T039. T043 depends on T042. T044 depends on T024 + T042. T045 depends on T025 + T027.
 - Phase 5: T046–T052 parallel. T053 depends on T025 + T044. T054 depends on T024. T055 depends on T053 + T046.
-- Final Phase: T056–T060, T062–T067 are [P]. T061 depends on T025 + T045 + T055. T068 depends on T061. T069 must run last.
+- Final Phase: T056–T058, T060, T062–T067 are [P]. T061 depends on T025 + T045 + T055. T068 depends on T061. T069 must run last.
 
 **Story dependencies:**
 - US2 extends the policy + client built in US1 (synthesizer, escalation payload) — cannot start until T022 + T023 + T024 land.
@@ -185,7 +193,7 @@ Final Phase (T056..T069)
 - **Phase 4 tests [P]**: T027–T038 — fixture batch and all step-defs live in distinct files.
 - **Phase 4 implementation**: T039 parallel to T043 (synthesizer vs. sink registry); T040 + T041 sequence into T042 + T044.
 - **Phase 5 tests [P]**: T046–T052 in parallel.
-- **Final Phase [P]**: T056–T060, T062–T067 in parallel on distinct deliverables.
+- **Final Phase [P]**: T056–T058, T060, T062–T067 in parallel on distinct deliverables.
 
 ---
 
@@ -194,7 +202,7 @@ Final Phase (T056..T069)
 1. **Land MVP at end of Phase 3 (US1)**: ship `StructuredError` + `RetryBudget` + `policy.decide` retry branch + JSONL log. The kata already defends against the generic-string anti-pattern on the retryable path.
 2. **Land the full anti-pattern defense in Phase 4 (US2)**: AST lint, synthesizer, typed escalation payload. This is where the kata's core learning value is realized — every non-retryable, every transport drop, every schema violation is typed.
 3. **Land observability in Phase 5 (US3)**: chained-failure independence + log reader + group-by without text parsing. The system functions without this so it ships last.
-4. **Polish and documentation last**: README, docstrings, why-comments, MCP error-handling contract section, quickstart verify, Constitution audit, dashboard refresh. No production code changes in this phase.
+4. **Polish and documentation last**: notebook + docstrings + why-comments + quickstart verify + Constitution audit (in notebook Reflection cell) + dashboard refresh. No production code changes in this phase.
 
 ---
 

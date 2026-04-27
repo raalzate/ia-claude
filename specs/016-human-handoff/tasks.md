@@ -107,7 +107,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON-Schema-boun
 - [ ] T041 [US3] Implement BDD step definitions for [TS-018, TS-019, TS-020, TS-021, TS-022, TS-023] in `tests/katas/016_human_handoff/step_defs/test_schema_evolution_required_field_steps.py` — steps load the v1.1 schema, replay P1 fixtures without `severity`, assert rejection; replay with `severity`, assert delivery; assert audit log contains both
 - [ ] T042 [P] [US3] Add unit test `tests/katas/016_human_handoff/unit/test_schema_rejects_missing_severity.py` — construct `HandoffPayload` sans `severity` and assert `ValidationError`; include a `valid_severity` positive case that passes (FR-010, SC-001) [TS-018, TS-019, TS-021]
 - [ ] T043 [P] [US3] Add unit test `tests/katas/016_human_handoff/unit/test_prompt_text_unchanged.py` — AST/textual check that no file under `katas/016_human_handoff/` was edited to reference `"severity"` in prompt strings (only in the pydantic model + JSON Schema); proves the schema alone propagates the requirement (FR-010) [TS-020]
-- [ ] T044 [P] [US3] Add unit test `tests/katas/016_human_handoff/unit/test_documentation_describes_contract.py` — scans `katas/016_human_handoff/README.md` for required sections: preconditions taxonomy, handoff schema, anti-pattern defense (FR-012, Principle VIII) [TS-022]
+- [ ] T044 [P] [US3] Add unit test `tests/katas/016_human_handoff/unit/test_documentation_describes_contract.py` — scans `katas/016_human_handoff/notebook.ipynb` for required sections (cell-level): preconditions taxonomy, handoff schema, anti-pattern defense (FR-012, Principle VIII) [TS-022]
 - [ ] T045 [P] [US3] Add unit test `tests/katas/016_human_handoff/unit/test_escalation_id_traceable_end_to_end.py` — take an `escalation_id` from `runs/handoffs/index.jsonl`, assert it also appears in a `runs/<session-id>/events.jsonl` record (delivered or rejected) and in the corresponding `runs/handoffs/<escalation_id>.json` payload (FR-009, SC-004) [TS-023]
 
 ### Implementation for User Story 3
@@ -122,15 +122,23 @@ Shared infrastructure blocking all stories — pydantic models, JSON-Schema-boun
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T049 [P] Write `katas/016_human_handoff/README.md` per plan.md §Principle VIII deliverable with the following mandatory sections: **Objective** (Principle VI Human-in-the-Loop contract for this kata), **Escalation Trigger Taxonomy** (policy-breach, out-of-policy-demand, operational-limit, unresolved-after-retries, explicit-user-request — one short paragraph each tying to `preconditions.py`), **Handoff Payload Schema** (copy of the pydantic model shape + JSON Schema `$id`), **Anti-Pattern Defense** (explain *why* prose-only handoffs and raw-transcript dumping are structurally impossible — no silent auto-approve), **Escalation Policy & Resume Semantics** (`ACTIVE → SUSPENDED` is terminal for the session; the spec deliberately does NOT define un-suspension — operator concern, out of kata scope), **Run** (mirror `quickstart.md` — fixture commands + `LIVE_API=1` smoke), **Reflection** answering: (1) "How does this kata enforce Constitution Principle VIII by making the schema the single source of handoff truth?", (2) "How does it enforce Constitution Principle VI Human-in-the-Loop by making escalation a terminal state rather than a soft boundary?"
+- [ ] T049 [P] Author `katas/016_human_handoff/notebook.ipynb` — single Principle VIII deliverable, replaces the README and folds in every previously requested README sub-section. Notebook is the kata's primary teaching artifact for Claude architecture certification prep; design and impl stay simple. Ordered cells (markdown unless noted):
+  1. **Objective & anti-pattern** — kata goal in plain language; the anti-pattern it structurally defends against.
+  2. **Concepts (Claude architecture certification)** — terminal escalation states (`ACTIVE → SUSPENDED`), suspend semantics (no programmatic resume — operator-only out-of-band), escalation trigger taxonomy (policy-breach, out-of-policy-demand, operational-limit, unresolved-after-retries, explicit-user-request), schema-required handoff payload, no silent auto-approve, structured-handoff over raw-transcript dump — each with a one-line definition tied to the certification syllabus.
+  3. **Architecture walkthrough** — components (`tools` → `preconditions` → `session` → `models` → `operator_queue` → `events` → `runner`) and the data flow as an ASCII or mermaid block diagram.
+  4. **Patterns** — terminal-suspend over soft-boundary, schema-required handoff, no-resume contract, operator-out-of-band takeover — each with the trade-off it solves.
+  5. **Principles & recommendations** — Constitution principles enforced (II Schema-First, VI Human-in-the-Loop, VII Provenance, VIII Documentation) cross-referenced to Anthropic engineering recommendations; practitioner-facing checklist for applying these on a real project.
+  6. **Contract** — Escalation Trigger Taxonomy (5 triggers tied to `preconditions.py`); Handoff Payload Schema (pydantic model shape + JSON Schema `$id`); Anti-Pattern Defense (why prose-only handoffs and raw-transcript dumping are structurally impossible — no silent auto-approve); Escalation Policy & Resume Semantics (`ACTIVE → SUSPENDED` is terminal; spec deliberately does NOT define un-suspension) (folded in from former README sub-sections).
+  7. **Run** — executable cells reproducing the fixture run; a final commented cell for the LIVE_API=1 path.
+  8. **Result** — captured outputs / metrics / event-log excerpts from the run with explanations.
+  9. **Reflection (Principle VIII)** — answers to the prompts in quickstart.md.
 - [ ] T050 [P] Add module-level docstrings to every file under `katas/016_human_handoff/*.py` (`__init__.py`, `models.py`, `tools.py`, `preconditions.py`, `session.py`, `operator_queue.py`, `events.py`, `runner.py`) explaining the module's role in the suspend-and-structured-handoff contract (Principle VIII)
 - [ ] T051 [P] Add why-comments on every non-trivial function in `katas/016_human_handoff/*.py` (per Constitution Principle VIII — each comment ties the code choice back to one of: FR-00X, SC-00X, or the anti-pattern defense — NOT what the code does line by line)
-- [ ] T052 [P] Document the escalation policy and resume semantics explicitly in `katas/016_human_handoff/README.md` (single subsection): which preconditions fire, what the payload guarantees, why there is no programmatic resume path, and how an operator would take over the session out-of-band (plan.md §Complexity Tracking — no session resumption after suspension)
 - [ ] T053 [P] Verify `specs/016-human-handoff/quickstart.md` usage walkthrough is accurate against the final layout; update any paths or commands that drifted during implementation
 - [ ] T054 Run `quickstart.md` end-to-end: `pytest tests/katas/016_human_handoff -v` against fixtures, plus the optional `LIVE_API=1 python -m katas.016_human_handoff.runner --scenario policy-breach-mid-tool-call` smoke; attach both outputs as PR evidence
 - [ ] T055 [P] Run `ruff check katas/016_human_handoff tests/katas/016_human_handoff` and `black --check` over the same paths; fix any findings
 - [ ] T056 [P] Produce a coverage report (`pytest --cov=katas.016_human_handoff`) and archive it at `runs/coverage/016_human_handoff.txt`; target >= 90% line coverage on `session.py`, `operator_queue.py`, and `models.py`
-- [ ] T057 Final self-audit: inspect `runs/handoffs/index.jsonl` and one `runs/handoffs/<escalation_id>.json` from the happy-path run; confirm SC-001 (100% schema-valid), SC-002 (zero raw-transcript handoffs), SC-004 (end-to-end traceability). Note SC-003 is declared but pedagogically demonstrated only in the README — flagged by `@needs-clarify SC-003`. Record the audit in the PR description
+- [ ] T057 Final self-audit: inspect `runs/handoffs/index.jsonl` and one `runs/handoffs/<escalation_id>.json` from the happy-path run; confirm SC-001 (100% schema-valid), SC-002 (zero raw-transcript handoffs), SC-004 (end-to-end traceability). Note SC-003 is declared but pedagogically demonstrated only in `notebook.ipynb` — flagged by `@needs-clarify SC-003`. Record the audit in the PR description
 
 ---
 
@@ -144,7 +152,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON-Schema-boun
 - Phase 3: T013–T016 (fixtures) in parallel. T017 depends on T005 + T013–T016 + T009 + T010. T018–T026 [P] once T006–T011 exist. T027 depends on T006 + T009. T028 depends on T006 + T007. T029 depends on T006 + T010 + T011. T030 depends on T012 + T027 + T029. T031 depends on T009.
 - Phase 4: T032 [P] (fixture). T033 depends on T032 + T005 + T008. T034–T037 [P] once T006 + T010 exist. T038 depends on T010 + T029. T039 depends on T008. T040 depends on T006.
 - Phase 5: T041 depends on T005 + US1 implementation + T046. T042–T045 [P] once T046 + T047 are done. T046 depends on T006. T047 depends on T006. T048 depends on T011 + T029.
-- Phase 6: T049–T053, T055–T056 [P]. T054 depends on all prior phases. T057 depends on T054.
+- Phase 6: T049–T051, T053, T055–T056 [P]. T054 depends on all prior phases. T057 depends on T054.
 
 **Story dependencies:**
 - US2 extends US1's `OperatorQueue` + `SuspensionAwareClient` — Phase 4 cannot begin before T027–T031 land.
@@ -164,7 +172,7 @@ Shared infrastructure blocking all stories — pydantic models, JSON-Schema-boun
 
 **Phase 5 [P]:** T042, T043, T044, T045 parallel once T046 + T047 land.
 
-**Phase 6 [P]:** T049, T050, T051, T052, T053, T055, T056 all parallel.
+**Phase 6 [P]:** T049, T050, T051, T053, T055, T056 all parallel.
 
 ---
 
@@ -183,4 +191,4 @@ Shared infrastructure blocking all stories — pydantic models, JSON-Schema-boun
 - Verify every `.feature` scenario fails before writing the matching production code (Constitution V — TDD). Do NOT make tests pass by editing assertions; fix the kata code instead (assertion-integrity rule).
 - The suspension guard in `session.py` (T027) is the irreversible anti-pattern barrier — keep the zero-bytes assertion green at all times after T021 lands. Any regression into prose-driven branching violates Principle I (Determinism Over Probability) and Principle VI (Human-in-the-Loop Escalation).
 - `write_handoff_note` is ONLY registered by the anti-pattern test harness; it must never leak into `runner.py` or any production path (T039 enforces this at import time).
-- SC-003 (median resolution-time delta) is declared but not empirically measured in this kata — plan.md §Complexity Tracking flags it as a clarify follow-up; the pedagogic delta is demonstrated in the README, not in a test assertion.
+- SC-003 (median resolution-time delta) is declared but not empirically measured in this kata — plan.md §Complexity Tracking flags it as a clarify follow-up; the pedagogic delta is demonstrated in `notebook.ipynb`, not in a test assertion.

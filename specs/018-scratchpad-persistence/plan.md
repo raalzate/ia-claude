@@ -135,7 +135,7 @@ compact-resume.
 | V. Test-First Kata Delivery (NN) | `/iikit-04-testify` will lock `.feature` files and assertion-integrity hashes before any production code. `tasks.md` (generated later by `/iikit-05-tasks`) references test IDs. This plan does NOT commit code. |
 | VI. Human-in-the-Loop Escalation | Conflicting findings are routed to the `conflicts` section with both entries preserved and surfaced — the human reader is the escalation target; the agent never picks arbitrarily (US2-AS3, FR-004). Corrupted scratchpads fail loud with `ScratchpadSchemaError` rather than partial recovery. |
 | VII. Provenance & Self-Audit | Each `Finding` carries `source_ref` (tool call id or session turn pointer); every rotation emits a `RotationEvent` into `rotation.jsonl`; every compact-resume emits an `anchor.json`. The three files together are sufficient to re-derive SC-001..SC-004 without re-running the live investigation. |
-| VIII. Mandatory Documentation (NN) | Every non-trivial function / validator will carry a *why* comment tied to the FR or the anti-pattern it defends against. Kata `README.md` (produced during `/iikit-07-implement`) will cover objective, walkthrough, anti-pattern defense, run instructions, and reflection. Quickstart already enumerates the §Kata Completion Standards checklist. |
+| VIII. Mandatory Documentation (NN) | Every non-trivial function / validator will carry a *why* comment tied to the FR or the anti-pattern it defends against. A single `notebook.ipynb` produced at `/iikit-07-implement` is the Principle VIII deliverable: it explains the kata, results, every Claude architecture concept exercised, the architecture walkthrough, applied patterns + principles, practitioner recommendations, the contract details, run cells, and the reflection. No separate `README.md`. Quickstart already enumerates the §Kata Completion Standards checklist. |
 
 **Result:** PASS. Proceed to Phase 0 / 1 artifacts.
 
@@ -157,7 +157,7 @@ specs/018-scratchpad-persistence/
   checklists/
     requirements.md    # (already present — produced by /iikit-01)
   tasks.md             # (generated later by /iikit-05-tasks)
-  README.md            # Principle VIII deliverable — written during /iikit-07
+  # (kata narrative lives in katas/.../notebook.ipynb — no spec-side README)
 ```
 
 ### Source Code (repository root)
@@ -174,7 +174,7 @@ katas/
     rotation.py              # MAX_SCRATCHPAD_BYTES cap + rotation to <name>.<iso-date>.md with prior-pad anchor
     client.py                # Thin injectable Anthropic client wrapper (shared shape with katas 001/011)
     runner.py                # CLI entrypoint: `python -m katas.018_scratchpad_persistence.runner`
-    README.md                # kata narrative — written during /iikit-07
+    notebook.ipynb           # Principle VIII deliverable — kata narrative + Claude architecture certification concepts (written during /iikit-07)
 
 tests/
   katas/
